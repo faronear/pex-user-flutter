@@ -156,3 +156,21 @@
 ### 备注：Aibot 相关（不投入）
 - 老板 2026-09-29：Aibot 概念已被 agent 取代，Agidin 待重新构思方向；
   **除非另行指示，不再迁移 Aibot 的创建/编辑链路**。
+
+### 品牌切换机制（入口级裁剪，同日）
+
+- **老板提问**：切到 NFT（Babelyx）项目，是分成两个项目，还是一个项目里用 switchApp 式脚本切换构建？
+- **结论与落地**：**一个仓库 + 每品牌一个入口 + 构建期指定**，不做破坏性文件改写。
+  - `main_agidin.dart`（公共+AI）/ `main_babelyx.dart`（公共+创作NFT）/ `main_tryapp.dart`（公共+最小 AI）；
+    `main.dart` 默认 = Agidin。
+  - **路由分文件**：`route_common.dart` / `route_ai.dart` / `route_creation.dart`；
+    `createAppRouter(routes: ...)` 组装 + 兜底占位。
+  - **BrandFeatures** 功能开关（enableAiChat/enableAibotMarket/enableCreation/enableCreator/enableMarket/enableNft/enableResource）；
+    `showCreatorShortcuts` 改为由 features 推导，业务代码不再判断 appkey。
+  - 新增 `brands/brand_features.dart`（含 agidin/babelyx/tryapp 三套预设）。
+  - `package.json` 脚本按品牌入口更新（`build:web:agidin|babelyx|tryapp`、`run:agidin|babelyx|tryapp`）。
+- **实测入口级裁剪**：Agidin `main.dart.js` 3,030,380 B vs Babelyx 2,883,228 B，
+  差 **147KB**（AI 域代码未进入 Babelyx 产物）✅
+- **实测品牌渲染**：Babelyx 产物在浏览器正确显示红色主题、Babelyx logo、
+  后端下发 `100 BAB` 与 `Sell Your Content` slogan、橙色 Start 按钮 —— 同代码、换品牌即变。
+- **验证**：`flutter analyze` 0 问题；两品牌 Web 构建均成功。

@@ -12,8 +12,14 @@ import 'core/state/app_startup_notifier.dart';
 import 'core/storage/local_store.dart';
 import 'theme/app_theme.dart';
 
-/// 启动应用：注入品牌与本地存储，构建 [ProviderScope]。
-Future<void> runPexApp(BrandConfig brand) async {
+/// 启动应用：注入品牌、路由组与本地存储，构建 [ProviderScope]。
+///
+/// [routes] 由品牌入口提供（见各 `main_<brand>.dart`），只包含该品牌启用的业务域路由，
+/// 以便 Dart 按 import 图做入口级裁剪。
+Future<void> runPexApp({
+  required BrandConfig brand,
+  required List<RouteBase> routes,
+}) async {
   WidgetsFlutterBinding.ensureInitialized();
   final LocalStore store = await LocalStore.open();
   runApp(
@@ -22,20 +28,22 @@ Future<void> runPexApp(BrandConfig brand) async {
         brandProvider.overrideWithValue(brand),
         localStoreProvider.overrideWithValue(store),
       ],
-      child: const PexApp(),
+      child: PexApp(routes: routes),
     ),
   );
 }
 
 class PexApp extends ConsumerStatefulWidget {
-  const PexApp({super.key});
+  const PexApp({super.key, required this.routes});
+
+  final List<RouteBase> routes;
 
   @override
   ConsumerState<PexApp> createState() => _PexAppState();
 }
 
 class _PexAppState extends ConsumerState<PexApp> {
-  late final GoRouter _router = createAppRouter(ref.read(brandProvider));
+  late final GoRouter _router = createAppRouter(routes: widget.routes);
 
   @override
   void initState() {

@@ -1,9 +1,9 @@
-/// 默认入口：品牌由编译期 `--dart-define=BRAND=` 决定，默认 AKAGIDIN。
+/// 默认入口 = Agidin（爱奇点）。
 ///
-/// 各品牌的独立入口见 `main_agidin.dart` / `main_babelyx.dart` / `main_tryapp.dart`。
+/// 这样 `flutter build web`（不指定 `-t`）可直接构建 Agidin；
+/// 其它品牌请显式指定入口：`flutter build web -t lib/main_babelyx.dart`。
 library;
 
-import 'app.dart';
-import 'brands/brand_registry.dart';
+import 'main_agidin.dart' as agidin;
 
-void main() => runPexApp(brandFromBuild());
+void main() => agidin.main();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/i18n/lang_text.dart';
 import 'brand_config.dart';
+import 'brand_features.dart';
 
 /// Babelyx（巴贝历）：内容创作与 NFT 市场，主色红橙 `#fc592b`。
 class BabelyxBrand extends BrandConfig {
@@ -44,6 +45,9 @@ class BabelyxBrand extends BrandConfig {
 
   @override
   String get portalImageAsset => 'assets/static/bgBabelyx.jpg';
+
+  @override
+  BrandFeatures get features => BrandFeatures.babelyx;
 
   @override
   String get appLandPage => 'midBabely';

@@ -6,12 +6,18 @@
   "scripts": {
     "syncAgentRule": "node -e \"fetch('https://git.tic.cc/opx/sysconfig/raw/branch/main/agents/syncAgentRule.mjs').then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.text()}).then(async t=>{await import('data:text/javascript;base64,'+Buffer.from(t).toString('base64'))})\"",
     "analyze": "flutter analyze",
-    "dev:web": "flutter run -d web-server --web-port=8090 --dart-define=API_BASE=http://localhost:7739",
+    "dev:web": "flutter run -d web-server --web-port=8090 -t lib/main_agidin.dart --dart-define=API_BASE=http://localhost:7739",
     "run:chrome": "flutter run -d chrome --dart-define=API_BASE=http://localhost:7739",
-    "run:macos": "flutter run -d macos --dart-define=API_BASE=http://localhost:7739",
-    "build:web": "flutter build web --release --dart-define=API_BASE=http://localhost:7739",
+    "run:macos": "flutter run -d macos -t lib/main_agidin.dart --dart-define=API_BASE=http://localhost:7739",
+    "build:web": "npm run build:web:agidin",
     "serve:web": "cd build/web && python3 -m http.server 8090",
-    "check:base": "dart run tool/check_first_touch.dart"
+    "check:base": "dart run tool/check_first_touch.dart",
+    "run:agidin": "flutter run -d chrome -t lib/main_agidin.dart --dart-define=API_BASE=http://localhost:7739",
+    "run:babelyx": "flutter run -d chrome -t lib/main_babelyx.dart --dart-define=API_BASE=http://localhost:7739",
+    "run:tryapp": "flutter run -d chrome -t lib/main_tryapp.dart --dart-define=API_BASE=http://localhost:7739",
+    "build:web:agidin": "flutter build web --release -t lib/main_agidin.dart --dart-define=API_BASE=http://localhost:7739",
+    "build:web:babelyx": "flutter build web --release -t lib/main_babelyx.dart --dart-define=API_BASE=http://localhost:7739",
+    "build:web:tryapp": "flutter build web --release -t lib/main_tryapp.dart --dart-define=API_BASE=http://localhost:7739"
   },
   "keywords": [],
   "author": "",

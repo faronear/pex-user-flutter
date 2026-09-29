@@ -69,6 +69,37 @@ lib/
 
 **为何不拆成三个独立仓库**：约 95% 代码三品牌共用，拆分会复制三份并导致长期漂移；flavors 已能产出独立包名/图标/上架的独立 App，同时保留单一代码源。若某品牌未来业务严重分叉，再抽库拆分。
 
+### 切换机制：入口级裁剪（核心）
+
+品牌切换**不是**改文件（源项目 `switchApp` 会复制品牌框架、生成 `pages.json`、软链资源，是破坏性的），
+而是**每品牌一个入口 + 构建期指定**：
+
+| 入口 | 组成 | 命令 |
+| ---- | ---- | ---- |
+| `lib/main_agidin.dart` | 公共域 + AI 域 | `flutter build web -t lib/main_agidin.dart` |
+| `lib/main_babelyx.dart` | 公共域 + 创作/NFT 域 | `flutter build web -t lib/main_babelyx.dart` |
+| `lib/main_tryapp.dart` | 公共域 + 最小 AI 域 | `flutter build web -t lib/main_tryapp.dart` |
+| `lib/main.dart` | 默认 = Agidin（便于直接 `flutter build web`） | — |
+
+关键点：**Dart 按 import 图做 tree-shaking**。Agidin 的入口不 import 创作/NFT 页面，
+这些代码就不进 Agidin 产物；反之亦然。**单一代码源 + 按品牌裁剪产物** 两者兼得。
+
+实测（2026-09-29，Web release）：
+- Agidin 产物 `main.dart.js` = 3,030,380 字节
+- Babelyx 产物 `main.dart.js` = 2,883,228 字节
+- 差 **147KB** = AI 域代码未进入 Babelyx 产物 ✅
+
+**路由必须分文件**（否则引入公共路由会连带把其它域页面打进产物）：
+- `core/router/route_common.dart`（首页 + 账户/登录）
+- `core/router/route_ai.dart`（AI 域）
+- `core/router/route_creation.dart`（创作/NFT 域）
+- `core/router/app_router.dart`：`createAppRouter(routes: ...)` 组装 + 兜底占位路由
+
+**品牌差异三层收口**（业务代码无需判断 appkey）：
+1. `BrandConfig`：域名、包名、主色、logo、门户图、落地页、币种、midButton；
+2. `BrandFeatures`：功能开关（`enableAiChat / enableAibotMarket / enableCreation / enableCreator / enableMarket / enableNft / enableResource`）；
+3. `main_<brand>.dart`：入口装配（注入 BrandConfig + 按 `features` 组装路由组）。
+
 ### flavors 落地状态
 
 | 平台 | 状态 | 说明 |

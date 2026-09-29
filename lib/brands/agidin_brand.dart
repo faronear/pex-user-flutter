@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/i18n/lang_text.dart';
 import 'brand_config.dart';
+import 'brand_features.dart';
 
 /// Agidin（爱奇点）：AI 应用市场，主色蓝 `#25bcf1`。
 class AgidinBrand extends BrandConfig {
@@ -49,14 +50,13 @@ class AgidinBrand extends BrandConfig {
   String get portalImageAsset => 'assets/static/bgAgidin.jpg';
 
   @override
+  BrandFeatures get features => BrandFeatures.agidin;
+
+  @override
   String get appLandPage => 'midAgidin';
 
   @override
   String get midPage => 'midAgidin';
-
-  /// Agidin 不显示创作类快捷入口（与源项目 `appkey !== 'AKAGIDIN'` 判断一致）。
-  @override
-  bool get showCreatorShortcuts => false;
 
   @override
   String get coinCode => 'AGI';

@@ -10,6 +10,7 @@ library;
 import 'package:flutter/material.dart';
 
 import '../core/i18n/lang_text.dart';
+import 'brand_features.dart';
 
 abstract class BrandConfig {
   const BrandConfig();
@@ -69,9 +70,12 @@ abstract class BrandConfig {
         deDE: 'Chat',
       );
 
+  /// 品牌功能开关（决定注册哪些业务域路由，配合入口级裁剪）。
+  BrandFeatures get features;
+
   /// 是否在 PC 顶栏显示「我的选集/圈子」等创作类快捷入口
   /// （源项目按 `appkey !== 'AKAGIDIN'` 判断；此处改为品牌开关）。
-  bool get showCreatorShortcuts => true;
+  bool get showCreatorShortcuts => features.enableCreator || features.enableCreation;
 
   /// 应用内币种代码（源项目 `cryptocoinSet.TUC.coinCode`）。
   String get coinCode;
