@@ -226,3 +226,33 @@
 - **结论**：该页不可一次吞下，已拆为 **7 片**（2A 骨架 → 2B 互动 → 2C 付费 → 2D 用户列表 →
   2E 编辑下架 → 2F 分享举报 → 2G 资源页），建议顺序 **2A → 2G → 2B → 2D → 2F → 2C → 2E**。
 - **本轮未写实现代码**：上下文预算耗尽，为免留半成品而主动止步，拆解方案已落盘供下次直接开工。
+
+### 创作/NFT 域 批次 2 · 2A 只读骨架（showCreation 首片）
+
+- **范围**：`showCreation.vue`（2227 行，全项目最大页）的第一片——**只读骨架**：
+  页面框架（PC 二级导航 + 加载态）→「未找到作品」态（含编号搜索，对应 `search_unid`）→
+  标题/日期/上下架提示 → 封面（**全部禁用态遮罩** + 内容 story 渲染 + 加密封面）→
+  作者头像 → 右栏周边（作者、IPFS、NFT、pact 只读行）→ `get_single_creation`。
+- **新增**：
+  - `pages/show_creation_page.dart`（页面本体，按 `ShowCoverKind` 枚举集中呈现源项目
+    模板里的一串 `v-if/v-else-if` 遮罩优先级）
+  - `core/state/creation_show_provider.dart`（对应 `wo.ss.Creation.ctnShow`，含 `readyShow` 语义）
+  - `widgets/part_pexdata_summary.dart`（对应 `partPexdataSummary.vue`）
+  - `data/creation.dart` 扩展：`Pact` 视图、`ShowCoverKind` 判定、`bannedBySystem` /
+    `unlistedByOwner` / `unlistedByMe` / `deletedByMe` / `linkedByMe` / `belongToMe` / `stockNumber`
+  - `core/api/creation_api.dart`：`getSingleCreation` 支持多入口参数（csid/链接参数，对应 `onLoad` 两分支）
+  - `theme/app_theme.dart` 补色：`grey8/greyE/subtext/blueMy/blueMatt/greenLight`
+  - 工具 `tool/check_creation_show.dart`（契约自检：18 个关键字段全部 OK）
+- **有意偏离**（均已在代码注释与本项目标注）：
+  1. **不渲染任何「会死」的交互入口**：解密按钮（2C）、评论编辑器与操作按钮行（2B/2E/2F）、
+     复制/分享小图标（2F）、mint 入口（批次5）本轮全部不出现，只保留只读信息；
+  2. 源项目把封条文字渲染了两遍（疑似视觉密度 hack），Flutter 侧只渲染一遍；
+  3. `dateAt` 源项目恒为 `SUBTITLE`，只实现该分支；
+  4. 搜索按钮与输入框并排（源项目绝对定位叠在输入框内）。
+- **实测**（headless Chrome 截图，本轮解决了上轮截图卡住的问题——
+  **Chrome 窗口宽度有 500px 下限**，此前 420/300 宽的截图其实是 500 宽布局被裁切，并非布局溢出）：
+  - 手机 500 宽：内容作品 / 加密作品 / 未找到 三态均正确；
+  - PC 1200 宽：左右栏 60/40（实测右栏 724–1190px，与 flex 6:4 精确吻合）；
+  - 修掉一处真 bug：加密封面兜底背景误用纯绿色导致封条文字不可见，已改回 `matrix7.jpg`。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功；`dart run tool/check_creation_show.dart` PASS。
+- **下一片**：按既定顺序 **2G 资源页 → 2B 统计与互动**（评论列表 + 点赞）。

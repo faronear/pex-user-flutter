@@ -13,9 +13,15 @@ class PexColors {
   static const Color border = Color(0xFFE5E5E5);
   static const Color grey3 = Color(0xFF303133);
   static const Color grey6 = Color(0xFF606266);
+  static const Color grey8 = Color(0xFF82848A);
   static const Color grey9 = Color(0xFF909399);
   static const Color greyA = Color(0xFFAAAAAA);
   static const Color greyC = Color(0xFFC8C9CC);
+  static const Color greyE = Color(0xFFE4E7ED);
+  static const Color subtext = Color(0xFF999999);
+  static const Color blueMy = Color(0xFF2979FF);
+  static const Color blueMatt = Color(0xFFA0CFFF);
+  static const Color greenLight = Color(0xFFDBF1E1);
   static const Color colorFund = Color(0xFFFFB300);
   static const Color colorMia = Color(0xFF4CD964);
   static const Color redMy = Color(0xFFFA3534);

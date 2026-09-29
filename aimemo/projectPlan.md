@@ -113,9 +113,13 @@
       `partCloseButton` · `partPexdataSummary` · `partStoryEditor`(已有基础版)
     - 先建依赖（可先行、也可随片并行）：`partCloseButton` · `partPexdataSummary` ·
       `partIcontextCopy` · `partUserList` · `partComplain` · `partPopLink`
-    - [ ] **2A 只读骨架**：页面框架 + 「未找到作品」态 + 标题/状态栏 + 封面与内容渲染
-      （含 `bannedBySystem` / `deletedByMe` / `HIDED` / `BLOCKED` / `unlistedByOwner` 等**全部禁用态遮罩**）
-      + 作者信息 + `get_single_creation`
+    - [x] **2A 只读骨架**：页面框架 + 「未找到作品」态（含编号搜索）+ 标题/日期/上下架提示
+      + 封面与内容渲染（`bannedBySystem` / `deletedByMe` / `HIDED` / `BLOCKED` /
+      `unlistedByOwner` / 中国区待审核等**全部禁用态遮罩** + 内容 story 渲染 + 加密封面）
+      + 作者头像 + 右栏周边（作者、IPFS、NFT、TVIEW/THOLD/TWORK/TOWN 只读行）
+      + `get_single_creation`（`creationShowProvider` 对应 `wo.ss.Creation.ctnShow`）
+      + 组件 `part_pexdata_summary`；新工具 `tool/check_creation_show.dart`
+      （2A 不渲染任何会死的交互入口：解密按钮留待 2C，评论编辑器/操作按钮留待 2B/2E/2F）
     - [ ] **2B 统计与互动（只读侧）**：点赞 `upvote_creation`、评论列表 `get_comment_list` 展示
     - [ ] **2C 解锁与付费**：`pay_to_view` / `pay_to_own` / `pay_to_hold` + `partDeposit` 充值弹窗
     - [ ] **2D 用户列表**：`partUserList`（观看者 / 持有者 / 赞赏者）

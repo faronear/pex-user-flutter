@@ -6,6 +6,7 @@ library;
 import 'package:go_router/go_router.dart';
 
 import '../../pages/menu_creation_page.dart';
+import '../../pages/show_creation_page.dart';
 import '../../pages/umy_collection_page.dart';
 import 'app_routes.dart';
 
@@ -21,6 +22,12 @@ List<RouteBase> creationRoutes() => <RouteBase>[
         name: AppRoutes.umyCollection,
         builder: (_, _) => const UmyCollectionPage(),
       ),
-      // showCreation / showCreationUpdate / menuCreator / showCreator / menuMarket
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.showCreation),
+        name: AppRoutes.showCreation,
+        builder: (_, GoRouterState state) =>
+            ShowCreationPage(queryParameters: state.uri.queryParameters),
+      ),
+      // showCreationUpdate / menuCreator / showCreator / menuMarket
       // / userResource / userResourceDetail 待后续批次加入
     ];

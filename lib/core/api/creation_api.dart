@@ -53,12 +53,33 @@ class CreationApi {
         },
       );
 
-  Future<Map<String, dynamic>> getSingleCreation(String csid) => _client.callBase(
+  /// 取单个作品详情。入口可以是 `csid`（从列表跳转）或链接参数
+  /// （`pexdataCidHash` / `nftToid` / `pexBaseCid` / `mintTxHash` / `unid`），
+  /// 对应源项目 `showCreation.vue` 的 `onLoad` 两种分支。
+  Future<Map<String, dynamic>> getSingleCreation({
+    String? csid,
+    String? pexdataCidHash,
+    String? nftToid,
+    String? pexBaseCid,
+    String? mintTxHash,
+    String? unid,
+  }) =>
+      _client.callBase(
         apiWho: who,
         apiTodo: 'get_single_creation',
-        apiWhat: <String, dynamic>{'csid': csid},
+        apiWhat: <String, dynamic>{
+          'csid': ?_nonEmpty(csid),
+          'pexdataCidHash': ?_nonEmpty(pexdataCidHash),
+          'nftToid': ?_nonEmpty(nftToid),
+          'pexBaseCid': ?_nonEmpty(pexBaseCid),
+          'mintTxHash': ?_nonEmpty(mintTxHash),
+          'unid': ?_nonEmpty(unid),
+        },
       );
 }
+
+String? _nonEmpty(String? value) =>
+    value == null || value.isEmpty ? null : value;
 
 final Provider<CreationApi> creationApiProvider =
     Provider<CreationApi>((ref) => CreationApi(ref.watch(apiClientProvider)));

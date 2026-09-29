@@ -73,7 +73,7 @@
 | `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[x]` |
 | `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[ ]` |
 | `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
-| `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[ ]` 最大页 |
+| `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[>]` 2A 只读骨架已迁（评论/互动/付费/名单/分享举报待 2B–2F） |
 | `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[ ]` |
 | `showCreator.vue` | 712 | `pages/show_creator_page.dart` | `[ ]` |
 | `userResource.vue` | 133 | `pages/user_resource_page.dart` | `[ ]` |
@@ -150,7 +150,7 @@
 | `partDeposit.vue` | 1066 | `widgets/part_deposit.dart` | `[ ]` |
 | `partFundChannelCard.vue` | 153 | `widgets/part_fund_channel_card.dart` | `[ ]` |
 | `partTxList.vue` | 195 | `widgets/part_tx_list.dart` | `[ ]` |
-| `partPexdataSummary.vue` | 44 | `widgets/part_pexdata_summary.dart` | `[ ]` |
+| `partPexdataSummary.vue` | 44 | `widgets/part_pexdata_summary.dart` | `[x]` |
 
 ### AI / 媒体
 | 源 | 行数 | 目标 | 状态 |
