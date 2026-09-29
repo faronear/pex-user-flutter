@@ -213,3 +213,16 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **遗留**：headless 截图在本页卡住（应用持续重连导致 Chrome 虚拟时间不收敛），
   本轮以**接口契约核对**替代视觉验收；下轮改用其它方式补视觉对照。
+
+### 创作/NFT 域 批次 2 侦察与拆解（本轮止于此）
+
+- **侦察 `showCreation.vue`（2227 行，全项目最大页）**：
+  - 模板重度依赖弹窗与列表：`uni-popup` ×13、`uni-list-item` ×10、`partLoadMore` ×6
+  - 未迁移的依赖组件：`partDeposit`(1066，属资金域) · `partUserList` · `partPopLink`(分享) ·
+    `partComplain`(举报) · `partIcontextPop`/`partIcontextCopy`(复制菜单) · `partCloseButton` ·
+    `partPexdataSummary` · `partStoryEditor`(已有基础版可复用)
+  - 主体包含**大量禁用态分支**：`bannedBySystem` / `deletedByMe` / `HIDED` / `BLOCKED` /
+    `unlistedByOwner`(对本人/他人/被链接者三种视角不同) / 中国区待审核
+- **结论**：该页不可一次吞下，已拆为 **7 片**（2A 骨架 → 2B 互动 → 2C 付费 → 2D 用户列表 →
+  2E 编辑下架 → 2F 分享举报 → 2G 资源页），建议顺序 **2A → 2G → 2B → 2D → 2F → 2C → 2E**。
+- **本轮未写实现代码**：上下文预算耗尽，为免留半成品而主动止步，拆解方案已落盘供下次直接开工。

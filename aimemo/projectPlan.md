@@ -106,7 +106,24 @@
     `get_my_{followers,followings}` / `get_invitee_list`；社交 `unfollow_user` / `unblock_user` / `send_mia`
   - 外部依赖：**合约铸造**（`mintNow`/`mintTxHash`/`mintCsid`）、**IPFS**（`story_to_cid`）、`tic-crypto`
   - [ ] 批次1 列表与分类（只读）：`menuCreation` + `partCreationCardList` / `partCreationAll` / `partCreationAs{Creator,Owner,Holder,Viewer,Fueler}`
-  - [ ] 批次2 作品详情与阅读：`showCreation` 只读部分（story 渲染/作者/评论/点赞）+ `userResource` / `userResourceDetail`
+  - [>] 批次2 作品详情与阅读（`showCreation.vue` 2227 行，**全项目最大页**，已拆为 7 片）
+    - 侦察结论：模板含大量 `uni-popup`(13) / `uni-list-item`(10) / `partLoadMore`(6)；
+      依赖未迁移组件：`partDeposit`(1066，资金域) · `partUserList` · `partPopLink`(分享) ·
+      `partComplain`(举报) · `partIcontextPop` / `partIcontextCopy`(复制菜单) ·
+      `partCloseButton` · `partPexdataSummary` · `partStoryEditor`(已有基础版)
+    - 先建依赖（可先行、也可随片并行）：`partCloseButton` · `partPexdataSummary` ·
+      `partIcontextCopy` · `partUserList` · `partComplain` · `partPopLink`
+    - [ ] **2A 只读骨架**：页面框架 + 「未找到作品」态 + 标题/状态栏 + 封面与内容渲染
+      （含 `bannedBySystem` / `deletedByMe` / `HIDED` / `BLOCKED` / `unlistedByOwner` 等**全部禁用态遮罩**）
+      + 作者信息 + `get_single_creation`
+    - [ ] **2B 统计与互动（只读侧）**：点赞 `upvote_creation`、评论列表 `get_comment_list` 展示
+    - [ ] **2C 解锁与付费**：`pay_to_view` / `pay_to_own` / `pay_to_hold` + `partDeposit` 充值弹窗
+    - [ ] **2D 用户列表**：`partUserList`（观看者 / 持有者 / 赞赏者）
+    - [ ] **2E 作者编辑与下架**：接入 `partStoryEditor` + `update_creation` / `unlist_creation`
+      / `unhide_creation` / 删除
+    - [ ] **2F 分享与举报**：`partPopLink` / `partComplain` / `partIcontextPop` / `partIcontextCopy`
+    - [ ] **2G 资源页**：`userResource`(133) / `userResourceDetail`(208) —— 小而独立，可随时插入
+    - 建议顺序：2A → 2G → 2B → 2D → 2F → 2C → 2E（先只读闭环，再交互，最后付费/编辑）
   - [ ] 批次3 **创作与编辑（UGC 核心）**：`partCreate` + `partStoryEditor` 完整版 + `story_to_cid` + `create_creation`
   - [ ] 批次4 付费与持有：`pay_to_{view,own,hold}` + 充值弹窗 `partDeposit`
   - [ ] 批次5 NFT 铸造：合约交互（**需先评审 Flutter web3/加密方案**，风险最高）
