@@ -6,6 +6,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../brands/brand_config.dart';
 import '../../pages/home_portal_page.dart';
+import '../../pages/menu_aipp_aichat_page.dart';
+import '../../pages/menu_aipp_page.dart';
+import '../../pages/mid_agidin_page.dart';
 import '../../pages/ident_begin_page.dart';
 import '../../pages/ident_new_passcode_page.dart';
 import '../../pages/ident_new_regcode_page.dart';
@@ -21,6 +24,8 @@ class AppRoutes {
 
   static const String homePortal = 'homePortal';
   static const String midAgidin = 'midAgidin';
+  static const String menuAipp = 'menuAipp';
+  static const String menuAippAichat = 'menuAippAichat';
   static const String midBabely = 'midBabely';
   static const String midTryapp = 'midTryapp';
   static const String identBegin = 'identBegin';
@@ -78,6 +83,27 @@ GoRouter createAppRouter(BrandConfig brand) {
         path: AppRoutes.path(AppRoutes.identOldReset),
         name: AppRoutes.identOldReset,
         builder: (_, _) => const IdentOldResetPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.midAgidin),
+        name: AppRoutes.midAgidin,
+        builder: (BuildContext context, GoRouterState state) => MidAgidinPage(
+          aicode: state.uri.queryParameters['aicode'],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.menuAipp),
+        name: AppRoutes.menuAipp,
+        builder: (BuildContext context, GoRouterState state) => MenuAippPage(
+          tagnow: state.uri.queryParameters['tagnow'],
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.menuAippAichat),
+        name: AppRoutes.menuAippAichat,
+        builder: (BuildContext context, GoRouterState state) => MenuAippAichatPage(
+          aicode: state.uri.queryParameters['aicode'],
+        ),
       ),
       // 兜底：尚未迁移的页面统一显示占位页，避免跳转报错。
       GoRoute(

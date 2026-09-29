@@ -76,3 +76,43 @@ bool isEmptyValue(Object? value) {
   if (value is Map) return value.isEmpty;
   return false;
 }
+
+/// 日期格式化，对应 `wo.tt.formatDate`（支持 `yyyy-mm-dd HH:MM`）。
+String formatDate(Object? date, [String format = 'yyyy-mm-dd']) {
+  if (date == null) return '';
+  DateTime? value;
+  if (date is DateTime) {
+    value = date;
+  } else if (date is num) {
+    value = DateTime.fromMillisecondsSinceEpoch(date.toInt());
+  } else {
+    value = DateTime.tryParse(date.toString());
+  }
+  if (value == null) return '';
+
+  String pad(int n) => n.toString().padLeft(2, '0');
+  return format
+      .replaceAll('yyyy', value.year.toString())
+      .replaceAll('mm', pad(value.month))
+      .replaceAll('dd', pad(value.day))
+      .replaceAll('HH', pad(value.hour))
+      .replaceAll('MM', pad(value.minute))
+      .replaceAll('SS', pad(value.second));
+}
+
+/// 字节数可读化，对应 `wo.tt.segment_number`。
+String segmentNumber(Object? sizeBytes) {
+  final num? bytes =
+      sizeBytes is num ? sizeBytes : num.tryParse(sizeBytes?.toString() ?? '');
+  if (bytes == null) return '';
+  const List<String> units = <String>['B', 'KB', 'MB', 'GB', 'TB'];
+  num size = bytes;
+  int unit = 0;
+  while (size >= 1024 && unit < units.length - 1) {
+    size = size / 1024;
+    unit++;
+  }
+  final String text =
+      size >= 100 || unit == 0 ? size.toStringAsFixed(0) : size.toStringAsFixed(2);
+  return '$text${units[unit]}';
+}

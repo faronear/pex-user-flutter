@@ -91,3 +91,38 @@
   补 PC 二级标题（各页 `i18nPageTitle`）；页脚分组纵向堆叠；logo 增加兜底图标。
 - **验证**：`flutter analyze` 0 问题；`flutter build web` 成功；与 `localhost:8080` 逐页截图比对。
 - **待办**：`midAgidin`（登录后落地页）仍是占位，属 AI 域；WebSocket 未接；iOS/Android 真机待验证。
+
+### AI 域迁移（第一轮，同日）
+
+- **传输机制澄清**：AI 回复**不是** WebSocket 流式，而是 HTTP 长请求
+  `Aimodel/reply_challenge`（源项目前端同步等待 + 「思考中…N」倒计时）；
+  WebSocket 的 `AICHAT_SUCCESS` 只是补充推送路径。→ 实现大幅简化。
+- **老板提示并确认的核心架构**：`story`（`[{text|image|video|audio|link|file}]`）是**跨域内容容器**，
+  贯穿 AI 对话、创作/NFT、列表详情；`partStoryReader` 渲染、`partStoryEditor` 组编。
+  已写入 `architecture.md` 第七节。
+- **接口实测**（`tool/check_ai_flow.dart`，注册账号后全链路）：
+  `get_aipp` SUCCESS（爱奇点/Agidin）· `get_all_aippList` SUCCESS（10 个共享 Aibot）·
+  `get_my_aippList` SUCCESS · `get_chat_history` SUCCESS ·
+  `reply_challenge` 返回 `_state=ERROR / Bad request for dependent service.`（含 `promptUuid`）。
+  → **前端契约正确**；失败原因是**本地后端的上游模型连接已过时**。
+- **老板指示**：后台连 AI 模型很久没更新，**先完成前端迁移、再更新后台**；目前很多模型连接是错的，
+  不必为此阻塞前端。
+- **新增基础设施**：
+  - `core/util/server_url.dart`（`make_server_url` 等价 + `ServerImage`）
+  - `data/ai_model.dart`（`AiModel` 视图：ainame/ainote/aiprice/aiprovider/aiavatar/isTextChat/isImageChat/isAibot/pickState）
+  - `core/state/ai_provider.dart`（chatList/promptStory/aicodeNow/aintNow/memory/imgNum/autoTTS/aippTag/…）
+  - `core/api/aimodel_api.dart`（9 个 apiTodo；注意参数名为 **`takeLimit`**）
+  - `pex_toolkit` 增补 `formatDate` / `segmentNumber`
+- **新增组件**：`part_window_layout`、`part_load_more`、`part_text_reader`、
+  `part_story_reader`、**`part_story_editor`**、`ai_model_tile`、
+  `part_aipp_models` / `part_aipp_shared` / `part_aipp_picked`、`part_aichat`（核心）。
+- **`part_aichat` 覆盖**：模型头部（名称/价格/供应商 + 清空/加载更多/收藏）、消息列表（story 渲染、
+  左右分栏、头像、tuc 成本）、输入条（多行 + 发送）、**story 模式**（图片对话模型或 Aibot 时切换为
+  `partStoryEditor`，发布即发送 `promptStory`）、记忆条数/图片数设置、余额显示、消息长按菜单（拷贝/删除）。
+  **暂缓**：语音输入（`partSoundRecorder`）、TTS 自动朗读、分享弹窗、充值弹窗、story 段落媒体上传。
+- **新增页面**：`mid_agidin_page`（AI 对话落地页，含手机端自绘顶栏）、`menu_aipp_page`（Aibot 市场，
+  限宽 900、分类切换、创建入口）、`menu_aipp_aichat_page`；路由已接入。
+- **视觉对照修正**：`menuAipp` 内容限宽 900 居中；列表说明文字限 1 行（对齐 `uni-list-chat`）。
+- **验证**：`flutter analyze` 0 问题；`flutter build web` 成功。
+- **待办**：`menuAippCreate`/`menuAippModify` + `partAippEditor`；`partMenuRing`/`partPopLink`/`partDeposit`；
+  语音/TTS；story 段落媒体上传（`pickupFile2Server` 等价）。

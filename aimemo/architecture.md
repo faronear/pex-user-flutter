@@ -98,7 +98,36 @@ lib/
 
 **实测（2026-09-29，本地 7739）**：`first_touch` 返回 `HTTP 200`、`_state = SUCCESS`、`_stateLogin = MISSING_USID`、`envarBase` 30 个键（含 `slogans`/`newsline`/`linkNews`/`linkSlogan`/`servUrl`/`linkTree`/`aiModelSet`）。
 
-## 七、开发环境与地址
+## 七、核心内容容器：story（跨域基石）
+
+> 老板提示（2026-09-29）：`partStoryReader` / `partStoryEditor` 把不同类型的内容组织在一个容器里。
+
+**`story` 是一个段落数组**，每段只承载一种内容类型：
+
+```jsonc
+[
+  { "text": "..." },                  // 文本（也支持 textIpfs / _autocontent）
+  { "image": "<路径或 CID>" },
+  { "video": "<路径或 CID>", "_originalname": "..." },
+  { "audio": "<路径或 CID>", "_originalname": "..." },
+  { "link": "...", "linkTarget": "...", "_linkText": {...}, "linkExpireAt": 0 },
+  { "file": { "cid": "...", "originalname": "...", "size": 0, "usage": "..." } }
+]
+```
+
+**用途**：同一个容器贯穿三条业务线——
+- **AI 对话**：消息体 `chat.story`（assistant 回复可为多段混合内容）；图片对话模型/Aibot 的输入用 `promptStory`（story 模式）；
+- **创作 / NFT**：作品内容 `pexdataUser` 即 story；
+- **各列表/详情**：复用同一渲染器。
+
+**渲染与组编**：
+- `partStoryReader`（Flutter: `widgets/part_story_reader.dart`）——只读渲染各类型段落；
+- `partStoryEditor`（Flutter: `widgets/part_story_editor.dart`）——可编辑组编：增删段落、按 `allow{Text,Speak,Image,Video,Audio,File,Link}` 控制可添加类型、发布。
+- `partTextReader` 负责段落内文本（含 `textIpfs` 拉取）。
+
+**迁移约束**：`story` 结构必须与源项目**逐字段一致**（后端与 IPFS 都按此结构存取），新增类型需前后端同步。
+
+## 八、开发环境与地址
 
 | 用途 | 地址 | 备注 |
 | ---- | ---- | ---- |
@@ -120,7 +149,7 @@ lib/
   - 结论：手机版式截图请用 `--window-size=500,987`（补偿高度）；PC 用 `1280,800` 正常。
   - 需要 `--virtual-time-budget`（否则会在 Flutter 渲染前截图）；但图片资源偶尔仍未加载完，截图可能缺图——以真实浏览器为准。
 
-## 八、待评审事项
+## 九、待评审事项
 
 - `tic-crypto`（加密/链上）在 Flutter 的等价实现方案待调研。
 - 图片/视频资源的品牌化与 `static/` 命名映射。

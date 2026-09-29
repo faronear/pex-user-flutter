@@ -152,6 +152,13 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
     );
   }
 
+  /// 局部更新在线用户字段（如对话后刷新余额）。
+  void mergeOnlineUser(Map<String, dynamic> patch) {
+    state = state.copyWith(
+      onlineUser: <String, dynamic>{...state.onlineUser, ...patch},
+    );
+  }
+
   /// 退出登录（对应源项目 `wo.tt.logout_local_account`）。
   void logout() {
     state = state.copyWith(

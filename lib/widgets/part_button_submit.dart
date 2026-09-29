@@ -16,6 +16,7 @@ class PartButtonSubmit extends ConsumerWidget {
     this.inShadow = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 50),
     this.height = 50,
+    this.fullWidth = true,
   });
 
   final List<Widget> children;
@@ -26,6 +27,9 @@ class PartButtonSubmit extends ConsumerWidget {
   final EdgeInsets padding;
   final double height;
 
+  /// 是否占满可用宽度（独立使用时为 true；放在 Row 内时应为 false）。
+  final bool fullWidth;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Color mainColor = ref.watch(brandProvider).mainColor;
@@ -33,7 +37,7 @@ class PartButtonSubmit extends ConsumerWidget {
     return Opacity(
       opacity: inactive ? 0.3 : 1,
       child: SizedBox(
-        width: double.infinity,
+        width: fullWidth ? double.infinity : null,
         height: height,
         child: FilledButton(
           onPressed: inactive ? null : onPressed,

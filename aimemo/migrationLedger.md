@@ -10,7 +10,7 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `homePortal.vue` | 255 | `pages/home_portal_page.dart` | `[x]` 已实现（待视觉校验） |
-| `midAgidin.vue` | 82 | `pages/mid_agidin_page.dart` | `[ ]` |
+| `midAgidin.vue` | 82 | `pages/mid_agidin_page.dart` | `[x] 已迁移` |
 | `midAizoic.vue` | 12 | — | `[-]` Agidin 旧名遗留（评估后决定） |
 | `midBabely.vue` | 63 | `pages/mid_babely_page.dart` | `[ ]` |
 | `midTryapp.vue` | 187 | `pages/mid_tryapp_page.dart` | `[ ]` |
@@ -60,8 +60,8 @@
 ### AI
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `menuAipp.vue` | 91 | `pages/menu_aipp_page.dart` | `[ ]` |
-| `menuAippAichat.vue` | 42 | `pages/menu_aipp_aichat_page.dart` | `[ ]` |
+| `menuAipp.vue` | 91 | `pages/menu_aipp_page.dart` | `[x] 已迁移` |
+| `menuAippAichat.vue` | 42 | `pages/menu_aipp_aichat_page.dart` | `[x] 已迁移` |
 | `menuAippCreate.vue` | 611 | `pages/menu_aipp_create_page.dart` | `[ ]` |
 | `menuAippCreate.wrapper.vue` | 101 | `pages/menu_aipp_create_wrapper_page.dart` | `[ ]` |
 | `menuAippModify.vue` | 691 | `pages/menu_aipp_modify_page.dart` | `[ ]` |
@@ -96,7 +96,7 @@
 | `partWindow.vue` | 108 | `widgets/part_window.dart` | `[x]` |
 | `partWindowHeader.vue` | 268 | `widgets/part_window_header.dart` | `[x]` |
 | `partWindowFooter.vue` | 132 | `widgets/part_window_footer.dart` | `[x]` |
-| `partWindowLayout.vue` | 22 | `widgets/part_window_layout.dart` | `[ ]` |
+| `partWindowLayout.vue` | 22 | `widgets/part_window_layout.dart` | `[x]` |
 | `partWindowLayoutIdent.vue` | 51 | `widgets/part_window_layout_ident.dart` | `[x]` |
 | `partWindowLayoutUser.vue` | 101 | `widgets/part_window_layout_user.dart` | `[ ]` |
 | `partNavibarPc.vue` | 115 | `widgets/part_navibar_pc.dart` | `[x]` |
@@ -112,7 +112,7 @@
 | `partButtonPasscode.vue` | 40 | `widgets/part_button_passcode.dart` | `[x]` |
 | `partCloseButton.vue` | 27 | `widgets/part_close_button.dart` | `[ ]` |
 | `partCountdown.vue` | 78 | `widgets/part_countdown.dart` | `[x]` |
-| `partLoadMore.vue` | 171 | `widgets/part_load_more.dart` | `[ ]` |
+| `partLoadMore.vue` | 171 | `widgets/part_load_more.dart` | `[x]` |
 | `partEmptyList.vue` | 90 | `widgets/part_empty_list.dart` | `[ ]` |
 | `partShowLoading.vue` | 20 | `widgets/part_show_loading.dart` | `[x]` |
 | `partTooltip.vue` | 34 | `widgets/part_tooltip.dart` | `[ ]` |
@@ -155,14 +155,14 @@
 ### AI / 媒体
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `partAichat.vue` | 1504 | `widgets/part_aichat.dart` | `[ ]` |
+| `partAichat.vue` | 1504 | `widgets/part_aichat.dart` | `[>] 核心已迁移` |
 | `partAippEditor.vue` | 510 | `widgets/part_aipp_editor.dart` | `[ ]` |
-| `partAippModels.vue` | 94 | `widgets/part_aipp_models.dart` | `[ ]` |
-| `partAippPicked.vue` | 151 | `widgets/part_aipp_picked.dart` | `[ ]` |
-| `partAippShared.vue` | 131 | `widgets/part_aipp_shared.dart` | `[ ]` |
-| `partStoryEditor.vue` | 763 | `widgets/part_story_editor.dart` | `[ ]` |
-| `partStoryReader.vue` | 208 | `widgets/part_story_reader.dart` | `[ ]` |
-| `partTextReader.vue` | 54 | `widgets/part_text_reader.dart` | `[ ]` |
+| `partAippModels.vue` | 94 | `widgets/part_aipp_models.dart` | `[x]` |
+| `partAippPicked.vue` | 151 | `widgets/part_aipp_picked.dart` | `[x]` |
+| `partAippShared.vue` | 131 | `widgets/part_aipp_shared.dart` | `[x]` |
+| `partStoryEditor.vue` | 763 | `widgets/part_story_editor.dart` | `[x]` |
+| `partStoryReader.vue` | 208 | `widgets/part_story_reader.dart` | `[x]` |
+| `partTextReader.vue` | 54 | `widgets/part_text_reader.dart` | `[x]` |
 | `partTexturlReader.vue` | 28 | `widgets/part_texturl_reader.dart` | `[ ]` |
 | `partSoundRecorder.vue` | 303 | `widgets/part_sound_recorder.dart` | `[ ]` 原生能力 |
 
