@@ -98,7 +98,19 @@
   - [x] story 段落媒体上传（`Fileloader/receiveFile` + 选择器 + 段落写入，已实测 SUCCESS）
   - [ ] 语音输入 · TTS 自动朗读
   - [ ] WebSocket（`SOCKET_OWNER` 登录后握手、`AICHAT_SUCCESS` 推送路径）
-- [ ] 3B 创作/NFT 域：`menuCreation` / `menuCreator` / `showCreation`(2227行) / `showCreationUpdate` / `showCreator` / `userResource` / `userResourceDetail`；组件 `partCreate` / `partCreation*` / `partCreator*` / `partStoryEditor`
+- [>] 3B 创作/NFT 域（Babelyx UGC 主战场，约 7000 行，分 6 批）
+  - 规模：页面 3591 行（`showCreation` 2227 为最大页）/ 组件 3486 行（`partCreate` 1012、`partStoryEditor` 763）
+  - 接口面：`get_single_creation` / `get_creation_list` / `get_creations_as_{creator,owner,holder,viewer,fueler}` /
+    `get_user_creations` / `create_creation` / `story_to_cid` / `upvote_creation` / `pay_to_{view,own,hold}` /
+    `unlist_creation` / `unhide_creation` / `get_comment_list`；创作者侧 `get_single_creator` / `get_creator_list` /
+    `get_my_{followers,followings}` / `get_invitee_list`；社交 `unfollow_user` / `unblock_user` / `send_mia`
+  - 外部依赖：**合约铸造**（`mintNow`/`mintTxHash`/`mintCsid`）、**IPFS**（`story_to_cid`）、`tic-crypto`
+  - [ ] 批次1 列表与分类（只读）：`menuCreation` + `partCreationCardList` / `partCreationAll` / `partCreationAs{Creator,Owner,Holder,Viewer,Fueler}`
+  - [ ] 批次2 作品详情与阅读：`showCreation` 只读部分（story 渲染/作者/评论/点赞）+ `userResource` / `userResourceDetail`
+  - [ ] 批次3 **创作与编辑（UGC 核心）**：`partCreate` + `partStoryEditor` 完整版 + `story_to_cid` + `create_creation`
+  - [ ] 批次4 付费与持有：`pay_to_{view,own,hold}` + 充值弹窗 `partDeposit`
+  - [ ] 批次5 NFT 铸造：合约交互（**需先评审 Flutter web3/加密方案**，风险最高）
+  - [ ] 批次6 创作者与社交：`showCreator` / `menuCreator` / `menuMarket` / `partCreator*`
 - [ ] 3C 资金域：`umyFund` / `umyFundChannel` / `umyFundChannelCreate` / `umyFundChannelWithdraw` / `umyFundTranx`；组件 `partDeposit`(1066行) / `partFundChannelCard` / `partTxList` / `partPexdataSummary`
 - [ ] 3D 账户/社交域：`menuUzone` / `umyAccount*` / `umyKyc` / `umyInvite*` / `umyCircle` / `umyCollection` / `umyContact` / `umyConfig` / `umyMia*` / `umyAccountTerminate` / `midTryapp` / `midBabely`；组件 `partIdentCommid` / `partComplain`
 - [ ] 其余：`showWebview`（webview 容器）
