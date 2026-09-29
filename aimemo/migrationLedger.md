@@ -53,7 +53,7 @@
 | `umyInvite.vue` | 114 | `pages/umy_invite_page.dart` | `[ ]` |
 | `umyInviteList.vue` | 43 | `pages/umy_invite_list_page.dart` | `[ ]` |
 | `umyCircle.vue` | 73 | `pages/umy_circle_page.dart` | `[ ]` |
-| `umyCollection.vue` | 89 | `pages/umy_collection_page.dart` | `[ ]` |
+| `umyCollection.vue` | 89 | `pages/umy_collection_page.dart` | `[x]` |
 | `umyMia.vue` | 130 | `pages/umy_mia_page.dart` | `[ ]` |
 | `umyMiaDetail.vue` | 185 | `pages/umy_mia_detail_page.dart` | `[ ]` |
 
@@ -70,7 +70,7 @@
 ### 创作 / NFT
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[ ]` |
+| `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[x]` |
 | `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[ ]` |
 | `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
 | `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[ ]` 最大页 |
@@ -113,7 +113,7 @@
 | `partCloseButton.vue` | 27 | `widgets/part_close_button.dart` | `[ ]` |
 | `partCountdown.vue` | 78 | `widgets/part_countdown.dart` | `[x]` |
 | `partLoadMore.vue` | 171 | `widgets/part_load_more.dart` | `[x]` |
-| `partEmptyList.vue` | 90 | `widgets/part_empty_list.dart` | `[ ]` |
+| `partEmptyList.vue` | 90 | `widgets/part_empty_list.dart` | `[x]` |
 | `partShowLoading.vue` | 20 | `widgets/part_show_loading.dart` | `[x]` |
 | `partTooltip.vue` | 34 | `widgets/part_tooltip.dart` | `[ ]` |
 | `partPopLink.vue` | 69 | `widgets/part_pop_link.dart` | `[ ]` |
@@ -170,13 +170,13 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `partCreate.vue` | 1012 | `widgets/part_create.dart` | `[ ]` |
-| `partCreationAll.vue` | 76 | `widgets/part_creation_all.dart` | `[ ]` |
-| `partCreationAsCreator.vue` | 108 | `widgets/part_creation_as_creator.dart` | `[ ]` |
-| `partCreationAsFueler.vue` | 107 | `widgets/part_creation_as_fueler.dart` | `[ ]` |
-| `partCreationAsHolder.vue` | 107 | `widgets/part_creation_as_holder.dart` | `[ ]` |
-| `partCreationAsOwner.vue` | 107 | `widgets/part_creation_as_owner.dart` | `[ ]` |
-| `partCreationAsViewer.vue` | 107 | `widgets/part_creation_as_viewer.dart` | `[ ]` |
-| `partCreationCardList.vue` | 363 | `widgets/part_creation_card_list.dart` | `[ ]` |
+| `partCreationAll.vue` | 76 | `widgets/part_creation_all.dart` | `[x]` |
+| `partCreationAsCreator.vue` | 108 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
+| `partCreationAsFueler.vue` | 107 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
+| `partCreationAsHolder.vue` | 107 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
+| `partCreationAsOwner.vue` | 107 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
+| `partCreationAsViewer.vue` | 107 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
+| `partCreationCardList.vue` | 363 | `widgets/part_creation_card_list.dart` | `[x]` |
 | `partCreatorAll.vue` | 72 | `widgets/part_creator_all.dart` | `[ ]` |
 | `partCreatorCardList.vue` | 116 | `widgets/part_creator_card_list.dart` | `[ ]` |
 | `partCreatorMyFollowers.vue` | 98 | `widgets/part_creator_my_followers.dart` | `[ ]` |

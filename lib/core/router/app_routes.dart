@@ -21,6 +21,7 @@ class AppRoutes {
 
   // 创作 / NFT 域（待迁移）
   static const String menuCreation = 'menuCreation';
+  static const String umyCollection = 'umyCollection';
   static const String menuCreator = 'menuCreator';
   static const String menuMarket = 'menuMarket';
   static const String showCreation = 'showCreation';

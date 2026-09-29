@@ -155,6 +155,13 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
     );
   }
 
+  /// 等待自动登录结束（对应源项目 `wo.tt.wait_autologin`）。
+  Future<void> waitAutologin() async {
+    while (!state.afterAutologging) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+  }
+
   /// 局部更新在线用户字段（如对话后刷新余额）。
   void mergeOnlineUser(Map<String, dynamic> patch) {
     state = state.copyWith(

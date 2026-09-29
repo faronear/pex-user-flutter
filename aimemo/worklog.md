@@ -192,3 +192,24 @@
   预置资源 50,056 B 已进产物；`flutter analyze` 0 问题；Agidin Web 构建成功。
 - **注意**：后端 7739 在本轮期间已停止（只剩 HBuilderX 8080 与静态服务 8090），
   为此生成器增加了「后端未启动时回退缓存基准」的能力。
+
+### 创作/NFT 域 批次 1（列表与分类，只读）
+
+- **范围**：`menuCreation`（探索创作品）+ `umyCollection`（我的收藏·5 身份）+ 卡片/空态/加载组件。
+- **一处设计偏离**（按老板"不必照抄 uniapp"原则）：
+  源项目 `partCreationAs{Creator,Owner,Holder,Viewer,Fueler}.vue` 是 5 个近乎相同的组件（各 107 行），
+  **合并为一个参数化组件** `part_creation_as_list.dart`（入参 `CreationRole`），行为等价、代码量降约 80%。
+- **新增**：
+  - `core/api/creation_api.dart`（`get_creation_list` / `get_creations_as_<role>` / `get_single_creation`，含 `CreationRole` 枚举）
+  - `core/state/creation_provider.dart`（`listAll` + 各身份集合 + `onceLoaded`）
+  - `data/creation.dart`（`Creation` 视图：封面 3 态、禁用原因、我与作品的关系、标题兜底、seal 文案）
+  - `core/util/story_utils.dart`（`filterStoryImage/Video`、`isAutocontent`、`readVarchain`）
+  - 组件：`part_empty_list` / `part_creation_card_list`（封面 3 态 + 标题栏 + 统计条 + 禁用遮罩）/
+    `part_creation_all` / `part_creation_as_list`
+  - 页面：`menu_creation_page` / `umy_collection_page`；`route_creation.dart` 已接入
+- **接口契约核对**（匿名打 `Creation/get_creation_list`）：`_state=SUCCESS`，返回 3 条；
+  卡片用到的 20 个字段中 **19 个存在**（仅可选 `myCommentCount` 缺 → 按"未评论"处理）；
+  `pexdataUser[0]` 为 `{textIpfs: ...}` → 走文本封面分支。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **遗留**：headless 截图在本页卡住（应用持续重连导致 Chrome 虚拟时间不收敛），
+  本轮以**接口契约核对**替代视觉验收；下轮改用其它方式补视觉对照。

@@ -5,8 +5,22 @@ library;
 
 import 'package:go_router/go_router.dart';
 
+import '../../pages/menu_creation_page.dart';
+import '../../pages/umy_collection_page.dart';
+import 'app_routes.dart';
+
 /// 创作、创作者、市场、作品详情等。
 List<RouteBase> creationRoutes() => <RouteBase>[
-      // menuCreation / showCreation / showCreationUpdate / menuCreator / showCreator
-      // / menuMarket / userResource / userResourceDetail 待迁移后加入
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.menuCreation),
+        name: AppRoutes.menuCreation,
+        builder: (_, _) => const MenuCreationPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyCollection),
+        name: AppRoutes.umyCollection,
+        builder: (_, _) => const UmyCollectionPage(),
+      ),
+      // showCreation / showCreationUpdate / menuCreator / showCreator / menuMarket
+      // / userResource / userResourceDetail 待后续批次加入
     ];
