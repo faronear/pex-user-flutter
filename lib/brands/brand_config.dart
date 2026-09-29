@@ -1,0 +1,67 @@
+/// 品牌配置抽象。
+///
+/// 承载三品牌（Agidin / Babelyx / TRYAPP）的差异：[appkey]、域名、包名、
+/// 应用名、主色、logo、落地页等。业务代码只读本配置，**不判 appkey**。
+///
+/// 对应源项目 `appenv.json` + `AK*/framework/App.theme.scss` + `envar-config.js`
+/// 中的品牌专属字段。
+library;
+
+import 'package:flutter/material.dart';
+
+import '../core/i18n/lang_text.dart';
+
+abstract class BrandConfig {
+  const BrandConfig();
+
+  /// 品牌标识，如 `AKAGIDIN`（与后端 appkey 一致）。
+  String get appkey;
+
+  /// 文件/资源前缀，如 `agidin`（对应源项目 `filekey`）。
+  String get filekey;
+
+  /// 应用标识名（三品牌共用 `pex`，用于推导 API/链端口）。
+  String get idname => 'pex';
+
+  /// 主域名，如 `agidin.com`。
+  String get webDomain;
+
+  /// Cloudflare Pages 项目名。
+  String get cfpWebapp;
+  String get cfpWebstore;
+
+  /// 面向用户的站点根，如 `https://agidin.com`。
+  String get cacheWebapp;
+  String get cacheWebstore;
+
+  /// 应用显示名。
+  LangText get displayName;
+
+  /// 启动页/门户背景色。
+  Color get mainColor;
+
+  /// 全局浅灰背景（源项目 `--Grey3` 用于 Agidin 门户底色）。
+  Color get portalBackgroundColor => const Color(0xFF303133);
+
+  /// 应用 logo 资源。
+  String get logoAsset;
+
+  /// 门户背景图资源（运行时会被后端 envar 覆盖）。
+  String get portalImageAsset;
+
+  /// 「出发」后进入的落地页路由名（源项目 `pagesJson.appLandPage`）。
+  String get appLandPage;
+
+  /// 手机端 TabBar 中间按钮目标页路由名（源项目 `tabBar.midButton.midPage`）。
+  String get midPage;
+
+  /// 应用内币种代码（源项目 `cryptocoinSet.TUC.coinCode`）。
+  String get coinCode;
+
+  /// 应用内币种名称。
+  LangText get coinIname;
+
+  /// 原生包名 / Bundle ID。
+  String get androidAppId;
+  String get iosBundleId;
+}

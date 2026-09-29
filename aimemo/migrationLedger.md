@@ -1,0 +1,207 @@
+# 迁移台账（migrationLedger）
+
+> 源 `pex-user-uniapp` → 目标 `pex-user-flutter` 的逐项对照与进度。
+> 状态：`[ ]` 待迁移 / `[>]` 迁移中 / `[x]` 已迁移 / `[-]` 不迁移（有理由）
+> 最后更新：2026-09-29
+
+## 一、页面（pages/，48 个 .vue，11,236 行）
+
+### 入口 / 落地
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `homePortal.vue` | 255 | `pages/home_portal_page.dart` | `[x]` 已实现（待视觉校验） |
+| `midAgidin.vue` | 82 | `pages/mid_agidin_page.dart` | `[ ]` |
+| `midAizoic.vue` | 12 | — | `[-]` Agidin 旧名遗留（评估后决定） |
+| `midBabely.vue` | 63 | `pages/mid_babely_page.dart` | `[ ]` |
+| `midTryapp.vue` | 187 | `pages/mid_tryapp_page.dart` | `[ ]` |
+
+### 身份认证（ident）
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `identBegin.vue` | 217 | `pages/ident_begin_page.dart` | `[ ]` |
+| `identNewRegister.vue` | 164 | `pages/ident_new_register_page.dart` | `[ ]` |
+| `identNewRegcode.vue` | 159 | `pages/ident_new_regcode_page.dart` | `[ ]` |
+| `identNewPasscode.vue` | 185 | `pages/ident_new_passcode_page.dart` | `[ ]` |
+| `identOldLogin.vue` | 138 | `pages/ident_old_login_page.dart` | `[ ]` |
+| `identOldPasscode.vue` | 170 | `pages/ident_old_passcode_page.dart` | `[ ]` |
+| `identOldReset.vue` | 161 | `pages/ident_old_reset_page.dart` | `[ ]` |
+
+### 账户 / 个人
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `umyAccount.vue` | 108 | `pages/umy_account_page.dart` | `[ ]` |
+| `umyAccountCommid.vue` | 180 | `pages/umy_account_commid_page.dart` | `[ ]` |
+| `umyAccountCommidNew.vue` | 334 | `pages/umy_account_commid_new_page.dart` | `[ ]` |
+| `umyAccountPassword.vue` | 158 | `pages/umy_account_password_page.dart` | `[ ]` |
+| `umyAccountTerminate.vue` | 124 | `pages/umy_account_terminate_page.dart` | `[ ]` |
+| `umyKyc.vue` | 435 | `pages/umy_kyc_page.dart` | `[ ]` |
+| `umyConfig.vue` | 83 | `pages/umy_config_page.dart` | `[ ]` |
+| `umyContact.vue` | 158 | `pages/umy_contact_page.dart` | `[ ]` |
+
+### 资金
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `umyFund.vue` | 271 | `pages/umy_fund_page.dart` | `[ ]` |
+| `umyFundChannel.vue` | 58 | `pages/umy_fund_channel_page.dart` | `[ ]` |
+| `umyFundChannelCreate.vue` | 592 | `pages/umy_fund_channel_create_page.dart` | `[ ]` |
+| `umyFundChannelWithdraw.vue` | 236 | `pages/umy_fund_channel_withdraw_page.dart` | `[ ]` |
+| `umyFundTranx.vue` | 70 | `pages/umy_fund_tranx_page.dart` | `[ ]` |
+
+### 社交
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `umyInvite.vue` | 114 | `pages/umy_invite_page.dart` | `[ ]` |
+| `umyInviteList.vue` | 43 | `pages/umy_invite_list_page.dart` | `[ ]` |
+| `umyCircle.vue` | 73 | `pages/umy_circle_page.dart` | `[ ]` |
+| `umyCollection.vue` | 89 | `pages/umy_collection_page.dart` | `[ ]` |
+| `umyMia.vue` | 130 | `pages/umy_mia_page.dart` | `[ ]` |
+| `umyMiaDetail.vue` | 185 | `pages/umy_mia_detail_page.dart` | `[ ]` |
+
+### AI
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `menuAipp.vue` | 91 | `pages/menu_aipp_page.dart` | `[ ]` |
+| `menuAippAichat.vue` | 42 | `pages/menu_aipp_aichat_page.dart` | `[ ]` |
+| `menuAippCreate.vue` | 611 | `pages/menu_aipp_create_page.dart` | `[ ]` |
+| `menuAippCreate.wrapper.vue` | 101 | `pages/menu_aipp_create_wrapper_page.dart` | `[ ]` |
+| `menuAippModify.vue` | 691 | `pages/menu_aipp_modify_page.dart` | `[ ]` |
+| `menuAippModify.wrapper.vue` | 86 | `pages/menu_aipp_modify_wrapper_page.dart` | `[ ]` |
+
+### 创作 / NFT
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[ ]` |
+| `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[ ]` |
+| `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
+| `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[ ]` 最大页 |
+| `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[ ]` |
+| `showCreator.vue` | 712 | `pages/show_creator_page.dart` | `[ ]` |
+| `userResource.vue` | 133 | `pages/user_resource_page.dart` | `[ ]` |
+| `userResourceDetail.vue` | 208 | `pages/user_resource_detail_page.dart` | `[ ]` |
+
+### 其它
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `menuUzone.vue` | 675 | `pages/menu_uzone_page.dart` | `[ ]` |
+| `showWebview.vue` | 24 | `pages/show_webview_page.dart` | `[ ]` |
+| `test/testIndex.vue` | 90 | — | `[-]` 开发测试页，迁移时评估 |
+
+---
+
+## 二、组件（parts/，65 个，10,750 行）
+
+### 框架 / 布局（阶段一~二）
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `partWindow.vue` | 108 | `widgets/part_window.dart` | `[x]` |
+| `partWindowHeader.vue` | 268 | `widgets/part_window_header.dart` | `[ ]` |
+| `partWindowFooter.vue` | 132 | `widgets/part_window_footer.dart` | `[ ]` |
+| `partWindowLayout.vue` | 22 | `widgets/part_window_layout.dart` | `[ ]` |
+| `partWindowLayoutIdent.vue` | 51 | `widgets/part_window_layout_ident.dart` | `[ ]` |
+| `partWindowLayoutUser.vue` | 101 | `widgets/part_window_layout_user.dart` | `[ ]` |
+| `partNavibarPc.vue` | 115 | `widgets/part_navibar_pc.dart` | `[ ]` |
+| `partNavibarPcFixed.vue` | 77 | `widgets/part_navibar_pc_fixed.dart` | `[ ]` |
+| `partNavilink.vue` | 55 | `widgets/part_navilink.dart` | `[ ]` |
+| `partLinkview.vue` | 41 | `widgets/part_linkview.dart` | `[ ]` |
+| `partLinkhelp.vue` | 47 | `widgets/part_linkhelp.dart` | `[ ]` |
+
+### 通用 / UI
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `partButtonSubmit.vue` | 76 | `widgets/part_button_submit.dart` | `[x]` |
+| `partButtonPasscode.vue` | 40 | `widgets/part_button_passcode.dart` | `[ ]` |
+| `partCloseButton.vue` | 27 | `widgets/part_close_button.dart` | `[ ]` |
+| `partCountdown.vue` | 78 | `widgets/part_countdown.dart` | `[ ]` |
+| `partLoadMore.vue` | 171 | `widgets/part_load_more.dart` | `[ ]` |
+| `partEmptyList.vue` | 90 | `widgets/part_empty_list.dart` | `[ ]` |
+| `partShowLoading.vue` | 20 | `widgets/part_show_loading.dart` | `[ ]` |
+| `partTooltip.vue` | 34 | `widgets/part_tooltip.dart` | `[ ]` |
+| `partPopLink.vue` | 69 | `widgets/part_pop_link.dart` | `[ ]` |
+| `partShortcuts.vue` | 75 | `widgets/part_shortcuts.dart` | `[ ]` |
+| `partBreathingDot.vue` | 59 | `widgets/part_breathing_dot.dart` | `[ ]` |
+| `partBreathingOpacity.vue` | 30 | `widgets/part_breathing_opacity.dart` | `[ ]` |
+| `partDev.vue` | 17 | `widgets/part_dev.dart` | `[ ]` |
+| `partIcontextCopy.vue` | 25 | `widgets/part_icontext_copy.dart` | `[ ]` |
+| `partIcontextCopyshare.vue` | 57 | `widgets/part_icontext_copyshare.dart` | `[ ]` |
+| `partIcontextPop.vue` | 25 | `widgets/part_icontext_pop.dart` | `[ ]` |
+| `partUserList.vue` | 96 | `widgets/part_user_list.dart` | `[ ]` |
+| `partMenuCircle.vue` | 178 | `widgets/part_menu_circle.dart` | `[ ]` |
+| `partMenuRing.vue` | 152 | `widgets/part_menu_ring.dart` | `[ ]` |
+
+### 语言 / 地区 / 币种
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `partLangPicker.vue` | 44 | `widgets/part_lang_picker.dart` | `[ ]` |
+| `partLangSelect.vue` | 39 | `widgets/part_lang_select.dart` | `[ ]` |
+| `partLangTable.vue` | 161 | `widgets/part_lang_table.dart` | `[x]` |
+| `partLandTable.vue` | 127 | `widgets/part_land_table.dart` | `[ ]` |
+| `partCoinPicker.vue` | 55 | `widgets/part_coin_picker.dart` | `[ ]` |
+| `partCoinTable.vue` | 99 | `widgets/part_coin_table.dart` | `[ ]` |
+
+### 身份
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `partIdentCommid.vue` | 26 | `widgets/part_ident_commid.dart` | `[ ]` |
+| `partComplain.vue` | 144 | `widgets/part_complain.dart` | `[ ]` |
+
+### 资金
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `partDeposit.vue` | 1066 | `widgets/part_deposit.dart` | `[ ]` |
+| `partFundChannelCard.vue` | 153 | `widgets/part_fund_channel_card.dart` | `[ ]` |
+| `partTxList.vue` | 195 | `widgets/part_tx_list.dart` | `[ ]` |
+| `partPexdataSummary.vue` | 44 | `widgets/part_pexdata_summary.dart` | `[ ]` |
+
+### AI / 媒体
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `partAichat.vue` | 1504 | `widgets/part_aichat.dart` | `[ ]` |
+| `partAippEditor.vue` | 510 | `widgets/part_aipp_editor.dart` | `[ ]` |
+| `partAippModels.vue` | 94 | `widgets/part_aipp_models.dart` | `[ ]` |
+| `partAippPicked.vue` | 151 | `widgets/part_aipp_picked.dart` | `[ ]` |
+| `partAippShared.vue` | 131 | `widgets/part_aipp_shared.dart` | `[ ]` |
+| `partStoryEditor.vue` | 763 | `widgets/part_story_editor.dart` | `[ ]` |
+| `partStoryReader.vue` | 208 | `widgets/part_story_reader.dart` | `[ ]` |
+| `partTextReader.vue` | 54 | `widgets/part_text_reader.dart` | `[ ]` |
+| `partTexturlReader.vue` | 28 | `widgets/part_texturl_reader.dart` | `[ ]` |
+| `partSoundRecorder.vue` | 303 | `widgets/part_sound_recorder.dart` | `[ ]` 原生能力 |
+
+### 创作
+| 源 | 行数 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `partCreate.vue` | 1012 | `widgets/part_create.dart` | `[ ]` |
+| `partCreationAll.vue` | 76 | `widgets/part_creation_all.dart` | `[ ]` |
+| `partCreationAsCreator.vue` | 108 | `widgets/part_creation_as_creator.dart` | `[ ]` |
+| `partCreationAsFueler.vue` | 107 | `widgets/part_creation_as_fueler.dart` | `[ ]` |
+| `partCreationAsHolder.vue` | 107 | `widgets/part_creation_as_holder.dart` | `[ ]` |
+| `partCreationAsOwner.vue` | 107 | `widgets/part_creation_as_owner.dart` | `[ ]` |
+| `partCreationAsViewer.vue` | 107 | `widgets/part_creation_as_viewer.dart` | `[ ]` |
+| `partCreationCardList.vue` | 363 | `widgets/part_creation_card_list.dart` | `[ ]` |
+| `partCreatorAll.vue` | 72 | `widgets/part_creator_all.dart` | `[ ]` |
+| `partCreatorCardList.vue` | 116 | `widgets/part_creator_card_list.dart` | `[ ]` |
+| `partCreatorMyFollowers.vue` | 98 | `widgets/part_creator_my_followers.dart` | `[ ]` |
+| `partCreatorMyFollowings.vue` | 98 | `widgets/part_creator_my_followings.dart` | `[ ]` |
+| `partCreatorMyInvitees.vue` | 144 | `widgets/part_creator_my_invitees.dart` | `[ ]` |
+
+---
+
+## 三、通用组件与外部资产
+
+| 源 | 说明 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `components/dragFileUploader/` | 拖拽/文件上传 | `widgets/drag_file_uploader.dart` | `[ ]` |
+| `components/myp-one/` | 第三方 mypUI 组件（输入框） | 用 Flutter 原生输入替代 | `[ ]` |
+| `uni_modules/` | uni-app 模块 | 视依赖逐个替代 | `[ ]` |
+| `wo-user-part-uniapp/uc*` | easycom 注册的外部 uc* 组件 | 需盘点后逐个迁移 | `[ ]` |
+| `static/` | 图片/图标/字体 | `assets/`（按品牌分） | `[ ]` |
+
+## 四、非 UI 资产（需等价重建）
+
+| 源 | 说明 | 目标 | 状态 |
+| -- | ---- | ---- | ---- |
+| `main.js` 的 `wo` | 全局对象（ss/ll/tt/bok/unisocket/pageSet） | `core/` 各 Provider + 工具类 | `[ ]` |
+| `App.data.js` | Vuex store（i18n/Ident/User/Mia/AI/Creation/Creator/Tx/envar） | Riverpod Provider 分层 | `[ ]` |
+| `envar-config.js` | 2417 行共享配置 | 后端 `first_touch` 下发 + 本地最小 fallback | `[ ]` |
+| `App.vue onLaunch` | 启动流程 | `core/appStartup.dart` | `[ ]` |
+| `App.theme.scss` / `App.style.scss` | 全局主题与样式 | `theme/`（Material3 ThemeData） | `[ ]` |
+| `buildPages/manifest/appPackConfig/androidPrivacy.js` | 生成式配置与打包 | flavors + CI | `[ ]` |
