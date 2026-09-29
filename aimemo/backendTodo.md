@@ -20,6 +20,31 @@
   1 万 DAU × 5 次启动/天 ≈ 500 MB/天 → 有 304 后近似 0。
 - **建议**：把该接口的响应改为走 Express 的 `res.json()` / `res.send()`，或显式比对 `If-None-Match` 后返回 304。
 
+### B3. 后端启动崩溃：缺少 `envar/versionCode-*` 文件（**曾阻塞，已定位**）
+- **现象**：后端启动即崩，日志尾部：
+  `Error: Cannot find module './versionCode-web-AKAGIDIN'`（require stack: `envar/envar-config.js:1052` → `wo-base-envar/envar-tool.js` → `server.js:74`）
+  随后 `[nodemon] app crashed - waiting for file changes before starting...`
+- **根因**：`envar-config.js` 里的
+  ```js
+  function requireVersion (versionFile) {
+    if (!inUniapp) { delete require.cache[require.resolve(versionFile)]; return require(versionFile) }
+    return undefined            // 客户端不 require，版本号由后端下发
+  }
+  // 调用：requireVersion('./versionCode-web-AKAGIDIN')
+  ```
+  **服务端**会 `require()` 该模块 → 后端 `envar/` 目录下必须存在对应文件。当前缺失。
+- **素材**：前端 `pex-user-uniapp/<brand>/cfstore/` 下已有：
+  - `AKAGIDIN`：`versionCode-{aab-GPLAY,apk,ipa,web}-AKAGIDIN.json`（值为 `26082304` 等）
+  - `AKBABELY`：对应 4 个（`versionCode-web-AKBABELY.json` = `26082311`）
+  - `AKTRYAPP`：**无**（若要跑 TRYAPP 需先生成）
+- **修复**：把这批文件拷进后端 `envar/`。`require('./x')` 会依次尝试 `.js`/`.json`，**直接拷 `.json` 即可**。
+  最小修复只需 `versionCode-web-AKAGIDIN.json`（崩溃点）；建议四类一并拷。
+- **注意**：后端运行目录与我的工作目录是**两份拷贝**
+  （老板运行的 `/Users/Shared/product-产品/pex/pex-server-torm`，我这边是 `/Volumes/repodisk/productX/pex/pex-server-torm`），
+  该路径我无法访问，需老板侧执行拷贝。
+- **同类历史**：2026-08-23 AKAIZOIC→AKAGIDIN 迁移后也发生过同类 MODULE_NOT_FOUND（见 uniapp worklog）。
+- **正常流程**：`deploy` 会把前端 `${brand}/cfstore/versionCode-*` 拷到后端 `envar/`；本次显然未跑。
+
 ## 已评估但决定不做
 
 ### B9. 让后端把「客户端专属配置块」一并下发给客户端（方案 A）—— **不采纳**
