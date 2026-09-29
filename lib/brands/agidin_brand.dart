@@ -43,10 +43,10 @@ class AgidinBrand extends BrandConfig {
   Color get portalBackgroundColor => mainColor;
 
   @override
-  String get logoAsset => 'assets/brands/agidin/logo.png';
+  String get logoAsset => 'assets/static/logoAgidin.png';
 
   @override
-  String get portalImageAsset => 'assets/brands/agidin/portal.jpg';
+  String get portalImageAsset => 'assets/static/bgAgidin.jpg';
 
   @override
   String get appLandPage => 'midAgidin';

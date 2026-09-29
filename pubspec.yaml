@@ -64,9 +64,16 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/brands/agidin/
-    - assets/brands/babelyx/
-    - assets/brands/tryapp/
+    - assets/static/
+
+  # 图标字体（由源项目 static/icont 迁移；码点映射见 lib/core/icons/icont_icons.dart）
+  fonts:
+    - family: icont
+      fonts:
+        - asset: assets/static/icont/iconfont.ttf
+    - family: uniicons
+      fonts:
+        - asset: assets/static/icont/uniicons.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

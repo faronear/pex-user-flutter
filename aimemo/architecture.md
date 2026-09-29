@@ -108,6 +108,17 @@ lib/
 
 - 开发时用 `--dart-define=API_BASE=http://localhost:7739` 指向本地后端；默认走生产 `https://pexserver.tic.cc`。
 - 连通性自检脚本：`dart run tool/check_first_touch.dart [baseUrl]`。
+- 常用 npm 脚本：`npm run dev:web`（8090 热重载）、`npm run run:chrome`、`npm run run:macos`、`npm run build:web`、`npm run serve:web`、`npm run check:base`。
+
+### 本地预览与截图比对（踩坑记录）
+
+- **静态预览**：`flutter build web --release --dart-define=API_BASE=http://localhost:7739` → `cd build/web && python3 -m http.server 8090`。
+- **不要用 shell 的 `&` 后台**：进程会被回收（表现为 `ERR_CONNECTION_REFUSED`），要用受管后台任务。
+- **headless Chrome 截图两个陷阱**（macOS）：
+  1. 窗口宽度被**钳制为最小 500**（`--window-size=414` 实测 `innerWidth=500`），截图却是 414 宽 → 右侧被裁切，看起来像布局溢出，其实是假象。
+  2. 截图高度比视口高 ~87px（`896` 截图 vs `innerHeight=809`）→ 底部出现白边，纯 `height:100vh` 的空白页同样如此，是假象。
+  - 结论：手机版式截图请用 `--window-size=500,987`（补偿高度）；PC 用 `1280,800` 正常。
+  - 需要 `--virtual-time-budget`（否则会在 Flutter 渲染前截图）；但图片资源偶尔仍未加载完，截图可能缺图——以真实浏览器为准。
 
 ## 八、待评审事项
 

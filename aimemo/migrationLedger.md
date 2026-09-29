@@ -117,7 +117,7 @@
 | `partShowLoading.vue` | 20 | `widgets/part_show_loading.dart` | `[ ]` |
 | `partTooltip.vue` | 34 | `widgets/part_tooltip.dart` | `[ ]` |
 | `partPopLink.vue` | 69 | `widgets/part_pop_link.dart` | `[ ]` |
-| `partShortcuts.vue` | 75 | `widgets/part_shortcuts.dart` | `[ ]` |
+| `partShortcuts.vue` | 75 | `widgets/part_shortcuts.dart` | `[x]` |
 | `partBreathingDot.vue` | 59 | `widgets/part_breathing_dot.dart` | `[ ]` |
 | `partBreathingOpacity.vue` | 30 | `widgets/part_breathing_opacity.dart` | `[ ]` |
 | `partDev.vue` | 17 | `widgets/part_dev.dart` | `[ ]` |
@@ -193,7 +193,8 @@
 | `components/myp-one/` | 第三方 mypUI 组件（输入框） | 用 Flutter 原生输入替代 | `[ ]` |
 | `uni_modules/` | uni-app 模块 | 视依赖逐个替代 | `[ ]` |
 | `wo-user-part-uniapp/uc*` | easycom 注册的外部 uc* 组件 | 需盘点后逐个迁移 | `[ ]` |
-| `static/` | 图片/图标/字体 | `assets/`（按品牌分） | `[ ]` |
+| `static/` | 图片/图标/字体 | `assets/static/`（已整目录迁移，2.4M） | `[x]` |
+| `static/icont/` | icont + uniicons 图标字体（275 图标） | `assets/static/icont/` + `lib/core/icons/`（码点映射已生成） | `[x]` |
 
 ## 四、非 UI 资产（需等价重建）
 

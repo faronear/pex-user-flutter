@@ -41,3 +41,19 @@
 - **flavors**：Android `productFlavors`（agidin/babelyx/tryapp，applicationId + `resValue app_name`）；踩坑：需 `buildFeatures.resValues = true`（AGP 8 默认关闭）→ 已修正，`gradlew :app:tasks` 验证 `installAgidin/Babelyx/Tryapp*` 生成。iOS/macOS/Windows flavors 待阶段五。
 - **验证**：`flutter analyze` **0 问题**；`flutter build web --release` **成功**；`dart run tool/check_first_touch.dart` → 本地后端 `HTTP 200 / _state=SUCCESS / _stateLogin=MISSING_USID / envarBase 30 键`。
 - **待办**：`homePortal` 的视觉校验（与 `localhost:8080` 或 `u.agidin.com` 对比），随后进入账户/登录注册域。
+
+### homePortal 视觉校验与修正（同日，回应老板「推进2」）
+
+- **落实老板指示**：连接状态保留到正式版（去掉"开发用可移除"措辞）；把首个验证页跑起来给老板看。
+- **预览链路**：`flutter build web --dart-define=API_BASE=http://localhost:7739` + `python3 -m http.server 8090`，并在默认浏览器打开 `http://localhost:8090/`。
+- **后端 CORS 已开放**（`Access-Control-Allow-Origin: *`），Web 可直连本地后端。
+- **修正项**（对照 `localhost:8080` 源站）：
+  1. 推荐卡片由「2 个/行、无图」改为源站版式「一行 3 个（`flex: 0 0 calc(33.3%)`）+ 左侧封面图 + 右侧红色徽标 + 标题 + 描述」，并用 `AspectRatio(1)` 方形卡；
+  2. 新增 `partShortcuts`（源 `parts/partShortcuts.vue`）：由 `envar.linkTree` 渲染 ios/android/webapp/info 图标 + 固定的 umyContact 耳机图标 + more；
+  3. 底栏状态文字改为独立右对齐一行，消除横向溢出；
+  4. **整目录迁移 `static/` → `assets/static/`（2.4M）**，并生成 **icont + uniicons 图标字体**（109 + 166 个码点）到 `lib/core/icons/`，配套 `PexIcon`/`PexGlyph` 组件与 `pex_assets.dart`（`/static/*` → `assets/static/*`）。
+- **踩坑记录**（已写入 architecture.md）：
+  - shell `&` 后台进程会被回收 → 用受管后台任务；
+  - headless Chrome（macOS）窗口宽度最小被钳制为 **500**，且截图高度比视口高 ~87px（白边假象，纯 `100vh` 页同样如此）→ 手机版式截图用 `--window-size=500,987`。
+- **验证**：`flutter analyze` 0 问题；`flutter build web` 成功；PC（1280×800）与手机（500 宽）截图版式与源站一致。
+- **待办/遗留**：`start` 按钮圆角需再核对；newsline 点击外链未接；`umyContact`/`userResource` 跳转待页面迁移后接通；`homePortal` 尚未在 iOS/Android 真机验证。

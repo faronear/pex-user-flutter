@@ -40,10 +40,10 @@ class BabelyxBrand extends BrandConfig {
   Color get mainColor => const Color(0xFFFC592B);
 
   @override
-  String get logoAsset => 'assets/brands/babelyx/logo.png';
+  String get logoAsset => 'assets/static/logoBabely.png';
 
   @override
-  String get portalImageAsset => 'assets/brands/babelyx/portal.jpg';
+  String get portalImageAsset => 'assets/static/bgBabelyx.jpg';
 
   @override
   String get appLandPage => 'midBabely';

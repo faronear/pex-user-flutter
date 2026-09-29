@@ -25,7 +25,7 @@ pex-user-uniapp 基于 uni-app，其 iOS / Android App 本质上仍是**web 技�
 开发环境:
 
 - 本台 iMac 为主力，安装有全套工具链（VSCode, flutter, dart, XCode, Android Studio)，另一台 macbook air 也会经常使用，但没有安装 XCode 和 Android Studio。
-- VS Code 里开启了后台服务端: [http://localhost:6173](%E2%80%B8http://localhost:6173)
+- VS Code 里开启了后台服务端: [http://localhost:7739](%E2%80%B8http://localhost:6173)
 - HBuilderX 里开启了前端 pex-user-uniapp 的预览: [http://localhost:8080](http://localhost:8080) ，同时也有在线版本 [https://u.agidin.com](%E2%80%B8https://u.agidin.com) 和 [https://u.babelyx.com](%E2%80%B8https://u.babelyx.com) You can use Playwright or Puppeteer to open these URLs to make sure that migrated pages works as expected.
 
 实现效果请尽可能与 pex-user-uniapp 保持一致。每个页面的视觉效果也应当保持一致。

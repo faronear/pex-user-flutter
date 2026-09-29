@@ -40,10 +40,10 @@ class TryappBrand extends BrandConfig {
   Color get mainColor => const Color(0xFF66BBEE);
 
   @override
-  String get logoAsset => 'assets/brands/tryapp/logo.png';
+  String get logoAsset => 'assets/static/logoTryapp.png';
 
   @override
-  String get portalImageAsset => 'assets/brands/tryapp/portal.jpg';
+  String get portalImageAsset => 'assets/static/bgStars.jpg';
 
   @override
   String get appLandPage => 'midTryapp';
