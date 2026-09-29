@@ -20,7 +20,17 @@
   1 万 DAU × 5 次启动/天 ≈ 500 MB/天 → 有 304 后近似 0。
 - **建议**：把该接口的响应改为走 Express 的 `res.json()` / `res.send()`，或显式比对 `If-None-Match` 后返回 304。
 
-### B3. 后端启动崩溃：缺少 `envar/versionCode-*` 文件（**曾阻塞，已定位**）
+### B3. 【⚠️ 仅 MacBook Air，不适用于 iMac】后端启动崩溃：缺少 `envar/versionCode-*`
+> **重要更正（老板指出）**：`/Users/Shared/product-产品/pex/...` 是 **MacBook Air** 的路径；
+> 我们工作的 iMac 是 `/Volumes/repodisk/productX/pex/pex-server-torm`。
+> 仓库经 **Seafile 同步**，`_logstore/` 里的日志会被**跨机器同步** ——
+> 那条崩溃栈实际来自 **MacBook Air**，**不代表 iMac**。
+>
+> **在 iMac 本机核实**：`envar/` 下 11 个 versionCode 文件**全部齐全**（3 品牌 × web/apk/ipa/aab），
+> 因此本条**不适用于 iMac**；且 `_logstore/pex-server-torm-dev.log` 的 mtime 为 8/23、内容含 Air 路径，
+> 属同步产物，**不可用于诊断本机**。
+>
+> **教训**：`_logstore/` 的日志是同步文件，**跨机器不可信**；诊断本机问题必须看本机进程与终端输出。
 - **现象**：后端启动即崩，日志尾部：
   `Error: Cannot find module './versionCode-web-AKAGIDIN'`（require stack: `envar/envar-config.js:1052` → `wo-base-envar/envar-tool.js` → `server.js:74`）
   随后 `[nodemon] app crashed - waiting for file changes before starting...`
