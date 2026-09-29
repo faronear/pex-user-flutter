@@ -6,6 +6,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../brands/brand_config.dart';
 import '../../pages/home_portal_page.dart';
+import '../../pages/ident_begin_page.dart';
+import '../../pages/ident_new_passcode_page.dart';
+import '../../pages/ident_new_regcode_page.dart';
+import '../../pages/ident_new_register_page.dart';
+import '../../pages/ident_old_login_page.dart';
+import '../../pages/ident_old_passcode_page.dart';
+import '../../pages/ident_old_reset_page.dart';
 import '../../pages/placeholder_page.dart';
 
 /// 路由名（与源项目页面文件名一致，便于逐页对照迁移）。
@@ -17,6 +24,12 @@ class AppRoutes {
   static const String midBabely = 'midBabely';
   static const String midTryapp = 'midTryapp';
   static const String identBegin = 'identBegin';
+  static const String identNewPasscode = 'identNewPasscode';
+  static const String identNewRegcode = 'identNewRegcode';
+  static const String identNewRegister = 'identNewRegister';
+  static const String identOldLogin = 'identOldLogin';
+  static const String identOldPasscode = 'identOldPasscode';
+  static const String identOldReset = 'identOldReset';
 
   static String path(String name) => '/$name';
 }
@@ -29,27 +42,49 @@ GoRouter createAppRouter(BrandConfig brand) {
       GoRoute(
         path: AppRoutes.path(AppRoutes.homePortal),
         name: AppRoutes.homePortal,
-        builder: (BuildContext context, GoRouterState state) =>
-            const HomePortalPage(),
+        builder: (_, _) => const HomePortalPage(),
       ),
       GoRoute(
         path: AppRoutes.path(AppRoutes.identBegin),
         name: AppRoutes.identBegin,
-        builder: (BuildContext context, GoRouterState state) =>
-            const PlaceholderPage(title: 'identBegin'),
+        builder: (_, _) => const IdentBeginPage(),
       ),
-      // 品牌落地页（对应源项目 midXxx）。迁移完成后替换为真实页面。
-      for (final String name in <String>[
-        AppRoutes.midAgidin,
-        AppRoutes.midBabely,
-        AppRoutes.midTryapp,
-      ])
-        GoRoute(
-          path: AppRoutes.path(name),
-          name: name,
-          builder: (BuildContext context, GoRouterState state) =>
-              PlaceholderPage(title: name),
-        ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.identNewPasscode),
+        name: AppRoutes.identNewPasscode,
+        builder: (_, _) => const IdentNewPasscodePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.identNewRegcode),
+        name: AppRoutes.identNewRegcode,
+        builder: (_, _) => const IdentNewRegcodePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.identNewRegister),
+        name: AppRoutes.identNewRegister,
+        builder: (_, _) => const IdentNewRegisterPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.identOldLogin),
+        name: AppRoutes.identOldLogin,
+        builder: (_, _) => const IdentOldLoginPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.identOldPasscode),
+        name: AppRoutes.identOldPasscode,
+        builder: (_, _) => const IdentOldPasscodePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.identOldReset),
+        name: AppRoutes.identOldReset,
+        builder: (_, _) => const IdentOldResetPage(),
+      ),
+      // 兜底：尚未迁移的页面统一显示占位页，避免跳转报错。
+      GoRoute(
+        path: '/:pageName',
+        builder: (BuildContext context, GoRouterState state) =>
+            PlaceholderPage(title: state.pathParameters['pageName'] ?? ''),
+      ),
     ],
   );
 }

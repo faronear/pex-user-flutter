@@ -18,13 +18,13 @@
 ### 身份认证（ident）
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `identBegin.vue` | 217 | `pages/ident_begin_page.dart` | `[ ]` |
-| `identNewRegister.vue` | 164 | `pages/ident_new_register_page.dart` | `[ ]` |
-| `identNewRegcode.vue` | 159 | `pages/ident_new_regcode_page.dart` | `[ ]` |
-| `identNewPasscode.vue` | 185 | `pages/ident_new_passcode_page.dart` | `[ ]` |
-| `identOldLogin.vue` | 138 | `pages/ident_old_login_page.dart` | `[ ]` |
-| `identOldPasscode.vue` | 170 | `pages/ident_old_passcode_page.dart` | `[ ]` |
-| `identOldReset.vue` | 161 | `pages/ident_old_reset_page.dart` | `[ ]` |
+| `identBegin.vue` | 217 | `pages/ident_begin_page.dart` | `[x]` |
+| `identNewRegister.vue` | 164 | `pages/ident_new_register_page.dart` | `[x]` |
+| `identNewRegcode.vue` | 159 | `pages/ident_new_regcode_page.dart` | `[x]` |
+| `identNewPasscode.vue` | 185 | `pages/ident_new_passcode_page.dart` | `[x]` |
+| `identOldLogin.vue` | 138 | `pages/ident_old_login_page.dart` | `[x]` |
+| `identOldPasscode.vue` | 170 | `pages/ident_old_passcode_page.dart` | `[x]` |
+| `identOldReset.vue` | 161 | `pages/ident_old_reset_page.dart` | `[x]` |
 
 ### 账户 / 个人
 | 源 | 行数 | 目标 | 状态 |
@@ -94,13 +94,13 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `partWindow.vue` | 108 | `widgets/part_window.dart` | `[x]` |
-| `partWindowHeader.vue` | 268 | `widgets/part_window_header.dart` | `[ ]` |
-| `partWindowFooter.vue` | 132 | `widgets/part_window_footer.dart` | `[ ]` |
+| `partWindowHeader.vue` | 268 | `widgets/part_window_header.dart` | `[x]` |
+| `partWindowFooter.vue` | 132 | `widgets/part_window_footer.dart` | `[x]` |
 | `partWindowLayout.vue` | 22 | `widgets/part_window_layout.dart` | `[ ]` |
-| `partWindowLayoutIdent.vue` | 51 | `widgets/part_window_layout_ident.dart` | `[ ]` |
+| `partWindowLayoutIdent.vue` | 51 | `widgets/part_window_layout_ident.dart` | `[x]` |
 | `partWindowLayoutUser.vue` | 101 | `widgets/part_window_layout_user.dart` | `[ ]` |
-| `partNavibarPc.vue` | 115 | `widgets/part_navibar_pc.dart` | `[ ]` |
-| `partNavibarPcFixed.vue` | 77 | `widgets/part_navibar_pc_fixed.dart` | `[ ]` |
+| `partNavibarPc.vue` | 115 | `widgets/part_navibar_pc.dart` | `[x]` |
+| `partNavibarPcFixed.vue` | 77 | `widgets/part_navibar_pc_fixed.dart` | `[x]` |
 | `partNavilink.vue` | 55 | `widgets/part_navilink.dart` | `[ ]` |
 | `partLinkview.vue` | 41 | `widgets/part_linkview.dart` | `[ ]` |
 | `partLinkhelp.vue` | 47 | `widgets/part_linkhelp.dart` | `[ ]` |
@@ -109,17 +109,17 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `partButtonSubmit.vue` | 76 | `widgets/part_button_submit.dart` | `[x]` |
-| `partButtonPasscode.vue` | 40 | `widgets/part_button_passcode.dart` | `[ ]` |
+| `partButtonPasscode.vue` | 40 | `widgets/part_button_passcode.dart` | `[x]` |
 | `partCloseButton.vue` | 27 | `widgets/part_close_button.dart` | `[ ]` |
-| `partCountdown.vue` | 78 | `widgets/part_countdown.dart` | `[ ]` |
+| `partCountdown.vue` | 78 | `widgets/part_countdown.dart` | `[x]` |
 | `partLoadMore.vue` | 171 | `widgets/part_load_more.dart` | `[ ]` |
 | `partEmptyList.vue` | 90 | `widgets/part_empty_list.dart` | `[ ]` |
-| `partShowLoading.vue` | 20 | `widgets/part_show_loading.dart` | `[ ]` |
+| `partShowLoading.vue` | 20 | `widgets/part_show_loading.dart` | `[x]` |
 | `partTooltip.vue` | 34 | `widgets/part_tooltip.dart` | `[ ]` |
 | `partPopLink.vue` | 69 | `widgets/part_pop_link.dart` | `[ ]` |
 | `partShortcuts.vue` | 75 | `widgets/part_shortcuts.dart` | `[x]` |
 | `partBreathingDot.vue` | 59 | `widgets/part_breathing_dot.dart` | `[ ]` |
-| `partBreathingOpacity.vue` | 30 | `widgets/part_breathing_opacity.dart` | `[ ]` |
+| `partBreathingOpacity.vue` | 30 | `widgets/part_breathing_opacity.dart` | `[x]` |
 | `partDev.vue` | 17 | `widgets/part_dev.dart` | `[ ]` |
 | `partIcontextCopy.vue` | 25 | `widgets/part_icontext_copy.dart` | `[ ]` |
 | `partIcontextCopyshare.vue` | 57 | `widgets/part_icontext_copyshare.dart` | `[ ]` |
@@ -134,14 +134,14 @@
 | `partLangPicker.vue` | 44 | `widgets/part_lang_picker.dart` | `[ ]` |
 | `partLangSelect.vue` | 39 | `widgets/part_lang_select.dart` | `[ ]` |
 | `partLangTable.vue` | 161 | `widgets/part_lang_table.dart` | `[x]` |
-| `partLandTable.vue` | 127 | `widgets/part_land_table.dart` | `[ ]` |
+| `partLandTable.vue` | 127 | `widgets/part_land_table.dart` | `[x]` |
 | `partCoinPicker.vue` | 55 | `widgets/part_coin_picker.dart` | `[ ]` |
 | `partCoinTable.vue` | 99 | `widgets/part_coin_table.dart` | `[ ]` |
 
 ### 身份
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `partIdentCommid.vue` | 26 | `widgets/part_ident_commid.dart` | `[ ]` |
+| `partIdentCommid.vue` | 26 | `widgets/part_ident_commid.dart` | `[x]` |
 | `partComplain.vue` | 144 | `widgets/part_complain.dart` | `[ ]` |
 
 ### 资金
@@ -201,8 +201,8 @@
 | 源 | 说明 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `main.js` 的 `wo` | 全局对象（ss/ll/tt/bok/unisocket/pageSet） | `core/` 各 Provider + 工具类 | `[ ]` |
-| `App.data.js` | Vuex store（i18n/Ident/User/Mia/AI/Creation/Creator/Tx/envar） | Riverpod Provider 分层 | `[ ]` |
-| `envar-config.js` | 2417 行共享配置 | 后端 `first_touch` 下发 + 本地最小 fallback | `[ ]` |
-| `App.vue onLaunch` | 启动流程 | `core/appStartup.dart` | `[ ]` |
+| `App.data.js` | Vuex store（i18n/Ident/User/Mia/AI/Creation/Creator/Tx/envar） | Riverpod Provider 分层（Ident/region/envar/startup 已迁移） | `[>]` |
+| `envar-config.js` | 2417 行共享配置 | 后端 `first_touch` 下发 + `core/state/envar_provider.dart` 类型化访问 | `[x]` |
+| `App.vue onLaunch` | 启动流程 | `core/state/app_startup_notifier.dart` | `[x]` |
 | `App.theme.scss` / `App.style.scss` | 全局主题与样式 | `theme/`（Material3 ThemeData） | `[ ]` |
 | `buildPages/manifest/appPackConfig/androidPrivacy.js` | 生成式配置与打包 | flavors + CI | `[ ]` |

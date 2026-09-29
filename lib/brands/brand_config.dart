@@ -55,6 +55,24 @@ abstract class BrandConfig {
   /// 手机端 TabBar 中间按钮目标页路由名（源项目 `tabBar.midButton.midPage`）。
   String get midPage;
 
+  /// 手机端 TabBar 中间按钮图标（源项目 `tabBar.midButton.iconType`）。
+  String get midButtonIcon => 'chatboxes';
+
+  /// 中间按钮选中态图标（`iconTypeOn`）。
+  String get midButtonIconOn => 'chatboxes-filled';
+
+  /// 中间按钮文案（`i18nText`）。
+  LangText get midButtonText => const LangText(
+        zhCN: '对话',
+        enUS: 'Chat',
+        jaJP: 'チャット',
+        deDE: 'Chat',
+      );
+
+  /// 是否在 PC 顶栏显示「我的选集/圈子」等创作类快捷入口
+  /// （源项目按 `appkey !== 'AKAGIDIN'` 判断；此处改为品牌开关）。
+  bool get showCreatorShortcuts => true;
+
   /// 应用内币种代码（源项目 `cryptocoinSet.TUC.coinCode`）。
   String get coinCode;
 

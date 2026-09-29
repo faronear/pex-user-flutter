@@ -57,3 +57,37 @@
   - headless Chrome（macOS）窗口宽度最小被钳制为 **500**，且截图高度比视口高 ~87px（白边假象，纯 `100vh` 页同样如此）→ 手机版式截图用 `--window-size=500,987`。
 - **验证**：`flutter analyze` 0 问题；`flutter build web` 成功；PC（1280×800）与手机（500 宽）截图版式与源站一致。
 - **待办/遗留**：`start` 按钮圆角需再核对；newsline 点击外链未接；`umyContact`/`userResource` 跳转待页面迁移后接通；`homePortal` 尚未在 iOS/Android 真机验证。
+
+### 账户域迁移（ident*，同日）
+
+- **梳理源流程**（读 `identBegin/NewPasscode/NewRegcode/NewRegister/OldLogin/OldPasscode/OldReset` + 相关组件）：
+  `identBegin`(输入手机/邮箱 → `User/identify_user`) → OLD_USER→`identOldLogin` / NEW_USER→`identNewPasscode`
+  →`send_passcode`+`verify_passcode`→`identNewRegcode`(`verify_regcode`)→`identNewRegister`(`register_new_user`)；
+  老用户重设：`identOldLogin`→`identOldPasscode`(RESETPWD)→`identOldReset`(`reset_password`)。
+- **关键兼容点：`hash_stable`**。源实现为 `crypto.createHash('sha256').update(data,'utf8').digest('hex')`；
+  Flutter 侧用 `crypto` 包等价实现。**已与后端实测比对一致**（`passwordClient` 与 `passcodeHash` 逐位相同），
+  否则存量用户无法登录。
+- **关键发现：`callBase` 自动持久化凭据**。源项目 `wo-core-toolkit` 的 callBase 会把响应里的
+  `_passtoken` / `uni_id_token` / `clid` 自动写入本地存储（各页面里的 `setStorageSync('_passtoken')` 因此全部注释掉）。
+  已在 `ApiClient` 复刻（`onPasstoken` 回调 → `LocalStore`），否则自动登录失效。
+- **生成式数据**（脚本生成，避免手工出错）：
+  - `lib/core/i18n/lands.dart`：249 个国家/地区（含 5 个 `phoneRegex`），源自 `wo-core-i18n/i18n-lands.js`
+  - `lib/core/appmeta/page_meta.dart`：35 个页面元数据（i18nPageTitle/gotoIcon/navigationStyle），源自 `pages.json`
+  - `lib/core/icons/icont_icons.dart`：icont 109 + uniicons 166 个图标码点
+- **基础设施**：`core/util/pex_toolkit.dart`（hashStable/validateEmail/validatePhone/numberPrecision）、
+  `core/state/{ident,region,envar}_provider.dart`、`core/util/feedback.dart`（toast/modal）、
+  `core/appmeta/app_env.dart`（`kInProd`，替代 `kReleaseMode` 做生产守卫，使本地预览与源项目 dev 行为一致）。
+- **组件**（11 个）：`part_window_layout_ident` / `part_window_header` / `part_window_footer` /
+  `part_navibar_pc` / `part_navibar_pc_fixed` / `part_show_loading` / `part_breathing_opacity` /
+  `part_button_passcode` / `part_countdown` / `part_ident_commid` / `part_land_table`，
+  以及复用的 `part_passcode_verify`（验证码发送+校验，供新老两个 passcode 页共用）、
+  `part_password_form`（两次密码+协议，供注册/重设共用）、`part_passcode_input`（6 位盒子输入，替代第三方 `myp-one`）。
+- **页面**（7 个）：`ident_begin` / `ident_new_passcode` / `ident_new_regcode` / `ident_new_register` /
+  `ident_old_login` / `ident_old_passcode` / `ident_old_reset`；路由表改为显式声明 + 未迁移页兜底占位。
+- **端到端自检**：新增 `tool/check_ident_flow.dart`，对本地后端跑通
+  `identify_user(NEW_USER)` → `send_passcode(PASSCODE_SENT)` → **hash 一致** → `verify_passcode(VERIFY_SUCCESS)`
+  → `register_new_user(REGISTER_SUCCESS)` → `identify_user(OLD_USER)` → `login_user(LOGIN_SUCCESS)`。
+- **视觉对照修正**：Submit 按钮改为整行；顶栏标签按源项目 `slice(0, N-1)` 只显示第一个；
+  补 PC 二级标题（各页 `i18nPageTitle`）；页脚分组纵向堆叠；logo 增加兜底图标。
+- **验证**：`flutter analyze` 0 问题；`flutter build web` 成功；与 `localhost:8080` 逐页截图比对。
+- **待办**：`midAgidin`（登录后落地页）仍是占位，属 AI 域；WebSocket 未接；iOS/Android 真机待验证。

@@ -33,6 +33,7 @@ class PartButtonSubmit extends ConsumerWidget {
     return Opacity(
       opacity: inactive ? 0.3 : 1,
       child: SizedBox(
+        width: double.infinity,
         height: height,
         child: FilledButton(
           onPressed: inactive ? null : onPressed,

@@ -48,6 +48,8 @@ class ApiClient {
     required this.clientInfo,
     String? baseUrl,
     String Function()? passtokenGetter,
+    this.onPasstoken,
+    this.onClid,
     this.lang = LangCode.enUS,
     Dio? dio,
   })  : _baseUrl = baseUrl ?? ApiEndpoint.baseUrl,
@@ -65,6 +67,12 @@ class ApiClient {
   final Dio _dio;
   final String _baseUrl;
   final String Function() _passtokenGetter;
+
+  /// 响应里带 `_passtoken` 时回调（对应源项目 callBase 内部自动 `setStorageSync`）。
+  final void Function(String passtoken)? onPasstoken;
+
+  /// 响应里带 `clid` 时回调。
+  final void Function(String clid)? onClid;
 
   /// 当前界面语言（随语言切换更新，用于 `_clientInfo.lang`）。
   String lang;
@@ -101,7 +109,14 @@ class ApiClient {
       );
       final dynamic body = response.data;
       if (body is Map) {
-        return body.map((key, value) => MapEntry(key.toString(), value));
+        final Map<String, dynamic> result =
+            body.map((key, value) => MapEntry(key.toString(), value));
+        // 对应源项目 callBase：自动持久化后端下发的凭据。
+        final String passtoken = result['_passtoken']?.toString() ?? '';
+        if (passtoken.isNotEmpty) onPasstoken?.call(passtoken);
+        final String clid = result['clid']?.toString() ?? '';
+        if (clid.isNotEmpty) onClid?.call(clid);
+        return result;
       }
       return <String, dynamic>{
         '_state': 'CLIENT_WOBASE_BADRESPONSE',

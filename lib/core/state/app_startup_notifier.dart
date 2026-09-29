@@ -6,9 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_client.dart';
 import '../i18n/i18n.dart';
+import '../i18n/lands.dart';
 import '../i18n/lang_text.dart';
 import '../storage/local_store.dart';
 import 'app_providers.dart';
+import 'region_provider.dart';
 
 /// 自动登录状态（对应源项目 `wo.ss.Ident.autologgingState`）。
 enum AutologgingState { waiting, success, fail }
@@ -21,6 +23,7 @@ class AppStartupState {
     this.autologging = AutologgingState.waiting,
     this.envar = const <String, dynamic>{},
     this.onlineUser = const <String, dynamic>{},
+    this.uipl = '',
     this.lastError,
   });
 
@@ -35,6 +38,9 @@ class AppStartupState {
   /// 在线用户（源项目 `first_touchResult.onlineUser`）。
   final Map<String, dynamic> onlineUser;
 
+  /// 后端判定的用户所在国家代码（源项目 `wo.ss._uipl`）。
+  final String uipl;
+
   final String? lastError;
 
   bool get afterAutologging =>
@@ -47,6 +53,7 @@ class AppStartupState {
     AutologgingState? autologging,
     Map<String, dynamic>? envar,
     Map<String, dynamic>? onlineUser,
+    String? uipl,
     String? lastError,
   }) =>
       AppStartupState(
@@ -56,6 +63,7 @@ class AppStartupState {
         autologging: autologging ?? this.autologging,
         envar: envar ?? this.envar,
         onlineUser: onlineUser ?? this.onlineUser,
+        uipl: uipl ?? this.uipl,
         lastError: lastError ?? this.lastError,
       );
 }
@@ -116,14 +124,40 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
       await store.clearPasstoken();
     }
 
+    // 后端判定的用户所在国家（源项目 `wo.ss._uipl`）→ 更新默认电话区号国家。
+    final String uipl = result['_uipl']?.toString() ?? '';
+    if (uipl.isNotEmpty) {
+      final LandItem? land = landByIso2(uipl);
+      if (land != null) {
+        ref.read(phoneLandProvider.notifier).set(land);
+      }
+    }
+
     state = state.copyWith(
       connecting: false,
       connected: true,
       envar: envar,
       onlineUser: onlineUser,
+      uipl: uipl,
       autologging: loginOk ? AutologgingState.success : AutologgingState.fail,
     );
     return true;
+  }
+
+  /// 登录/注册成功后写入在线用户（对应源项目 `wo.ss.User.onlineUser = onlineUser`）。
+  void setOnlineUser(Map<String, dynamic> user) {
+    state = state.copyWith(
+      onlineUser: user,
+      autologging: AutologgingState.success,
+    );
+  }
+
+  /// 退出登录（对应源项目 `wo.tt.logout_local_account`）。
+  void logout() {
+    state = state.copyWith(
+      onlineUser: <String, dynamic>{},
+      autologging: AutologgingState.fail,
+    );
   }
 }
 

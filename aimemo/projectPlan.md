@@ -59,11 +59,14 @@
 
 ### 阶段一续 · 账户/登录注册闭环（首个完整功能域 D4）
 
-- [ ] 布局框架：`partWindowLayoutIdent`
-- [ ] 页面：`identBegin` / `identNewRegister` / `identNewRegcode` / `identNewPasscode` / `identOldLogin` / `identOldPasscode` / `identOldReset`
-- [ ] 通用件：`partButtonPasscode` / `partCountdown` / `partPopLink`
-- [ ] 页面：`midAgidin`（品牌落地中间页）
-- [ ] 验收：三端完成「注册 → 验证码 → 登录 → 自动登录 → 登出」
+- [x] 布局框架：`part_window_layout_ident`（含 PC 顶栏/页脚/二级导航）
+- [x] 页面：`ident_begin` / `ident_new_register` / `ident_new_regcode` / `ident_new_passcode` / `ident_old_login` / `ident_old_passcode` / `ident_old_reset`
+- [x] 通用件：`part_button_passcode` / `part_countdown` / `part_passcode_verify` / `part_password_form` / `part_passcode_input` / `part_land_table`
+- [x] PC 框架：`part_window_header` / `part_window_footer` / `part_navibar_pc(_fixed)` / `part_show_loading` / `part_breathing_opacity`
+- [x] 端到端自检：`tool/check_ident_flow.dart`（注册→验证→登录全链路 + hash 一致性）
+- [ ] 页面：`midAgidin`（品牌落地中间页，实为 AI 域，暂为占位）
+- [ ] 验收：三端完成「注册 → 验证码 → 登录 → 自动登录 → 登出」（Web 已通，iOS/Android 待验证）
+- [ ] WebSocket 接入（登录后 `SOCKET_OWNER`）
 
 ---
 

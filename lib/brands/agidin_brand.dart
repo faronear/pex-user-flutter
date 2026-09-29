@@ -54,6 +54,10 @@ class AgidinBrand extends BrandConfig {
   @override
   String get midPage => 'midAgidin';
 
+  /// Agidin 不显示创作类快捷入口（与源项目 `appkey !== 'AKAGIDIN'` 判断一致）。
+  @override
+  bool get showCreatorShortcuts => false;
+
   @override
   String get coinCode => 'AGI';
 

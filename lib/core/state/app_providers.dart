@@ -50,5 +50,7 @@ final Provider<ApiClient> apiClientProvider = Provider<ApiClient>((ref) {
     clientInfo: ref.watch(clientInfoProvider),
     baseUrl: ref.watch(apiBaseUrlProvider),
     passtokenGetter: () => store.passtoken,
+    // 对应源项目 callBase 内部自动持久化后端下发的凭据。
+    onPasstoken: (String value) => store.setPasstoken(value),
   );
 });
