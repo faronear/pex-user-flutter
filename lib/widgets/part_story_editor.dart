@@ -12,10 +12,14 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/api/fileloader_api.dart';
 import '../core/i18n/i18n.dart';
 import '../core/i18n/lang_text.dart';
 import '../core/icons/icont_icons.dart';
 import '../core/icons/pex_icon.dart';
+import '../core/state/envar_provider.dart';
+import '../core/util/file_utils.dart';
+import '../core/util/pex_file_picker.dart';
 import '../core/util/pex_toolkit.dart';
 import '../core/util/server_url.dart';
 import '../theme/app_theme.dart';
@@ -34,11 +38,6 @@ const LangText _kAddAudio = LangText(zhCN: '语音', enUS: 'Audio');
 const LangText _kAddFile = LangText(zhCN: '文件', enUS: 'File');
 
 const LangText _kAddLink = LangText(zhCN: '链接', enUS: 'Link');
-
-const LangText _kUploadPending = LangText(
-  zhCN: '媒体上传待接入（阶段四）',
-  enUS: 'Media upload is not wired up yet (Phase 4)',
-);
 
 class PartStoryEditor extends ConsumerStatefulWidget {
   const PartStoryEditor({
@@ -87,6 +86,9 @@ class PartStoryEditor extends ConsumerStatefulWidget {
 
 class _PartStoryEditorState extends ConsumerState<PartStoryEditor> {
   final List<TextEditingController> _controllers = <TextEditingController>[];
+
+  bool _uploading = false;
+  LangText? _feedback;
 
   /// 保证段落数变化时控制器数量同步。
   void _syncControllers() {
@@ -291,18 +293,40 @@ class _PartStoryEditorState extends ConsumerState<PartStoryEditor> {
       if (widget.allowText)
         _addButton(PexIcons.uni('compose'), _kAddText, () => _addSection('text')),
       if (widget.allowImage)
-        _addButton(PexIcons.uni('camera'), _kAddImage, () => _pendingUpload()),
+        _addButton(PexIcons.uni('camera'), _kAddImage, () => _pickAndUpload('image')),
       if (widget.allowVideo)
-        _addButton(PexIcons.uni('videocam'), _kAddVideo, () => _pendingUpload()),
+        _addButton(PexIcons.uni('videocam'), _kAddVideo, () => _pickAndUpload('video')),
       if (widget.allowAudio)
-        _addButton(PexIcons.uni('sound'), _kAddAudio, () => _pendingUpload()),
+        _addButton(PexIcons.uni('sound'), _kAddAudio, () => _pickAndUpload('audio')),
       if (widget.allowFile)
-        _addButton(PexIcons.icont('icont-file-line'), _kAddFile, () => _pendingUpload()),
+        _addButton(PexIcons.icont('icont-file-line'), _kAddFile, () => _pickAndUpload('file')),
       if (widget.allowLink)
         _addButton(PexIcons.icont('icont-hyperlink'), _kAddLink, () => _addSection('link')),
     ];
 
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        if (_uploading)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: <Widget>[
+                SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)),
+                SizedBox(width: 8),
+                Text('Uploading...', style: TextStyle(fontSize: 12, color: Color(0xFF909399))),
+              ],
+            ),
+          ),
+        if (_feedback != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Text(
+              ll(lang, _feedback!),
+              style: const TextStyle(fontSize: 12, color: Color(0xFFDD6161)),
+            ),
+          ),
+        Row(
       children: <Widget>[
         Expanded(
           child: Wrap(spacing: 6, children: adders),
@@ -320,6 +344,8 @@ class _PartStoryEditorState extends ConsumerState<PartStoryEditor> {
             ],
           ),
       ],
+        ),
+      ],
     );
   }
 
@@ -336,14 +362,90 @@ class _PartStoryEditorState extends ConsumerState<PartStoryEditor> {
     );
   }
 
-  void _pendingUpload() {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(_kUploadPending.resolve(ref.read(languageProvider))),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+  /// 选择文件 → 客户端校验 → 上传 → 写入对应类型的段落。
+  /// 对齐源项目 `partStoryEditor.add_section` 的 `pushContent`。
+  Future<void> _pickAndUpload(String type) async {
+    if (_uploading) return;
+    final List<String>? extensions = type == 'file' ? _fileExtensions() : null;
+
+    final PickedMedia? picked =
+        await pickMedia(mediaType: type, allowedExtensions: extensions);
+    if (picked == null || !mounted) return;
+
+    final FileloaderApi api = ref.read(fileloaderApiProvider);
+    final LangText? invalid = api.validate(
+      filename: picked.filename,
+      size: picked.size,
+      mediaType: type == 'file' ? null : type,
+      allowedExtensions: extensions,
+    );
+    if (invalid != null) {
+      setState(() => _feedback = invalid);
+      return;
+    }
+
+    setState(() {
+      _uploading = true;
+      _feedback = null;
+    });
+    final FileUploadResult result = await api.uploadFile(
+      filename: picked.filename,
+      bytes: picked.bytes,
+    );
+    if (!mounted) return;
+    setState(() => _uploading = false);
+
+    if (!result.ok) {
+      if (!result.cancelled) setState(() => _feedback = result.message);
+      return;
+    }
+
+    final Map<String, dynamic> info = result.fileInfo;
+    final Map<String, dynamic> section = switch (type) {
+      'image' => <String, dynamic>{'image': chooseUrl(info, prefer: 'url')},
+      'video' => <String, dynamic>{
+          'video': chooseUrl(info, prefer: 'url'),
+          '_originalname': info['originalname'],
+          '_size': info['size'],
+        },
+      'audio' => <String, dynamic>{
+          'audio': chooseUrl(info, prefer: 'url'),
+          '_originalname': info['originalname'],
+          '_size': info['size'],
+        },
+      _ => <String, dynamic>{
+          'file': <String, dynamic>{
+            'usage': _fileUsage(info['originalname']?.toString() ?? ''),
+            ...simplifyFile(info),
+          },
+        },
+    };
+    _notify(<Map<String, dynamic>>[...widget.story, section]);
+  }
+
+  /// 允许上传的文件扩展名（源项目取 `aiConfig.openaiCodeInterpreterExt`）。
+  List<String>? _fileExtensions() {
+    final Object? aiConfig = ref.read(envarProvider).raw['aiConfig'];
+    if (aiConfig is! Map) return null;
+    final Object? ext = aiConfig['openaiCodeInterpreterExt'];
+    if (ext is List) return ext.map((dynamic e) => e.toString()).toList();
+    return null;
+  }
+
+  /// 文件用途：KNOWBASE（知识库）/ TEMPLIB（模板库）/ UNKNOWN_USAGE。
+  String _fileUsage(String filename) {
+    final Object? aiConfig = ref.read(envarProvider).raw['aiConfig'];
+    if (aiConfig is Map) {
+      final String ext = '.${getFileExt(filename)}';
+      bool has(String key) {
+        final Object? list = aiConfig[key];
+        return list is List &&
+            list.map((dynamic e) => e.toString()).contains(ext);
+      }
+
+      if (has('openaiFileSearchExt')) return 'KNOWBASE';
+      if (has('openaiCodeInterpreterExt')) return 'TEMPLIB';
+    }
+    return 'UNKNOWN_USAGE';
   }
 }

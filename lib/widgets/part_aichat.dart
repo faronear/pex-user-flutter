@@ -427,13 +427,17 @@ class _PartAichatState extends ConsumerState<PartAichat> {
   }
 
   Widget _buildWelcome(AiModel? model, String lang) {
-    final String text = model == null ? '' : model.ainote.resolve(lang);
+    // 模型详情尚未返回（如 Aibot 需 get_aipp）时显示加载中；否则显示该模型的介绍语。
+    if (model == null) {
+      return const Expanded(child: PartShowLoading());
+    }
+    final String text = model.ainote.resolve(lang);
     return Expanded(
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Text(
-            text.isEmpty ? PartTexts.loading.resolve(lang) : text,
+            text.isEmpty ? model.ainame.resolve(lang) : text,
             textAlign: TextAlign.center,
             style: const TextStyle(color: Color(0xFF909399)),
           ),

@@ -62,10 +62,10 @@
 | -- | ---- | ---- | ---- |
 | `menuAipp.vue` | 91 | `pages/menu_aipp_page.dart` | `[x] 已迁移` |
 | `menuAippAichat.vue` | 42 | `pages/menu_aipp_aichat_page.dart` | `[x] 已迁移` |
-| `menuAippCreate.vue` | 611 | `pages/menu_aipp_create_page.dart` | `[ ]` |
-| `menuAippCreate.wrapper.vue` | 101 | `pages/menu_aipp_create_wrapper_page.dart` | `[ ]` |
-| `menuAippModify.vue` | 691 | `pages/menu_aipp_modify_page.dart` | `[ ]` |
-| `menuAippModify.wrapper.vue` | 86 | `pages/menu_aipp_modify_wrapper_page.dart` | `[ ]` |
+| `menuAippCreate.vue` | 611 | — | `[-]` Aibot 创建不再投入（已被 agent 概念超越，Agidin 待重新构思） |
+| `menuAippCreate.wrapper.vue` | 101 | — | `[-]` 同上 |
+| `menuAippModify.vue` | 691 | — | `[-]` 同上 |
+| `menuAippModify.wrapper.vue` | 86 | — | `[-]` 同上 |
 
 ### 创作 / NFT
 | 源 | 行数 | 目标 | 状态 |
@@ -156,7 +156,7 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `partAichat.vue` | 1504 | `widgets/part_aichat.dart` | `[>] 核心已迁移` |
-| `partAippEditor.vue` | 510 | `widgets/part_aipp_editor.dart` | `[ ]` |
+| `partAippEditor.vue` | 510 | — | `[-]` 同上 |
 | `partAippModels.vue` | 94 | `widgets/part_aipp_models.dart` | `[x]` |
 | `partAippPicked.vue` | 151 | `widgets/part_aipp_picked.dart` | `[x]` |
 | `partAippShared.vue` | 131 | `widgets/part_aipp_shared.dart` | `[x]` |
@@ -189,7 +189,7 @@
 
 | 源 | 说明 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `components/dragFileUploader/` | 拖拽/文件上传 | `widgets/drag_file_uploader.dart` | `[ ]` |
+| `components/dragFileUploader/` | 拖拽/文件上传 | `core/api/fileloader_api.dart` + `core/util/pex_file_picker.dart`（已实现 `Fileloader/receiveFile` 上传与 story 段写入） | `[x]` |
 | `components/myp-one/` | 第三方 mypUI 组件（输入框） | 用 Flutter 原生输入替代 | `[ ]` |
 | `uni_modules/` | uni-app 模块 | 视依赖逐个替代 | `[ ]` |
 | `wo-user-part-uniapp/uc*` | easycom 注册的外部 uc* 组件 | 需盘点后逐个迁移 | `[ ]` |

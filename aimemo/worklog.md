@@ -126,3 +126,33 @@
 - **验证**：`flutter analyze` 0 问题；`flutter build web` 成功。
 - **待办**：`menuAippCreate`/`menuAippModify` + `partAippEditor`；`partMenuRing`/`partPopLink`/`partDeposit`；
   语音/TTS；story 段落媒体上传（`pickupFile2Server` 等价）。
+
+### story 媒体上传（AI 域第二轮，同日）
+
+- **老板决定（战略）**：**Aibot 创建/编辑不做** —— Aibot 是两年前的设想，已被 **agent 概念全面超越**，
+  **Agidin 需要重新构思新方向**。故 `menuAippCreate/Modify(+wrapper)`、`partAippEditor` 标记为 `[-]` 不迁移
+  （Aibot 市场的浏览/选择仍保留）。
+- **上传契约**（读 `wo.tt.pickupFile2Server` 得到）：
+  `POST {servUrl}/api/Fileloader/receiveFile`，multipart，文件字段名 `file`，
+  另附 `_passtoken` 与 `filenameOriginal`（源项目为解决 multer 拿到随机文件名而主动回传）；
+  响应 `{_state:'SUCCESS', path, destination, filename, size, cid, ipfsUrl, baseUrl, ...}`。
+  客户端侧校验顺序：空文件 → 超出 `envar.fileSizeLimit`（100MB）→ 后缀类型检查。
+- **story 段写入规则**（源 `partStoryEditor.pushContent`）：
+  - image → `{ image: choose_url(info, prefer:'url') }`
+  - video/audio → `{ video|audio: choose_url(...), _originalname, _size }`
+  - file → `{ file: { usage, ...simplify_file(info) } }`，usage 依 `aiConfig.openaiFileSearchExt`
+    → `KNOWBASE` / `openaiCodeInterpreterExt` → `TEMPLIB` / 否则 `UNKNOWN_USAGE`
+- **实现**：
+  - `core/api/fileloader_api.dart`（Dio multipart 上传 + 客户端校验 + `fileUrl` 计算）
+  - `core/util/file_utils.dart`（`getFileExt`/`isImageFile|VideoFile|AudioFile`/`simplifyFile`/`chooseUrl`/`matchesExtensionList`）
+  - `core/util/pex_file_picker.dart`（跨端统一返回 bytes；`image_picker` + `file_picker` 13）
+  - `part_story_editor` 接入真实上传：选择 → 校验 → 上传 → 按类型写入 story 段，含上传中/失败反馈
+- **踩坑**：`file_picker` 13 API 变更（`FilePicker.pickFile` 为静态方法、返回 `PlatformFile?`，
+  且用 `readAsBytes()` 而非 `bytes` 字段）；Dart 侧统一取 bytes 以便 Web 与原生共用一套上传逻辑。
+- **实测**：`curl` 直打上传接口 → `_state: SUCCESS`，返回 `path`/`cid`/`baseUrl`/`ipfsUrl` 全部正确。
+- **验证**：`flutter analyze` 0 问题；`flutter build web` 成功。
+- **顺带修正**：`part_aichat` 的欢迎语在模型详情未返回时误显示 `Loading...`，改为加载态组件。
+
+### 备注：Aibot 相关（不投入）
+- 老板 2026-09-29：Aibot 概念已被 agent 取代，Agidin 待重新构思方向；
+  **除非另行指示，不再迁移 Aibot 的创建/编辑链路**。

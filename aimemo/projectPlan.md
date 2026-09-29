@@ -93,9 +93,10 @@
   - [x] 组件：`part_aichat`（核心：消息列表/输入/story 模式/发送/操作菜单/设置条）
   - [x] 组件：`part_story_reader` / `part_story_editor` / `part_text_reader`（**跨域内容容器**）
   - [x] 组件：`part_aipp_models` / `part_aipp_shared` / `part_aipp_picked` / `ai_model_tile` / `part_load_more` / `part_window_layout`
-  - [ ] 页面：`menuAippCreate(+)` / `menuAippModify(+)`；组件：`part_aipp_editor`
+  - [-] 页面：`menuAippCreate(+)` / `menuAippModify(+)`；组件：`part_aipp_editor` —— **不做**（Aibot 已被 agent 概念超越，Agidin 待重新构思）
   - [ ] 组件：`part_menu_ring` / `part_pop_link` / `part_deposit` / `part_sound_recorder`
-  - [ ] story 段落媒体上传（`pickupFile2Server` 等价）· 语音输入 · TTS 自动朗读
+  - [x] story 段落媒体上传（`Fileloader/receiveFile` + 选择器 + 段落写入，已实测 SUCCESS）
+  - [ ] 语音输入 · TTS 自动朗读
   - [ ] WebSocket（`SOCKET_OWNER` 登录后握手、`AICHAT_SUCCESS` 推送路径）
 - [ ] 3B 创作/NFT 域：`menuCreation` / `menuCreator` / `showCreation`(2227行) / `showCreationUpdate` / `showCreator` / `userResource` / `userResourceDetail`；组件 `partCreate` / `partCreation*` / `partCreator*` / `partStoryEditor`
 - [ ] 3C 资金域：`umyFund` / `umyFundChannel` / `umyFundChannelCreate` / `umyFundChannelWithdraw` / `umyFundTranx`；组件 `partDeposit`(1066行) / `partFundChannelCard` / `partTxList` / `partPexdataSummary`
