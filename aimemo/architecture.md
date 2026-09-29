@@ -129,6 +129,32 @@ lib/
 
 **实测（2026-09-29，本地 7739）**：`first_touch` 返回 `HTTP 200`、`_state = SUCCESS`、`_stateLogin = MISSING_USID`、`envarBase` 30 个键（含 `slogans`/`newsline`/`linkNews`/`linkSlogan`/`servUrl`/`linkTree`/`aiModelSet`）。
 
+## 七、配置来源：方案 E（预置层 + 后端覆盖层）
+
+> 2026-09-29 与老板澄清后确定；曾评估的方案 A / D+ 已废弃或降级。
+
+**背景澄清（老板）**：
+1. 连不上后端时，App **停在首屏显示 Connecting 读秒** → 本地副本**不是为了离线可用**；
+2. 复制配置到客户端的**真正目的**：希望客户端大多数设置/文案都能由后台随时下发更改，
+   因此这些设置**既要在前端有一份，也要后台持有**；
+3. 源项目用 `inUniapp` / `base2app` 控制「哪些预置给前端 / 哪些只在后台 / 哪些可灵活下发覆盖前端」。
+   （即使是纯客户端配置，也能通过调整 `inUniapp` 改为可下发；但**该需求不重要**。）
+
+**方案 E（采用）**：只预置「服务端不发的块 + 首屏必需稳定标量」，动态配置以后端为唯一真源。
+
+| 层 | 内容 | 实现 |
+| -- | ---- | ---- |
+| ① 本地预置层 | 客户端专属块（服务端永不发）：`tucSymbol`/`pactDict`/`Creation`(含 `uiStatDict`)/`Creator`/`Market`/`banChina`/三个扩展名列表/`mia*`/`t*` 文案 等 **79 个键** | `assets/clientEnvar.json`（由 `tool/genClientEnvar.js` 生成）+ `core/state/client_envar.dart` |
+| ② 后端下发层 | `first_touch.envarBase` **覆盖**第①层 | `core/state/envar_provider.dart` 合并 |
+
+- 合并顺序：`{...预置, ...后端}`。
+- **天然兼容未来翻开关**：后端若开始下发某个块，会自动覆盖预置值，**前端无需改代码**。
+- **不做本地缓存层**（曾属 D+ 方案）：连不上即停在 Connecting，缓存无实际收益。
+- **方案 A（让后端下发客户端专属块）撤回**：与「这些块本就该前端预置」的设计相悖。
+
+**生成器**：`node tool/genClientEnvar.js`（后端未启动时可回退到缓存基准）。
+产物：48.9 KB 原始 / **gzip 5.8 KB**（对比：一张门户背景图 576 KB）。
+
 ## 七、核心内容容器：story（跨域基石）
 
 > 老板提示（2026-09-29）：`partStoryReader` / `partStoryEditor` 把不同类型的内容组织在一个容器里。

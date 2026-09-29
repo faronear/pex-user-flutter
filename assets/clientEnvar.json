@@ -1,0 +1,1970 @@
+{
+ "AKAGIDIN": {
+  "inProd": false,
+  "idname": "pex",
+  "tucSymbol": "¢",
+  "coinKey": "TUC",
+  "priceToSeal": 0,
+  "priceToMint": 1,
+  "priceFuelDefault": 1,
+  "priceFuelMax": 1000,
+  "tucPrecision": 4,
+  "registerReward": 100,
+  "inviteeReward": 100,
+  "inviterReward": 100,
+  "textExtensionList": [
+   "txt",
+   "text"
+  ],
+  "imageExtensionList": [
+   "jpg",
+   "jpeg",
+   "png",
+   "gif",
+   "webp",
+   "image"
+  ],
+  "videoExtensionList": [
+   "avi",
+   "mp4",
+   "mov",
+   "wmv",
+   "video"
+  ],
+  "audioExtensionList": [
+   "flac",
+   "m4a",
+   "ogg",
+   "ape",
+   "amr",
+   "wma",
+   "wav",
+   "mp3",
+   "aac",
+   "aiff",
+   "caf"
+  ],
+  "promptBelowPic": false,
+  "banChina": [
+   "BAD_IN_CN",
+   "CENSOR_BAD_IN_CN",
+   "CENSOR_ERROR"
+  ],
+  "baseTypeDefault": "SERVER",
+  "baseTypeSms": "SERVER",
+  "baseTypeFile": "SERVER",
+  "waitingSeconds": 5,
+  "depositAmountMin": 0.01,
+  "depositAmountDefault": 10,
+  "withdrawAmountMin": 1000,
+  "responsive": true,
+  "hideWalletAddress": false,
+  "hideDepositButton": false,
+  "hideCashoutButton": false,
+  "cashoutAlone": false,
+  "aiapUnipay2": false,
+  "ctnDeletable": false,
+  "tMarketEmpty": {
+   "zhCN": "当前没有创作品在售",
+   "enUS": "Currently no creation available for sale"
+  },
+  "miaFile": false,
+  "miaImage": true,
+  "miaLink": false,
+  "miaSpeak": false,
+  "miaText": true,
+  "miaVideo": false,
+  "miaMaxSections": 2,
+  "byxCertName": {
+   "zhCN": "IPFS 永存证",
+   "enUS": "IPFS"
+  },
+  "byxTokenName": {
+   "zhCN": "NFT 主权币",
+   "enUS": "NFT"
+  },
+  "byxCertFullname": {
+   "zhCN": "IPFS 永存证",
+   "enUS": "Creation in IPFS"
+  },
+  "byxTokenFullname": {
+   "zhCN": "NFT 主权币",
+   "enUS": "Creation as NFT"
+  },
+  "byxCertMakerTitle": {
+   "zhCN": "智能合约",
+   "enUS": "Smart Contracts"
+  },
+  "byxTokenMakerTitle": {
+   "zhCN": "铸造 NFT 币",
+   "enUS": "Mint to NFT"
+  },
+  "byxTokenPayNotes": {
+   "zhCN": "您的创作品将被铸造成世界公认的 NFT，可在全球各种 NFT 平台上自由交易。",
+   "enUS": "Your creation will be minted to an NFT that can be traded in the decentralized world."
+  },
+  "Market": {
+   "uiClassDict": {
+    "MKALL": {
+     "zhCN": "交易市场",
+     "enUS": "Exchange Market",
+     "deDE": "Tauschmarkt",
+     "jaJP": "取引市場"
+    }
+   }
+  },
+  "Creator": {
+   "creatorListAll": [],
+   "myFollowingList": [],
+   "myFollowerList": [],
+   "myInviteeList": [],
+   "uiClassDict": {
+    "USALL": {
+     "zhCN": "遇见原创主",
+     "enUS": "Meet Creators",
+     "deDE": "Ersteller treffen",
+     "jaJP": "クリエイターと出会う"
+    }
+   },
+   "myCircleDict": {
+    "FOLLOWING": {
+     "zhCN": "关注",
+     "enUS": "Following",
+     "counter": "countFollowing",
+     "iconType": "heart-filled"
+    },
+    "FOLLOWER": {
+     "zhCN": "粉丝",
+     "enUS": "Followed",
+     "counter": "countFollower",
+     "iconType": "icont-wodefensi1",
+     "iconPrefix": "icont"
+    },
+    "INVITEE": {
+     "zhCN": "邀请",
+     "enUS": "Invited",
+     "counter": "countInvitee",
+     "iconType": "gift"
+    }
+   }
+  },
+  "Creation": {
+   "ctnShow": {},
+   "ctnUpdate": {},
+   "ctnCreate": {
+    "pexdataRaw": [
+     {
+      "text": ""
+     }
+    ],
+    "openTitle": "",
+    "openCover": "",
+    "viewerPact": {
+     "type": "PAYABLE",
+     "amount": "",
+     "coin": "TUC"
+    },
+    "holderPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "quota": "",
+     "coin": "TUC"
+    },
+    "workerPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "share": "",
+     "coin": "TUC"
+    },
+    "ownerPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "coin": "TUC"
+    }
+   },
+   "creationListAll": [],
+   "myCollectionAsCreator": [],
+   "myCollectionAsOwner": [],
+   "myCollectionAsHolder": [],
+   "myCollectionAsViewer": [],
+   "myCollectionAsFueler": [],
+   "uiClassDict": {
+    "POALL": {
+     "zhCN": "探索创作品",
+     "enUS": "Explore Creations",
+     "deDE": "Kreationen erkunden",
+     "jaJP": "創造界を探索"
+    }
+   },
+   "uiStatDict": {
+    "comment": {
+     "iconType": "chat",
+     "iconTypeOn": "chat-filled"
+    },
+    "like": {
+     "iconType": "hand-up",
+     "iconTypeOn": "hand-up-filled"
+    },
+    "fuel": {
+     "iconType": "heart",
+     "iconTypeOn": "heart-filled"
+    }
+   }
+  },
+  "pactDict": {
+   "TCREATE": {
+    "counter": "countAsCreator",
+    "iconType": "color",
+    "pact_tag": {
+     "zhCN": "原创",
+     "enUS": "Create"
+    },
+    "CREATOR": {
+     "zhCN": "原创主",
+     "enUS": "Creator"
+    },
+    "CREATED_EMPTY": {
+     "zhCN": "您还没有创造任何创作品。",
+     "enUS": "You have no any original creation yet.",
+     "jaJP": "まだオリジナル创作品がありません。",
+     "deDE": "Sie haben noch keine Originalkreationen."
+    }
+   },
+   "TFUEL": {
+    "counter": "countFueling",
+    "pact_tag": {
+     "zhCN": "赞赏",
+     "enUS": "Fuel",
+     "jaJP": "燃料",
+     "deDE": "Treibstoff"
+    },
+    "FUEL_TAG": {
+     "zhCN": "已赞赏",
+     "enUS": "Fueled",
+     "jaJP": "燃料済み",
+     "deDE": "Betrieben"
+    }
+   },
+   "TVIEW": {
+    "counter": "countAsViewer",
+    "iconType": "eye",
+    "iconTypeOn": "eye-filled",
+    "pact_tag": {
+     "zhCN": "解密",
+     "enUS": "View",
+     "jaJP": "解読",
+     "deDE": "Ansehen"
+    },
+    "VIEWER_LIST": {
+     "zhCN": "解密人",
+     "enUS": "Decryptors",
+     "jaJP": "解読者",
+     "deDE": "Entschlüsseler"
+    },
+    "VIEW_FORBIDDEN": {
+     "zhCN": "禁止",
+     "enUS": "Disallowed",
+     "jaJP": "禁止",
+     "deDE": "Verboten"
+    },
+    "VIEW_FREE": {
+     "zhCN": "免费",
+     "enUS": "Free",
+     "jaJP": "無料",
+     "deDE": "Kostenlos"
+    },
+    "VIEW_EMPTY": {
+     "zhCN": "您还没有解密任何创作品。",
+     "enUS": "You haven't decrypted any creation yet.",
+     "jaJP": "まだ创作品を復号していません。",
+     "deDE": "Sie haben noch keine Kreation entschlüsselt."
+    },
+    "VIEW_PAYTITLE": {
+     "zhCN": "解密创作品",
+     "enUS": "Decrypt this creation",
+     "jaJP": "この创作品を復号する",
+     "deDE": "Diese Kreation entschlüsseln"
+    },
+    "VIEW_PAYNOTES": {
+     "zhCN": "您将解密并阅览当前创作品内容。一次解密，永远有效。",
+     "enUS": "You will decrypt and view this creation's content.",
+     "jaJP": "この创作品の内容を復号し、永続的に閲覧する権利を得ます。",
+     "deDE": "Sie können den Inhalt dieser Kreation entschlüsseln und dauerhaft ansehen."
+    },
+    "VIEW_SETNOTES": {
+     "zhCN": "其他用户必须向您付费后，才能解密并阅览内容。",
+     "enUS": "Others must pay a fee to decrypt the content.",
+     "jaJP": "他のユーザーは、あなたに料金を支払った後にコンテンツを復号して閲覧できます。",
+     "deDE": "Andere müssen eine Entschlüsselungsgebühr zahlen, um den Inhalt anzusehen."
+    }
+   },
+   "THOLD": {
+    "counter": "countAsHolder",
+    "iconType": "icont-part-line",
+    "iconTypeOn": "icont-part-fill",
+    "iconPrefix": "icont",
+    "pact_tag": {
+     "zhCN": "持有",
+     "enUS": "Hold",
+     "jaJP": "保有",
+     "deDE": "Halten"
+    },
+    "HOLDER_LIST": {
+     "zhCN": "持有人",
+     "enUS": "Holders",
+     "jaJP": "保有者",
+     "deDE": "Inhaber"
+    },
+    "HOLD_FORBIDDEN": {
+     "zhCN": "禁止",
+     "enUS": "Disallowed",
+     "jaJP": "禁止",
+     "deDE": "Verboten"
+    },
+    "HOLD_FREE": {
+     "zhCN": "免费",
+     "enUS": "Free",
+     "jaJP": "無料",
+     "deDE": "Kostenlos"
+    },
+    "HOLD_QUOTA_INFINITE": {
+     "zhCN": "无限量",
+     "enUS": "Unlimited",
+     "jaJP": "無制限",
+     "deDE": "Unbegrenzt"
+    },
+    "HOLD_EMPTY": {
+     "zhCN": "您还没有持有任何创作品。",
+     "enUS": "You haven't held any creation yet.",
+     "jaJP": "まだ创作品を保有していません。",
+     "deDE": "Sie haben noch keine Kreation erhalten."
+    },
+    "HOLD_PAYTITLE": {
+     "zhCN": "购买创作品",
+     "enUS": "Buy this creation",
+     "jaJP": "この创作品を保有する",
+     "deDE": "Dieses Werk erhalten"
+    },
+    "HOLD_PAYNOTES": {
+     "zhCN": "您将购买并持有一份拷贝、席位或份额。",
+     "enUS": "You will hold a copy, a seat or a share of this creation.",
+     "jaJP": "この创作品のコピー、席、またはシェアを保有します。",
+     "deDE": "Sie erhalten eine Kopie, einen Sitz oder einen Anteil dieser Kreation."
+    },
+    "HOLD_SETNOTES": {
+     "zhCN": "出售限量的拷贝、席位、份额给其他买家。",
+     "enUS": "Sell this creation's copies, pieces, seats, etc. to buyers.",
+     "jaJP": "この创作品のコピー、席、シェアを他の購入者に販売します。",
+     "deDE": "Verkaufen Sie Kopien, Anteile, Sitze usw. dieser Kreation an Käufer."
+    }
+   }
+  },
+  "Tx": {
+   "myTxTagNow": "TXG_RECHARGE",
+   "myTxDict": {
+    "TXG_ALL": {
+     "zhCN": "所有交易",
+     "enUS": "All Transactions",
+     "jaJP": "すべての取引",
+     "deDE": "Alle Transaktionen",
+     "myTxList": []
+    },
+    "TXG_RECHARGE": {
+     "paydir": "+",
+     "zhCN": "充值",
+     "enUS": "Recharges",
+     "jaJP": "入金",
+     "deDE": "Einzahlungen",
+     "myTxList": []
+    },
+    "TXG_IN_REWARD": {
+     "paydir": "+",
+     "zhCN": "奖赏",
+     "enUS": "Rewards",
+     "jaJP": "報酬",
+     "deDE": "Belohnungen",
+     "myTxList": []
+    },
+    "TXG_OUT_PEX": {
+     "paydir": "-",
+     "zhCN": "创作品支出",
+     "enUS": "Creation Costs",
+     "jaJP": "创作品費用",
+     "deDE": "Artefaktkosten",
+     "myTxList": []
+    },
+    "TXG_IN_PEX": {
+     "paydir": "+",
+     "zhCN": "创作品收入",
+     "enUS": "Creation Income",
+     "jaJP": "创作品収入",
+     "deDE": "Artefakteinkommen",
+     "myTxList": []
+    }
+   },
+   "txTypeDict": {
+    "PAY_TO_CREATE": {
+     "zhCN": "我创作了",
+     "enUS": "Pay to create"
+    },
+    "PAY_TO_VIEW": {
+     "zhCN": "我解密了",
+     "enUS": "Pay to view",
+     "jaJP": "復号しました",
+     "deDE": "Entschlüsselt von mir"
+    },
+    "PAY_TO_VIEW_TO_CREATOR": {
+     "zhCN": "被解密了",
+     "enUS": "Was decrypted",
+     "deDE": "Wurde entschlüsselt"
+    },
+    "PAY_TO_VIEW_TO_OWNER": {
+     "zhCN": "被解密了",
+     "enUS": "Was decrypted",
+     "deDE": "Wurde entschlüsselt"
+    },
+    "PAY_TO_HOLD": {
+     "zhCN": "我买入了",
+     "enUS": "Pay to hold",
+     "jaJP": "購入しました",
+     "deDE": "Erhalten von mir"
+    },
+    "PAY_TO_HOLD_TO_CREATOR": {
+     "zhCN": "被收藏了",
+     "enUS": "Was held",
+     "jaJP": "購入されました",
+     "deDE": "Wurde erhalten"
+    },
+    "PAY_TO_HOLD_TO_OWNER": {
+     "zhCN": "被收藏了",
+     "enUS": "Was held",
+     "jaJP": "購入されました",
+     "deDE": "Wurde erhalten"
+    },
+    "PAY_TO_OWN": {
+     "zhCN": "我主管了",
+     "enUS": "Pay to own",
+     "jaJP": "取得しました",
+     "deDE": "Besessen von mir"
+    },
+    "PAY_TO_OWN_TO_CREATOR": {
+     "zhCN": "被主管了",
+     "enUS": "Was acquired",
+     "jaJP": "取得されました",
+     "deDE": "Wurde besessen"
+    },
+    "PAY_TO_OWN_TO_OWNER": {
+     "zhCN": "被主管了",
+     "enUS": "Was acquired",
+     "jaJP": "取得されました",
+     "deDE": "Wurde besessen"
+    },
+    "PAY_TO_WORK": {
+     "zhCN": "我代理了",
+     "enUS": "Pay to represent",
+     "jaJP": "代理しました",
+     "deDE": "Vertreten von mir"
+    },
+    "PAY_TO_WORK_TO_CREATOR": {
+     "zhCN": "被代理了",
+     "enUS": "Was represented",
+     "jaJP": "代理されました",
+     "deDE": "Wurde Vertreten"
+    },
+    "PAY_TO_WORK_TO_OWNER": {
+     "zhCN": "被代理了",
+     "enUS": "Was represented",
+     "jaJP": "代理されました",
+     "deDE": "Wurde Vertreten"
+    },
+    "PAY_TO_MINT": {
+     "zhCN": "我铸造了",
+     "enUS": "Pay to mint",
+     "jaJP": "鋳造しました",
+     "deDE": "Geprägt von mir"
+    },
+    "TXT_IN_REGISTER": {
+     "zhCN": "新用户注册奖励",
+     "enUS": "Signup rewards",
+     "jaJP": "新規登録報酬",
+     "deDE": "Anmeldebelohnung"
+    },
+    "TXT_IN_INVITE": {
+     "zhCN": "邀请新用户",
+     "enUS": "Invited new user",
+     "jaJP": "新規ユーザーを招待",
+     "deDE": "Neuen Benutzer eingeladen"
+    },
+    "TXT_IN_CREATION": {
+     "zhCN": "创作",
+     "enUS": "Content Creation",
+     "jaJP": "創作",
+     "deDE": "Kreation"
+    },
+    "TXT_IN_CHECKIN": {
+     "zhCN": "登录",
+     "enUS": "Check-in",
+     "jaJP": "ログイン",
+     "deDE": "Einloggen"
+    },
+    "USER_RECHARGE": {
+     "zhCN": "充值",
+     "enUS": "Recharge",
+     "jaJP": "チャージ",
+     "deDE": "Konto Aufladen"
+    },
+    "TXT_AI_CHAT": {
+     "zhCN": "AI消费",
+     "enUS": "AI Costs",
+     "jaJP": "AI費用",
+     "deDE": "KI-Kosten"
+    }
+   }
+  },
+  "kycDict": {
+   "SUBMITTED": {
+    "short": {
+     "zhCN": "已提交",
+     "enUS": "Submitted",
+     "jaJP": "提出済み",
+     "deDE": "Eingereicht"
+    },
+    "long": {
+     "zhCN": "您已提交资料，请等待认证结果。",
+     "enUS": "The documents were submitted. Please wait for verification.",
+     "jaJP": "資料を提出しました。認証結果をお待ちください。",
+     "deDE": "Die Unterlagen wurden eingereicht. Bitte warten Sie auf die Verifizierung."
+    }
+   },
+   "PASSED": {
+    "short": {
+     "zhCN": "认证成功",
+     "enUS": "Verified",
+     "jaJP": "認証成功",
+     "deDE": "Verifiziert"
+    },
+    "long": {
+     "zhCN": "您已通过实名认证！",
+     "enUS": "You have passed verification！",
+     "jaJP": "本人認証に成功しました！",
+     "deDE": "Sie haben die Verifizierung bestanden！"
+    }
+   },
+   "REJECTED": {
+    "short": {
+     "zhCN": "认证失败",
+     "enUS": "Rejected",
+     "jaJP": "認証失敗",
+     "deDE": "Abgelehnt"
+    },
+    "long": {
+     "zhCN": "没有通过认证，请修改后重新提交。",
+     "enUS": "Verification failed, please try again.",
+     "jaJP": "認証に失敗しました。修正して再提出してください。",
+     "deDE": "Verifizierung fehlgeschlagen, bitte erneut versuchen."
+    }
+   },
+   "NONE": {
+    "short": {
+     "zhCN": "未认证",
+     "enUS": "Unverified",
+     "jaJP": "未認証",
+     "deDE": "Unverifiziert"
+    },
+    "long": {
+     "zhCN": "实名认证后，您将获得更多功能。",
+     "enUS": "You will get more features after identity verification.",
+     "jaJP": "本人認証後、より多くの機能が利用できます。",
+     "deDE": "Nach der Verifizierung erhalten Sie weitere Funktionen."
+    }
+   }
+  },
+  "linkTagNow": "",
+  "webDomain": "agidin.com",
+  "webUrlRoot": "https://u.agidin.com",
+  "teamEmail": "hi@agidin.com",
+  "fullnames": {
+   "zhCN": "连接您与AI奇点",
+   "enUS": "Connecting You to AI"
+  },
+  "portalImage": "/static/bgAgidin.jpg",
+  "aicodeDefault": "asst_By0qXqqOufjbJlkOlLM3omi5",
+  "linkAgreement": "https://info.agidin.com/rules/terms_of_use/_",
+  "linkNews": "https://info.agidin.com/news/_",
+  "linkSlogan": "https://info.agidin.com/about/white_paper/_",
+  "linkHowToCreateAipp": "https://info.agidin.com/howto/how_to_create_aipp/_",
+  "linkHowToMonetizeAipp": "https://info.agidin.com/howto/how_to_monetize_aipp/_",
+  "linkHowToAippFiles": "https://info.agidin.com/howto/how_to_customize_aipp_files/_",
+  "appNews": {
+   "webapp": {}
+  },
+  "aiapSet": {
+   "cc.aizoi.iap.credit.0.99": {
+    "credit": 99,
+    "price": 0.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 99¢",
+     "enUS": "Energy Coins 99¢"
+    },
+    "info": {
+     "zhCN": "浅尝体验",
+     "enUS": "Trial Use"
+    },
+    "iapid": "cc.aizoi.iap.credit.0.99"
+   },
+   "cc.aizoi.iap.credit.202305": {
+    "credit": 999,
+    "price": 9.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 999¢",
+     "enUS": "Energy Coins 999¢"
+    },
+    "info": {
+     "zhCN": "偶尔来玩",
+     "enUS": "Casual Use"
+    },
+    "iapid": "cc.aizoi.iap.credit.202305"
+   },
+   "faronear.aizoi.iap.credit.4999": {
+    "hideIapp": true,
+    "credit": 4999,
+    "price": 49.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 4999¢",
+     "enUS": "Energy Coins 4999¢"
+    },
+    "info": {
+     "zhCN": "经常来玩",
+     "enUS": "Regular Use"
+    },
+    "iapid": "faronear.aizoi.iap.credit.4999"
+   },
+   "faronear.aizoi.iap.credit.9999": {
+    "hideIapp": true,
+    "credit": 9999,
+    "price": 99.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 9999¢",
+     "enUS": "Energy Coins 9999¢"
+    },
+    "info": {
+     "zhCN": "每天都玩",
+     "enUS": "Daily Use"
+    },
+    "iapid": "faronear.aizoi.iap.credit.9999"
+   }
+  }
+ },
+ "AKBABELY": {
+  "inProd": false,
+  "idname": "pex",
+  "tucSymbol": "¢",
+  "coinKey": "TUC",
+  "priceToSeal": 0,
+  "priceToMint": 1,
+  "priceFuelDefault": 1,
+  "priceFuelMax": 1000,
+  "tucPrecision": 4,
+  "registerReward": 100,
+  "inviteeReward": 100,
+  "inviterReward": 100,
+  "textExtensionList": [
+   "txt",
+   "text"
+  ],
+  "imageExtensionList": [
+   "jpg",
+   "jpeg",
+   "png",
+   "gif",
+   "webp",
+   "image"
+  ],
+  "videoExtensionList": [
+   "avi",
+   "mp4",
+   "mov",
+   "wmv",
+   "video"
+  ],
+  "audioExtensionList": [
+   "flac",
+   "m4a",
+   "ogg",
+   "ape",
+   "amr",
+   "wma",
+   "wav",
+   "mp3",
+   "aac",
+   "aiff",
+   "caf"
+  ],
+  "promptBelowPic": false,
+  "banChina": [
+   "BAD_IN_CN",
+   "CENSOR_BAD_IN_CN",
+   "CENSOR_ERROR"
+  ],
+  "baseTypeDefault": "SERVER",
+  "baseTypeSms": "SERVER",
+  "baseTypeFile": "SERVER",
+  "waitingSeconds": 5,
+  "depositAmountMin": 0.01,
+  "depositAmountDefault": 10,
+  "withdrawAmountMin": 1000,
+  "responsive": true,
+  "hideWalletAddress": false,
+  "hideDepositButton": false,
+  "hideCashoutButton": false,
+  "cashoutAlone": false,
+  "aiapUnipay2": false,
+  "ctnDeletable": false,
+  "tMarketEmpty": {
+   "zhCN": "当前没有创作品在售",
+   "enUS": "Currently no creation available for sale"
+  },
+  "miaFile": false,
+  "miaImage": true,
+  "miaLink": false,
+  "miaSpeak": false,
+  "miaText": true,
+  "miaVideo": false,
+  "miaMaxSections": 2,
+  "byxCertName": {
+   "zhCN": "IPFS 永存证",
+   "enUS": "IPFS"
+  },
+  "byxTokenName": {
+   "zhCN": "NFT 主权币",
+   "enUS": "NFT"
+  },
+  "byxCertFullname": {
+   "zhCN": "IPFS 永存证",
+   "enUS": "Creation in IPFS"
+  },
+  "byxTokenFullname": {
+   "zhCN": "NFT 主权币",
+   "enUS": "Creation as NFT"
+  },
+  "byxCertMakerTitle": {
+   "zhCN": "智能合约",
+   "enUS": "Smart Contracts"
+  },
+  "byxTokenMakerTitle": {
+   "zhCN": "铸造 NFT 币",
+   "enUS": "Mint to NFT"
+  },
+  "byxTokenPayNotes": {
+   "zhCN": "您的创作品将被铸造成世界公认的 NFT，可在全球各种 NFT 平台上自由交易。",
+   "enUS": "Your creation will be minted to an NFT that can be traded in the decentralized world."
+  },
+  "Market": {
+   "uiClassDict": {
+    "MKALL": {
+     "zhCN": "交易市场",
+     "enUS": "Exchange Market",
+     "deDE": "Tauschmarkt",
+     "jaJP": "取引市場"
+    }
+   }
+  },
+  "Creator": {
+   "creatorListAll": [],
+   "myFollowingList": [],
+   "myFollowerList": [],
+   "myInviteeList": [],
+   "uiClassDict": {
+    "USALL": {
+     "zhCN": "遇见原创主",
+     "enUS": "Meet Creators",
+     "deDE": "Ersteller treffen",
+     "jaJP": "クリエイターと出会う"
+    }
+   },
+   "myCircleDict": {
+    "FOLLOWING": {
+     "zhCN": "关注",
+     "enUS": "Following",
+     "counter": "countFollowing",
+     "iconType": "heart-filled"
+    },
+    "FOLLOWER": {
+     "zhCN": "粉丝",
+     "enUS": "Followed",
+     "counter": "countFollower",
+     "iconType": "icont-wodefensi1",
+     "iconPrefix": "icont"
+    },
+    "INVITEE": {
+     "zhCN": "邀请",
+     "enUS": "Invited",
+     "counter": "countInvitee",
+     "iconType": "gift"
+    }
+   }
+  },
+  "Creation": {
+   "ctnShow": {},
+   "ctnUpdate": {},
+   "ctnCreate": {
+    "pexdataRaw": [
+     {
+      "text": ""
+     }
+    ],
+    "openTitle": "",
+    "openCover": "",
+    "viewerPact": {
+     "type": "PAYABLE",
+     "amount": "",
+     "coin": "TUC"
+    },
+    "holderPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "quota": "",
+     "coin": "TUC"
+    },
+    "workerPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "share": "",
+     "coin": "TUC"
+    },
+    "ownerPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "coin": "TUC"
+    }
+   },
+   "creationListAll": [],
+   "myCollectionAsCreator": [],
+   "myCollectionAsOwner": [],
+   "myCollectionAsHolder": [],
+   "myCollectionAsViewer": [],
+   "myCollectionAsFueler": [],
+   "uiClassDict": {
+    "POALL": {
+     "zhCN": "探索创作品",
+     "enUS": "Explore Creations",
+     "deDE": "Kreationen erkunden",
+     "jaJP": "創造界を探索"
+    }
+   },
+   "uiStatDict": {
+    "comment": {
+     "iconType": "chat",
+     "iconTypeOn": "chat-filled"
+    },
+    "like": {
+     "iconType": "hand-up",
+     "iconTypeOn": "hand-up-filled"
+    },
+    "fuel": {
+     "iconType": "heart",
+     "iconTypeOn": "heart-filled"
+    }
+   }
+  },
+  "pactDict": {
+   "TCREATE": {
+    "counter": "countAsCreator",
+    "iconType": "color",
+    "pact_tag": {
+     "zhCN": "原创",
+     "enUS": "Create"
+    },
+    "CREATOR": {
+     "zhCN": "原创主",
+     "enUS": "Creator"
+    },
+    "CREATED_EMPTY": {
+     "zhCN": "您还没有创造任何创作品。",
+     "enUS": "You have no any original creation yet.",
+     "jaJP": "まだオリジナル创作品がありません。",
+     "deDE": "Sie haben noch keine Originalkreationen."
+    }
+   },
+   "TFUEL": {
+    "counter": "countFueling",
+    "pact_tag": {
+     "zhCN": "赞赏",
+     "enUS": "Fuel",
+     "jaJP": "燃料",
+     "deDE": "Treibstoff"
+    },
+    "FUEL_TAG": {
+     "zhCN": "已赞赏",
+     "enUS": "Fueled",
+     "jaJP": "燃料済み",
+     "deDE": "Betrieben"
+    }
+   },
+   "TVIEW": {
+    "counter": "countAsViewer",
+    "iconType": "eye",
+    "iconTypeOn": "eye-filled",
+    "pact_tag": {
+     "zhCN": "解密",
+     "enUS": "View",
+     "jaJP": "解読",
+     "deDE": "Ansehen"
+    },
+    "VIEWER_LIST": {
+     "zhCN": "解密人",
+     "enUS": "Decryptors",
+     "jaJP": "解読者",
+     "deDE": "Entschlüsseler"
+    },
+    "VIEW_FORBIDDEN": {
+     "zhCN": "禁止",
+     "enUS": "Disallowed",
+     "jaJP": "禁止",
+     "deDE": "Verboten"
+    },
+    "VIEW_FREE": {
+     "zhCN": "免费",
+     "enUS": "Free",
+     "jaJP": "無料",
+     "deDE": "Kostenlos"
+    },
+    "VIEW_EMPTY": {
+     "zhCN": "您还没有解密任何创作品。",
+     "enUS": "You haven't decrypted any creation yet.",
+     "jaJP": "まだ创作品を復号していません。",
+     "deDE": "Sie haben noch keine Kreation entschlüsselt."
+    },
+    "VIEW_PAYTITLE": {
+     "zhCN": "解密创作品",
+     "enUS": "Decrypt this creation",
+     "jaJP": "この创作品を復号する",
+     "deDE": "Diese Kreation entschlüsseln"
+    },
+    "VIEW_PAYNOTES": {
+     "zhCN": "您将解密并阅览当前创作品内容。一次解密，永远有效。",
+     "enUS": "You will decrypt and view this creation's content.",
+     "jaJP": "この创作品の内容を復号し、永続的に閲覧する権利を得ます。",
+     "deDE": "Sie können den Inhalt dieser Kreation entschlüsseln und dauerhaft ansehen."
+    },
+    "VIEW_SETNOTES": {
+     "zhCN": "其他用户必须向您付费后，才能解密并阅览内容。",
+     "enUS": "Others must pay a fee to decrypt the content.",
+     "jaJP": "他のユーザーは、あなたに料金を支払った後にコンテンツを復号して閲覧できます。",
+     "deDE": "Andere müssen eine Entschlüsselungsgebühr zahlen, um den Inhalt anzusehen."
+    }
+   },
+   "THOLD": {
+    "counter": "countAsHolder",
+    "iconType": "icont-part-line",
+    "iconTypeOn": "icont-part-fill",
+    "iconPrefix": "icont",
+    "pact_tag": {
+     "zhCN": "持有",
+     "enUS": "Hold",
+     "jaJP": "保有",
+     "deDE": "Halten"
+    },
+    "HOLDER_LIST": {
+     "zhCN": "持有人",
+     "enUS": "Holders",
+     "jaJP": "保有者",
+     "deDE": "Inhaber"
+    },
+    "HOLD_FORBIDDEN": {
+     "zhCN": "禁止",
+     "enUS": "Disallowed",
+     "jaJP": "禁止",
+     "deDE": "Verboten"
+    },
+    "HOLD_FREE": {
+     "zhCN": "免费",
+     "enUS": "Free",
+     "jaJP": "無料",
+     "deDE": "Kostenlos"
+    },
+    "HOLD_QUOTA_INFINITE": {
+     "zhCN": "无限量",
+     "enUS": "Unlimited",
+     "jaJP": "無制限",
+     "deDE": "Unbegrenzt"
+    },
+    "HOLD_EMPTY": {
+     "zhCN": "您还没有持有任何创作品。",
+     "enUS": "You haven't held any creation yet.",
+     "jaJP": "まだ创作品を保有していません。",
+     "deDE": "Sie haben noch keine Kreation erhalten."
+    },
+    "HOLD_PAYTITLE": {
+     "zhCN": "购买创作品",
+     "enUS": "Buy this creation",
+     "jaJP": "この创作品を保有する",
+     "deDE": "Dieses Werk erhalten"
+    },
+    "HOLD_PAYNOTES": {
+     "zhCN": "您将购买并持有一份拷贝、席位或份额。",
+     "enUS": "You will hold a copy, a seat or a share of this creation.",
+     "jaJP": "この创作品のコピー、席、またはシェアを保有します。",
+     "deDE": "Sie erhalten eine Kopie, einen Sitz oder einen Anteil dieser Kreation."
+    },
+    "HOLD_SETNOTES": {
+     "zhCN": "出售限量的拷贝、席位、份额给其他买家。",
+     "enUS": "Sell this creation's copies, pieces, seats, etc. to buyers.",
+     "jaJP": "この创作品のコピー、席、シェアを他の購入者に販売します。",
+     "deDE": "Verkaufen Sie Kopien, Anteile, Sitze usw. dieser Kreation an Käufer."
+    }
+   }
+  },
+  "Tx": {
+   "myTxTagNow": "TXG_RECHARGE",
+   "myTxDict": {
+    "TXG_ALL": {
+     "zhCN": "所有交易",
+     "enUS": "All Transactions",
+     "jaJP": "すべての取引",
+     "deDE": "Alle Transaktionen",
+     "myTxList": []
+    },
+    "TXG_RECHARGE": {
+     "paydir": "+",
+     "zhCN": "充值",
+     "enUS": "Recharges",
+     "jaJP": "入金",
+     "deDE": "Einzahlungen",
+     "myTxList": []
+    },
+    "TXG_IN_REWARD": {
+     "paydir": "+",
+     "zhCN": "奖赏",
+     "enUS": "Rewards",
+     "jaJP": "報酬",
+     "deDE": "Belohnungen",
+     "myTxList": []
+    },
+    "TXG_OUT_PEX": {
+     "paydir": "-",
+     "zhCN": "创作品支出",
+     "enUS": "Creation Costs",
+     "jaJP": "创作品費用",
+     "deDE": "Artefaktkosten",
+     "myTxList": []
+    },
+    "TXG_IN_PEX": {
+     "paydir": "+",
+     "zhCN": "创作品收入",
+     "enUS": "Creation Income",
+     "jaJP": "创作品収入",
+     "deDE": "Artefakteinkommen",
+     "myTxList": []
+    }
+   },
+   "txTypeDict": {
+    "PAY_TO_CREATE": {
+     "zhCN": "我创作了",
+     "enUS": "Pay to create"
+    },
+    "PAY_TO_VIEW": {
+     "zhCN": "我解密了",
+     "enUS": "Pay to view",
+     "jaJP": "復号しました",
+     "deDE": "Entschlüsselt von mir"
+    },
+    "PAY_TO_VIEW_TO_CREATOR": {
+     "zhCN": "被解密了",
+     "enUS": "Was decrypted",
+     "deDE": "Wurde entschlüsselt"
+    },
+    "PAY_TO_VIEW_TO_OWNER": {
+     "zhCN": "被解密了",
+     "enUS": "Was decrypted",
+     "deDE": "Wurde entschlüsselt"
+    },
+    "PAY_TO_HOLD": {
+     "zhCN": "我买入了",
+     "enUS": "Pay to hold",
+     "jaJP": "購入しました",
+     "deDE": "Erhalten von mir"
+    },
+    "PAY_TO_HOLD_TO_CREATOR": {
+     "zhCN": "被收藏了",
+     "enUS": "Was held",
+     "jaJP": "購入されました",
+     "deDE": "Wurde erhalten"
+    },
+    "PAY_TO_HOLD_TO_OWNER": {
+     "zhCN": "被收藏了",
+     "enUS": "Was held",
+     "jaJP": "購入されました",
+     "deDE": "Wurde erhalten"
+    },
+    "PAY_TO_OWN": {
+     "zhCN": "我主管了",
+     "enUS": "Pay to own",
+     "jaJP": "取得しました",
+     "deDE": "Besessen von mir"
+    },
+    "PAY_TO_OWN_TO_CREATOR": {
+     "zhCN": "被主管了",
+     "enUS": "Was acquired",
+     "jaJP": "取得されました",
+     "deDE": "Wurde besessen"
+    },
+    "PAY_TO_OWN_TO_OWNER": {
+     "zhCN": "被主管了",
+     "enUS": "Was acquired",
+     "jaJP": "取得されました",
+     "deDE": "Wurde besessen"
+    },
+    "PAY_TO_WORK": {
+     "zhCN": "我代理了",
+     "enUS": "Pay to represent",
+     "jaJP": "代理しました",
+     "deDE": "Vertreten von mir"
+    },
+    "PAY_TO_WORK_TO_CREATOR": {
+     "zhCN": "被代理了",
+     "enUS": "Was represented",
+     "jaJP": "代理されました",
+     "deDE": "Wurde Vertreten"
+    },
+    "PAY_TO_WORK_TO_OWNER": {
+     "zhCN": "被代理了",
+     "enUS": "Was represented",
+     "jaJP": "代理されました",
+     "deDE": "Wurde Vertreten"
+    },
+    "PAY_TO_MINT": {
+     "zhCN": "我铸造了",
+     "enUS": "Pay to mint",
+     "jaJP": "鋳造しました",
+     "deDE": "Geprägt von mir"
+    },
+    "TXT_IN_REGISTER": {
+     "zhCN": "新用户注册奖励",
+     "enUS": "Signup rewards",
+     "jaJP": "新規登録報酬",
+     "deDE": "Anmeldebelohnung"
+    },
+    "TXT_IN_INVITE": {
+     "zhCN": "邀请新用户",
+     "enUS": "Invited new user",
+     "jaJP": "新規ユーザーを招待",
+     "deDE": "Neuen Benutzer eingeladen"
+    },
+    "TXT_IN_CREATION": {
+     "zhCN": "创作",
+     "enUS": "Content Creation",
+     "jaJP": "創作",
+     "deDE": "Kreation"
+    },
+    "TXT_IN_CHECKIN": {
+     "zhCN": "登录",
+     "enUS": "Check-in",
+     "jaJP": "ログイン",
+     "deDE": "Einloggen"
+    },
+    "USER_RECHARGE": {
+     "zhCN": "充值",
+     "enUS": "Recharge",
+     "jaJP": "チャージ",
+     "deDE": "Konto Aufladen"
+    },
+    "TXT_AI_CHAT": {
+     "zhCN": "AI消费",
+     "enUS": "AI Costs",
+     "jaJP": "AI費用",
+     "deDE": "KI-Kosten"
+    }
+   }
+  },
+  "kycDict": {
+   "SUBMITTED": {
+    "short": {
+     "zhCN": "已提交",
+     "enUS": "Submitted",
+     "jaJP": "提出済み",
+     "deDE": "Eingereicht"
+    },
+    "long": {
+     "zhCN": "您已提交资料，请等待认证结果。",
+     "enUS": "The documents were submitted. Please wait for verification.",
+     "jaJP": "資料を提出しました。認証結果をお待ちください。",
+     "deDE": "Die Unterlagen wurden eingereicht. Bitte warten Sie auf die Verifizierung."
+    }
+   },
+   "PASSED": {
+    "short": {
+     "zhCN": "认证成功",
+     "enUS": "Verified",
+     "jaJP": "認証成功",
+     "deDE": "Verifiziert"
+    },
+    "long": {
+     "zhCN": "您已通过实名认证！",
+     "enUS": "You have passed verification！",
+     "jaJP": "本人認証に成功しました！",
+     "deDE": "Sie haben die Verifizierung bestanden！"
+    }
+   },
+   "REJECTED": {
+    "short": {
+     "zhCN": "认证失败",
+     "enUS": "Rejected",
+     "jaJP": "認証失敗",
+     "deDE": "Abgelehnt"
+    },
+    "long": {
+     "zhCN": "没有通过认证，请修改后重新提交。",
+     "enUS": "Verification failed, please try again.",
+     "jaJP": "認証に失敗しました。修正して再提出してください。",
+     "deDE": "Verifizierung fehlgeschlagen, bitte erneut versuchen."
+    }
+   },
+   "NONE": {
+    "short": {
+     "zhCN": "未认证",
+     "enUS": "Unverified",
+     "jaJP": "未認証",
+     "deDE": "Unverifiziert"
+    },
+    "long": {
+     "zhCN": "实名认证后，您将获得更多功能。",
+     "enUS": "You will get more features after identity verification.",
+     "jaJP": "本人認証後、より多くの機能が利用できます。",
+     "deDE": "Nach der Verifizierung erhalten Sie weitere Funktionen."
+    }
+   }
+  },
+  "linkTagNow": "",
+  "sealChoice": false,
+  "mintChoice": false,
+  "anonyCreator": false,
+  "contentRequired": false,
+  "creationAudio": true,
+  "creationFile": true,
+  "creationVideo": true,
+  "creationLink": true,
+  "creationSpeak": false,
+  "commentFile": false,
+  "commentImage": true,
+  "commentLink": false,
+  "commentSpeak": false,
+  "commentText": true,
+  "commentVideo": false,
+  "commentMaxSections": 2,
+  "webDomain": "babelyx.com",
+  "webUrlRoot": "https://u.babelyx.com",
+  "teamEmail": "hi@babelyx.com",
+  "fullnames": {
+   "zhCN": "出售你的内容",
+   "enUS": "Sell Your Content"
+  },
+  "portalImage": "/static/bgBabelyx.jpg",
+  "linkNews": "https://info.babelyx.com/news/_",
+  "linkSlogan": "https://info.babelyx.com/about/user_guide/_",
+  "linkAgreement": "https://info.babelyx.com/rules/terms_of_use/_",
+  "linkHowToCreateAipp": "",
+  "linkHowToMonetizeAipp": "https://info.babelyx.com/howto/how_to_monetize_aipp/_",
+  "linkHowToAippFiles": "https://info.babelyx.com/howto/how_to_customize_aipp_files/_",
+  "linkHowToCreateArtifact": "https://info.babelyx.com/howto/how_to_create_content/_",
+  "linkHowToMonetizeCreation": "https://info.babelyx.com/howto/how_to_monetize_creation/_",
+  "linkHowToMintNft": "https://info.babelyx.com/howto/how_to_mint_nft/_",
+  "appNews": {
+   "webapp": {}
+  },
+  "aiapSet": {
+   "faronear.babely.iap.credit.99": {
+    "credit": 99,
+    "price": 0.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 99¢",
+     "enUS": "Energy Coins 99¢"
+    },
+    "info": {
+     "zhCN": "初尝体验",
+     "enUS": "Trial Play"
+    },
+    "iapid": "faronear.babely.iap.credit.99"
+   },
+   "faronear.babely.iap.credit.999": {
+    "credit": 999,
+    "price": 9.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 999¢",
+     "enUS": "Energy Coins 999¢"
+    },
+    "info": {
+     "zhCN": "偶尔玩耍",
+     "enUS": "Casual Play"
+    },
+    "iapid": "faronear.babely.iap.credit.999"
+   },
+   "faronear.babely.iap.credit.4999": {
+    "credit": 4999,
+    "price": 49.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 4999¢",
+     "enUS": "Energy Coins 4999¢"
+    },
+    "info": {
+     "zhCN": "经常来玩",
+     "enUS": "Regular Play"
+    },
+    "iapid": "faronear.babely.iap.credit.4999"
+   },
+   "faronear.babely.iap.credit.9999": {
+    "credit": 9999,
+    "price": 99.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 9999¢",
+     "enUS": "Energy Coins 9999¢"
+    },
+    "info": {
+     "zhCN": "每天都玩",
+     "enUS": "Daily Play"
+    },
+    "iapid": "faronear.babely.iap.credit.9999"
+   }
+  }
+ },
+ "AKTRYAPP": {
+  "inProd": false,
+  "idname": "pex",
+  "tucSymbol": "¢",
+  "coinKey": "TUC",
+  "priceToSeal": 0,
+  "priceToMint": 1,
+  "priceFuelDefault": 1,
+  "priceFuelMax": 1000,
+  "tucPrecision": 4,
+  "registerReward": 100,
+  "inviteeReward": 100,
+  "inviterReward": 100,
+  "textExtensionList": [
+   "txt",
+   "text"
+  ],
+  "imageExtensionList": [
+   "jpg",
+   "jpeg",
+   "png",
+   "gif",
+   "webp",
+   "image"
+  ],
+  "videoExtensionList": [
+   "avi",
+   "mp4",
+   "mov",
+   "wmv",
+   "video"
+  ],
+  "audioExtensionList": [
+   "flac",
+   "m4a",
+   "ogg",
+   "ape",
+   "amr",
+   "wma",
+   "wav",
+   "mp3",
+   "aac",
+   "aiff",
+   "caf"
+  ],
+  "promptBelowPic": false,
+  "banChina": [
+   "BAD_IN_CN",
+   "CENSOR_BAD_IN_CN",
+   "CENSOR_ERROR"
+  ],
+  "baseTypeDefault": "SERVER",
+  "baseTypeSms": "SERVER",
+  "baseTypeFile": "SERVER",
+  "waitingSeconds": 5,
+  "depositAmountMin": 0.01,
+  "depositAmountDefault": 10,
+  "withdrawAmountMin": 1000,
+  "responsive": true,
+  "hideWalletAddress": false,
+  "hideDepositButton": false,
+  "hideCashoutButton": false,
+  "cashoutAlone": false,
+  "aiapUnipay2": false,
+  "ctnDeletable": false,
+  "tMarketEmpty": {
+   "zhCN": "当前没有创作品在售",
+   "enUS": "Currently no creation available for sale"
+  },
+  "miaFile": false,
+  "miaImage": true,
+  "miaLink": false,
+  "miaSpeak": false,
+  "miaText": true,
+  "miaVideo": false,
+  "miaMaxSections": 2,
+  "byxCertName": {
+   "zhCN": "IPFS 永存证",
+   "enUS": "IPFS"
+  },
+  "byxTokenName": {
+   "zhCN": "NFT 主权币",
+   "enUS": "NFT"
+  },
+  "byxCertFullname": {
+   "zhCN": "IPFS 永存证",
+   "enUS": "Creation in IPFS"
+  },
+  "byxTokenFullname": {
+   "zhCN": "NFT 主权币",
+   "enUS": "Creation as NFT"
+  },
+  "byxCertMakerTitle": {
+   "zhCN": "智能合约",
+   "enUS": "Smart Contracts"
+  },
+  "byxTokenMakerTitle": {
+   "zhCN": "铸造 NFT 币",
+   "enUS": "Mint to NFT"
+  },
+  "byxTokenPayNotes": {
+   "zhCN": "您的创作品将被铸造成世界公认的 NFT，可在全球各种 NFT 平台上自由交易。",
+   "enUS": "Your creation will be minted to an NFT that can be traded in the decentralized world."
+  },
+  "Market": {
+   "uiClassDict": {
+    "MKALL": {
+     "zhCN": "交易市场",
+     "enUS": "Exchange Market",
+     "deDE": "Tauschmarkt",
+     "jaJP": "取引市場"
+    }
+   }
+  },
+  "Creator": {
+   "creatorListAll": [],
+   "myFollowingList": [],
+   "myFollowerList": [],
+   "myInviteeList": [],
+   "uiClassDict": {
+    "USALL": {
+     "zhCN": "遇见原创主",
+     "enUS": "Meet Creators",
+     "deDE": "Ersteller treffen",
+     "jaJP": "クリエイターと出会う"
+    }
+   },
+   "myCircleDict": {
+    "FOLLOWING": {
+     "zhCN": "关注",
+     "enUS": "Following",
+     "counter": "countFollowing",
+     "iconType": "heart-filled"
+    },
+    "FOLLOWER": {
+     "zhCN": "粉丝",
+     "enUS": "Followed",
+     "counter": "countFollower",
+     "iconType": "icont-wodefensi1",
+     "iconPrefix": "icont"
+    },
+    "INVITEE": {
+     "zhCN": "邀请",
+     "enUS": "Invited",
+     "counter": "countInvitee",
+     "iconType": "gift"
+    }
+   }
+  },
+  "Creation": {
+   "ctnShow": {},
+   "ctnUpdate": {},
+   "ctnCreate": {
+    "pexdataRaw": [
+     {
+      "text": ""
+     }
+    ],
+    "openTitle": "",
+    "openCover": "",
+    "viewerPact": {
+     "type": "PAYABLE",
+     "amount": "",
+     "coin": "TUC"
+    },
+    "holderPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "quota": "",
+     "coin": "TUC"
+    },
+    "workerPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "share": "",
+     "coin": "TUC"
+    },
+    "ownerPact": {
+     "type": "FORBIDDEN",
+     "amount": "",
+     "coin": "TUC"
+    }
+   },
+   "creationListAll": [],
+   "myCollectionAsCreator": [],
+   "myCollectionAsOwner": [],
+   "myCollectionAsHolder": [],
+   "myCollectionAsViewer": [],
+   "myCollectionAsFueler": [],
+   "uiClassDict": {
+    "POALL": {
+     "zhCN": "探索创作品",
+     "enUS": "Explore Creations",
+     "deDE": "Kreationen erkunden",
+     "jaJP": "創造界を探索"
+    }
+   },
+   "uiStatDict": {
+    "comment": {
+     "iconType": "chat",
+     "iconTypeOn": "chat-filled"
+    },
+    "like": {
+     "iconType": "hand-up",
+     "iconTypeOn": "hand-up-filled"
+    },
+    "fuel": {
+     "iconType": "heart",
+     "iconTypeOn": "heart-filled"
+    }
+   }
+  },
+  "pactDict": {
+   "TCREATE": {
+    "counter": "countAsCreator",
+    "iconType": "color",
+    "pact_tag": {
+     "zhCN": "原创",
+     "enUS": "Create"
+    },
+    "CREATOR": {
+     "zhCN": "原创主",
+     "enUS": "Creator"
+    },
+    "CREATED_EMPTY": {
+     "zhCN": "您还没有创造任何创作品。",
+     "enUS": "You have no any original creation yet.",
+     "jaJP": "まだオリジナル创作品がありません。",
+     "deDE": "Sie haben noch keine Originalkreationen."
+    }
+   },
+   "TFUEL": {
+    "counter": "countFueling",
+    "pact_tag": {
+     "zhCN": "赞赏",
+     "enUS": "Fuel",
+     "jaJP": "燃料",
+     "deDE": "Treibstoff"
+    },
+    "FUEL_TAG": {
+     "zhCN": "已赞赏",
+     "enUS": "Fueled",
+     "jaJP": "燃料済み",
+     "deDE": "Betrieben"
+    }
+   },
+   "TVIEW": {
+    "counter": "countAsViewer",
+    "iconType": "eye",
+    "iconTypeOn": "eye-filled",
+    "pact_tag": {
+     "zhCN": "解密",
+     "enUS": "View",
+     "jaJP": "解読",
+     "deDE": "Ansehen"
+    },
+    "VIEWER_LIST": {
+     "zhCN": "解密人",
+     "enUS": "Decryptors",
+     "jaJP": "解読者",
+     "deDE": "Entschlüsseler"
+    },
+    "VIEW_FORBIDDEN": {
+     "zhCN": "禁止",
+     "enUS": "Disallowed",
+     "jaJP": "禁止",
+     "deDE": "Verboten"
+    },
+    "VIEW_FREE": {
+     "zhCN": "免费",
+     "enUS": "Free",
+     "jaJP": "無料",
+     "deDE": "Kostenlos"
+    },
+    "VIEW_EMPTY": {
+     "zhCN": "您还没有解密任何创作品。",
+     "enUS": "You haven't decrypted any creation yet.",
+     "jaJP": "まだ创作品を復号していません。",
+     "deDE": "Sie haben noch keine Kreation entschlüsselt."
+    },
+    "VIEW_PAYTITLE": {
+     "zhCN": "解密创作品",
+     "enUS": "Decrypt this creation",
+     "jaJP": "この创作品を復号する",
+     "deDE": "Diese Kreation entschlüsseln"
+    },
+    "VIEW_PAYNOTES": {
+     "zhCN": "您将解密并阅览当前创作品内容。一次解密，永远有效。",
+     "enUS": "You will decrypt and view this creation's content.",
+     "jaJP": "この创作品の内容を復号し、永続的に閲覧する権利を得ます。",
+     "deDE": "Sie können den Inhalt dieser Kreation entschlüsseln und dauerhaft ansehen."
+    },
+    "VIEW_SETNOTES": {
+     "zhCN": "其他用户必须向您付费后，才能解密并阅览内容。",
+     "enUS": "Others must pay a fee to decrypt the content.",
+     "jaJP": "他のユーザーは、あなたに料金を支払った後にコンテンツを復号して閲覧できます。",
+     "deDE": "Andere müssen eine Entschlüsselungsgebühr zahlen, um den Inhalt anzusehen."
+    }
+   },
+   "THOLD": {
+    "counter": "countAsHolder",
+    "iconType": "icont-part-line",
+    "iconTypeOn": "icont-part-fill",
+    "iconPrefix": "icont",
+    "pact_tag": {
+     "zhCN": "持有",
+     "enUS": "Hold",
+     "jaJP": "保有",
+     "deDE": "Halten"
+    },
+    "HOLDER_LIST": {
+     "zhCN": "持有人",
+     "enUS": "Holders",
+     "jaJP": "保有者",
+     "deDE": "Inhaber"
+    },
+    "HOLD_FORBIDDEN": {
+     "zhCN": "禁止",
+     "enUS": "Disallowed",
+     "jaJP": "禁止",
+     "deDE": "Verboten"
+    },
+    "HOLD_FREE": {
+     "zhCN": "免费",
+     "enUS": "Free",
+     "jaJP": "無料",
+     "deDE": "Kostenlos"
+    },
+    "HOLD_QUOTA_INFINITE": {
+     "zhCN": "无限量",
+     "enUS": "Unlimited",
+     "jaJP": "無制限",
+     "deDE": "Unbegrenzt"
+    },
+    "HOLD_EMPTY": {
+     "zhCN": "您还没有持有任何创作品。",
+     "enUS": "You haven't held any creation yet.",
+     "jaJP": "まだ创作品を保有していません。",
+     "deDE": "Sie haben noch keine Kreation erhalten."
+    },
+    "HOLD_PAYTITLE": {
+     "zhCN": "购买创作品",
+     "enUS": "Buy this creation",
+     "jaJP": "この创作品を保有する",
+     "deDE": "Dieses Werk erhalten"
+    },
+    "HOLD_PAYNOTES": {
+     "zhCN": "您将购买并持有一份拷贝、席位或份额。",
+     "enUS": "You will hold a copy, a seat or a share of this creation.",
+     "jaJP": "この创作品のコピー、席、またはシェアを保有します。",
+     "deDE": "Sie erhalten eine Kopie, einen Sitz oder einen Anteil dieser Kreation."
+    },
+    "HOLD_SETNOTES": {
+     "zhCN": "出售限量的拷贝、席位、份额给其他买家。",
+     "enUS": "Sell this creation's copies, pieces, seats, etc. to buyers.",
+     "jaJP": "この创作品のコピー、席、シェアを他の購入者に販売します。",
+     "deDE": "Verkaufen Sie Kopien, Anteile, Sitze usw. dieser Kreation an Käufer."
+    }
+   }
+  },
+  "Tx": {
+   "myTxTagNow": "TXG_RECHARGE",
+   "myTxDict": {
+    "TXG_ALL": {
+     "zhCN": "所有交易",
+     "enUS": "All Transactions",
+     "jaJP": "すべての取引",
+     "deDE": "Alle Transaktionen",
+     "myTxList": []
+    },
+    "TXG_RECHARGE": {
+     "paydir": "+",
+     "zhCN": "充值",
+     "enUS": "Recharges",
+     "jaJP": "入金",
+     "deDE": "Einzahlungen",
+     "myTxList": []
+    },
+    "TXG_IN_REWARD": {
+     "paydir": "+",
+     "zhCN": "奖赏",
+     "enUS": "Rewards",
+     "jaJP": "報酬",
+     "deDE": "Belohnungen",
+     "myTxList": []
+    },
+    "TXG_OUT_PEX": {
+     "paydir": "-",
+     "zhCN": "创作品支出",
+     "enUS": "Creation Costs",
+     "jaJP": "创作品費用",
+     "deDE": "Artefaktkosten",
+     "myTxList": []
+    },
+    "TXG_IN_PEX": {
+     "paydir": "+",
+     "zhCN": "创作品收入",
+     "enUS": "Creation Income",
+     "jaJP": "创作品収入",
+     "deDE": "Artefakteinkommen",
+     "myTxList": []
+    }
+   },
+   "txTypeDict": {
+    "PAY_TO_CREATE": {
+     "zhCN": "我创作了",
+     "enUS": "Pay to create"
+    },
+    "PAY_TO_VIEW": {
+     "zhCN": "我解密了",
+     "enUS": "Pay to view",
+     "jaJP": "復号しました",
+     "deDE": "Entschlüsselt von mir"
+    },
+    "PAY_TO_VIEW_TO_CREATOR": {
+     "zhCN": "被解密了",
+     "enUS": "Was decrypted",
+     "deDE": "Wurde entschlüsselt"
+    },
+    "PAY_TO_VIEW_TO_OWNER": {
+     "zhCN": "被解密了",
+     "enUS": "Was decrypted",
+     "deDE": "Wurde entschlüsselt"
+    },
+    "PAY_TO_HOLD": {
+     "zhCN": "我买入了",
+     "enUS": "Pay to hold",
+     "jaJP": "購入しました",
+     "deDE": "Erhalten von mir"
+    },
+    "PAY_TO_HOLD_TO_CREATOR": {
+     "zhCN": "被收藏了",
+     "enUS": "Was held",
+     "jaJP": "購入されました",
+     "deDE": "Wurde erhalten"
+    },
+    "PAY_TO_HOLD_TO_OWNER": {
+     "zhCN": "被收藏了",
+     "enUS": "Was held",
+     "jaJP": "購入されました",
+     "deDE": "Wurde erhalten"
+    },
+    "PAY_TO_OWN": {
+     "zhCN": "我主管了",
+     "enUS": "Pay to own",
+     "jaJP": "取得しました",
+     "deDE": "Besessen von mir"
+    },
+    "PAY_TO_OWN_TO_CREATOR": {
+     "zhCN": "被主管了",
+     "enUS": "Was acquired",
+     "jaJP": "取得されました",
+     "deDE": "Wurde besessen"
+    },
+    "PAY_TO_OWN_TO_OWNER": {
+     "zhCN": "被主管了",
+     "enUS": "Was acquired",
+     "jaJP": "取得されました",
+     "deDE": "Wurde besessen"
+    },
+    "PAY_TO_WORK": {
+     "zhCN": "我代理了",
+     "enUS": "Pay to represent",
+     "jaJP": "代理しました",
+     "deDE": "Vertreten von mir"
+    },
+    "PAY_TO_WORK_TO_CREATOR": {
+     "zhCN": "被代理了",
+     "enUS": "Was represented",
+     "jaJP": "代理されました",
+     "deDE": "Wurde Vertreten"
+    },
+    "PAY_TO_WORK_TO_OWNER": {
+     "zhCN": "被代理了",
+     "enUS": "Was represented",
+     "jaJP": "代理されました",
+     "deDE": "Wurde Vertreten"
+    },
+    "PAY_TO_MINT": {
+     "zhCN": "我铸造了",
+     "enUS": "Pay to mint",
+     "jaJP": "鋳造しました",
+     "deDE": "Geprägt von mir"
+    },
+    "TXT_IN_REGISTER": {
+     "zhCN": "新用户注册奖励",
+     "enUS": "Signup rewards",
+     "jaJP": "新規登録報酬",
+     "deDE": "Anmeldebelohnung"
+    },
+    "TXT_IN_INVITE": {
+     "zhCN": "邀请新用户",
+     "enUS": "Invited new user",
+     "jaJP": "新規ユーザーを招待",
+     "deDE": "Neuen Benutzer eingeladen"
+    },
+    "TXT_IN_CREATION": {
+     "zhCN": "创作",
+     "enUS": "Content Creation",
+     "jaJP": "創作",
+     "deDE": "Kreation"
+    },
+    "TXT_IN_CHECKIN": {
+     "zhCN": "登录",
+     "enUS": "Check-in",
+     "jaJP": "ログイン",
+     "deDE": "Einloggen"
+    },
+    "USER_RECHARGE": {
+     "zhCN": "充值",
+     "enUS": "Recharge",
+     "jaJP": "チャージ",
+     "deDE": "Konto Aufladen"
+    },
+    "TXT_AI_CHAT": {
+     "zhCN": "AI消费",
+     "enUS": "AI Costs",
+     "jaJP": "AI費用",
+     "deDE": "KI-Kosten"
+    }
+   }
+  },
+  "kycDict": {
+   "SUBMITTED": {
+    "short": {
+     "zhCN": "已提交",
+     "enUS": "Submitted",
+     "jaJP": "提出済み",
+     "deDE": "Eingereicht"
+    },
+    "long": {
+     "zhCN": "您已提交资料，请等待认证结果。",
+     "enUS": "The documents were submitted. Please wait for verification.",
+     "jaJP": "資料を提出しました。認証結果をお待ちください。",
+     "deDE": "Die Unterlagen wurden eingereicht. Bitte warten Sie auf die Verifizierung."
+    }
+   },
+   "PASSED": {
+    "short": {
+     "zhCN": "认证成功",
+     "enUS": "Verified",
+     "jaJP": "認証成功",
+     "deDE": "Verifiziert"
+    },
+    "long": {
+     "zhCN": "您已通过实名认证！",
+     "enUS": "You have passed verification！",
+     "jaJP": "本人認証に成功しました！",
+     "deDE": "Sie haben die Verifizierung bestanden！"
+    }
+   },
+   "REJECTED": {
+    "short": {
+     "zhCN": "认证失败",
+     "enUS": "Rejected",
+     "jaJP": "認証失敗",
+     "deDE": "Abgelehnt"
+    },
+    "long": {
+     "zhCN": "没有通过认证，请修改后重新提交。",
+     "enUS": "Verification failed, please try again.",
+     "jaJP": "認証に失敗しました。修正して再提出してください。",
+     "deDE": "Verifizierung fehlgeschlagen, bitte erneut versuchen."
+    }
+   },
+   "NONE": {
+    "short": {
+     "zhCN": "未认证",
+     "enUS": "Unverified",
+     "jaJP": "未認証",
+     "deDE": "Unverifiziert"
+    },
+    "long": {
+     "zhCN": "实名认证后，您将获得更多功能。",
+     "enUS": "You will get more features after identity verification.",
+     "jaJP": "本人認証後、より多くの機能が利用できます。",
+     "deDE": "Nach der Verifizierung erhalten Sie weitere Funktionen."
+    }
+   }
+  },
+  "linkTagNow": "",
+  "webDomain": "tic.cc",
+  "webUrlRoot": "https://u.tic.cc",
+  "teamEmail": "hi@tic.cc",
+  "slogans": {
+   "zhCN": "远近星空",
+   "enUS": "Faronear"
+  },
+  "portalImage": "/static/bgStars.jpg",
+  "linkAgreement": "https://info.tic.cc/rules/terms_of_use/_",
+  "linkNews": "https://info.tic.cc/news/_",
+  "linkSlogan": "https://info.tic.cc/about/white_paper/_",
+  "linkHowToCreateAipp": "",
+  "linkHowToMonetizeAipp": "https://info.tic.cc/howto/how_to_monetize_aipp/_",
+  "linkHowToAippFiles": "https://info.tic.cc/howto/how_to_customize_aipp_files/_",
+  "linkHowToCreateArtifact": "https://info.tic.cc/howto/how_to_create_content/_",
+  "linkHowToMonetizeCreation": "https://info.tic.cc/howto/how_to_monetize_creation/_",
+  "linkHowToMintNft": "",
+  "appNews": {
+   "webapp": {}
+  },
+  "aiapSet": {
+   "cc.aizoi.app.dev.ios.iap.credit.202306": {
+    "credit": 99,
+    "price": 0.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 99 dev",
+     "enUS": "Energy Coins 99 dev"
+    },
+    "info": {
+     "zhCN": "浅尝体验",
+     "enUS": "Trial Play"
+    },
+    "iapid": "cc.aizoi.app.dev.ios.iap.credit.202306"
+   },
+   "cc.aizoi.app.dev.ios.iap.credit.10": {
+    "credit": 999,
+    "price": 9.99,
+    "priceCoin": "USD",
+    "name": {
+     "zhCN": "能量币 999 dev",
+     "enUS": "Energy Coins 999 dev"
+    },
+    "info": {
+     "zhCN": "偶尔玩耍",
+     "enUS": "Casual Play"
+    },
+    "iapid": "cc.aizoi.app.dev.ios.iap.credit.10"
+   }
+  }
+ }
+}

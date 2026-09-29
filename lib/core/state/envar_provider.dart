@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../i18n/lang_text.dart';
 import 'app_startup_notifier.dart';
+import 'client_envar.dart';
 
 class Envar {
   const Envar(this.raw);
@@ -80,9 +81,15 @@ class Envar {
   }
 }
 
-/// 当前后端配置。
-final Provider<Envar> envarProvider =
-    Provider<Envar>((ref) => Envar(ref.watch(appStartupProvider).envar));
+/// 当前生效配置：**本地预置层 → 后端下发层覆盖**（方案 E）。
+///
+/// 预置层提供「服务端永不下发的客户端专属块」与「首屏默认值」；
+/// 后端层兑现「后台随时改文案/设置」——它一旦开始下发某个块，就会自动覆盖预置值。
+final Provider<Envar> envarProvider = Provider<Envar>((ref) {
+  final Map<String, dynamic> preset = ref.watch(clientEnvarPresetProvider);
+  final Map<String, dynamic> server = ref.watch(appStartupProvider).envar;
+  return Envar(<String, dynamic>{...preset, ...server});
+});
 
 /// 当前登录用户（源项目 `wo.ss.User.onlineUser`）。
 final Provider<Map<String, dynamic>> onlineUserProvider =

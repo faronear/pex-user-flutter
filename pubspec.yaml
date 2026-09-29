@@ -70,6 +70,7 @@ flutter:
 
   assets:
     - assets/static/
+    - assets/clientEnvar.json
 
   # 图标字体（由源项目 static/icont 迁移；码点映射见 lib/core/icons/icont_icons.dart）
   fonts:

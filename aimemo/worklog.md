@@ -174,3 +174,21 @@
 - **实测品牌渲染**：Babelyx 产物在浏览器正确显示红色主题、Babelyx logo、
   后端下发 `100 BAB` 与 `Sell Your Content` slogan、橙色 Start 按钮 —— 同代码、换品牌即变。
 - **验证**：`flutter analyze` 0 问题；两品牌 Web 构建均成功。
+
+### 配置来源方案 E（预置层 + 后端覆盖层，同日）
+
+- **老板两轮澄清**：
+  1. 连不上后端时 App 停在首屏 Connecting 读秒 → 本地副本**不是**为离线兜底；
+     真正目的是「大多数设置/文案可由后台随时下发」，故**前端一份 + 后台持有**；
+     源项目用 `inUniapp`/`base2app` 控制预置/仅后台/可下发三种角色（翻开关即可让纯客户端配置也可下发，但该需求不重要）。
+  2. 因此我**撤回方案 A**（让后端下发客户端专属块），D+ 的**缓存层也降级不做**。
+- **采用方案 E**：① 本地预置层（只含服务端不发的块 + 首屏稳定标量）→ ② 后端 `first_touch.envarBase` 覆盖。
+- **落地**：
+  - `tool/genClientEnvar.js`：模拟客户端上下文求值 `envar-config.js`，与后端实际下发的 `envarBase` 做**差集**，
+    得到 **79 个客户端专属键**；按品牌合并 `AK*` 块并删除品牌键 → `assets/clientEnvar.json`（48.9 KB / gzip 5.8 KB）
+  - `core/state/client_envar.dart`：启动时加载预置（`runPexApp`），`clientEnvarPresetProvider` 注入
+  - `core/state/envar_provider.dart`：合并 `{...预置, ...后端}`（后端覆盖预置）
+- **验证**：三品牌 `tucSymbol='¢'`、`pactDict`(TCREATE/TFUEL/TVIEW/THOLD)、`Creation.uiStatDict` 均就位；
+  预置资源 50,056 B 已进产物；`flutter analyze` 0 问题；Agidin Web 构建成功。
+- **注意**：后端 7739 在本轮期间已停止（只剩 HBuilderX 8080 与静态服务 8090），
+  为此生成器增加了「后端未启动时回退缓存基准」的能力。

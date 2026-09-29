@@ -9,6 +9,7 @@ import 'brands/brand_config.dart';
 import 'core/router/app_router.dart';
 import 'core/state/app_providers.dart';
 import 'core/state/app_startup_notifier.dart';
+import 'core/state/client_envar.dart';
 import 'core/storage/local_store.dart';
 import 'theme/app_theme.dart';
 
@@ -22,11 +23,14 @@ Future<void> runPexApp({
 }) async {
   WidgetsFlutterBinding.ensureInitialized();
   final LocalStore store = await LocalStore.open();
+  // 本地预置配置（方案 E 第 1 层）：服务端不发的客户端专属块 + 首屏默认值。
+  final Map<String, dynamic> clientEnvar = await loadClientEnvarPreset(brand.appkey);
   runApp(
     ProviderScope(
       overrides: [
         brandProvider.overrideWithValue(brand),
         localStoreProvider.overrideWithValue(store),
+        clientEnvarPresetProvider.overrideWithValue(clientEnvar),
       ],
       child: PexApp(routes: routes),
     ),
