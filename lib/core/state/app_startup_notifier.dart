@@ -133,6 +133,9 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
       }
     }
 
+    // 缓存本次成功拉取的配置，供断线时兜底（轻量缓存层）。
+    await store.setEnvarCache(envar);
+
     state = state.copyWith(
       connecting: false,
       connected: true,

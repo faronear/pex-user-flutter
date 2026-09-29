@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../i18n/lang_text.dart';
 import 'app_startup_notifier.dart';
+import 'app_providers.dart';
 import 'client_envar.dart';
 
 class Envar {
@@ -87,8 +88,10 @@ class Envar {
 /// 后端层兑现「后台随时改文案/设置」——它一旦开始下发某个块，就会自动覆盖预置值。
 final Provider<Envar> envarProvider = Provider<Envar>((ref) {
   final Map<String, dynamic> preset = ref.watch(clientEnvarPresetProvider);
+  // 缓存层：上次成功拉取的配置。断线时让首屏仍显示**上次真实**的新闻/文案。
+  final Map<String, dynamic> cached = ref.watch(localStoreProvider).envarCache;
   final Map<String, dynamic> server = ref.watch(appStartupProvider).envar;
-  return Envar(<String, dynamic>{...preset, ...server});
+  return Envar(<String, dynamic>{...preset, ...cached, ...server});
 });
 
 /// 当前登录用户（源项目 `wo.ss.User.onlineUser`）。

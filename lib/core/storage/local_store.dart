@@ -1,6 +1,8 @@
 /// 本地键值存储封装，替代源项目的 `uni.getStorageSync / setStorageSync`。
 library;
 
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStore {
@@ -12,6 +14,10 @@ class LocalStore {
   static const String keyPasstoken = '_passtoken';
   static const String keyMylang = 'mylang';
   static const String keyUserlandCode = 'userlandCode';
+
+  /// 上一次成功拉取的 `first_touch.envarBase`（JSON 字符串）。
+  /// 断线时用它兜底，使首屏仍显示**上次真实**的新闻/文案（方案 E 的轻量缓存层）。
+  static const String keyEnvarCache = 'envarCache';
 
   static Future<LocalStore> open() async =>
       LocalStore(await SharedPreferences.getInstance());
@@ -38,4 +44,19 @@ class LocalStore {
   Future<void> setPasstoken(String value) => setString(keyPasstoken, value);
 
   Future<void> clearPasstoken() => remove(keyPasstoken);
+
+  /// 读取缓存的配置（无则返回空 Map）。
+  Map<String, dynamic> get envarCache {
+    final String raw = getString(keyEnvarCache);
+    if (raw.isEmpty) return <String, dynamic>{};
+    try {
+      final Object? decoded = jsonDecode(raw);
+      return decoded is Map ? decoded.cast<String, dynamic>() : <String, dynamic>{};
+    } catch (_) {
+      return <String, dynamic>{};
+    }
+  }
+
+  Future<void> setEnvarCache(Map<String, dynamic> envar) =>
+      setString(keyEnvarCache, jsonEncode(envar));
 }
