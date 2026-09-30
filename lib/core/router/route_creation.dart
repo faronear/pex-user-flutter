@@ -6,6 +6,8 @@ library;
 import 'package:go_router/go_router.dart';
 
 import '../../pages/menu_creation_page.dart';
+import '../../pages/mid_babely_page.dart';
+import '../../pages/show_creation_update_page.dart';
 import '../../pages/show_creation_page.dart';
 import '../../pages/umy_collection_page.dart';
 import '../../pages/user_resource_detail_page.dart';
@@ -31,6 +33,17 @@ List<RouteBase> creationRoutes() => <RouteBase>[
             ShowCreationPage(queryParameters: state.uri.queryParameters),
       ),
       GoRoute(
+        path: AppRoutes.path(AppRoutes.midBabely),
+        name: AppRoutes.midBabely,
+        builder: (_, _) => const MidBabelyPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.showCreationUpdate),
+        name: AppRoutes.showCreationUpdate,
+        builder: (_, GoRouterState state) =>
+            ShowCreationUpdatePage(unid: state.uri.queryParameters['unid'] ?? ''),
+      ),
+      GoRoute(
         path: AppRoutes.path(AppRoutes.userResource),
         name: AppRoutes.userResource,
         builder: (_, _) => const UserResourcePage(),
@@ -42,5 +55,5 @@ List<RouteBase> creationRoutes() => <RouteBase>[
           tagNow: state.uri.queryParameters['tagnow'] ?? '',
         ),
       ),
-      // showCreationUpdate / menuCreator / showCreator / menuMarket 待后续批次加入
+      // menuCreator / showCreator / menuMarket 待后续批次加入
     ];

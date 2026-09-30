@@ -22,7 +22,11 @@ class AppRoutes {
   // 资金域（页面尚未迁移，仅用于跳转占位）
   static const String umyFund = 'umyFund';
 
+  // 标签栏页（部分尚未迁移，仅用于跳转占位）
+  static const String menuUzone = 'menuUzone';
+
   // 创作 / NFT 域（待迁移）
+  static const String midBabely = 'midBabely';
   static const String umyContact = 'umyContact';
   static const String menuCreation = 'menuCreation';
   static const String umyCollection = 'umyCollection';

@@ -150,7 +150,17 @@
       （分组/子项切换、安卓应用市场选择、版本比对、二维码 qr_flutter、链接复制；
       分享图标 partIcontextCopyshare 待 2F）
     - 建议顺序：2A → 2G → 2B → 2D → 2F → 2C → 2E（先只读闭环，再交互，最后付费/编辑）
-  - [ ] 批次3 **创作与编辑（UGC 核心）**：`partCreate` + `partStoryEditor` 完整版 + `story_to_cid` + `create_creation`
+  - [x] 批次3 **创作与编辑（UGC 核心）**：`partCreate` + `midBabely`（新建）+ `showCreationUpdate`（修改）
+    + `create_creation`（同接口兼作更新）+ `part_linkhelp`
+    - **重要侦察结论**：源项目支持三种加密封印（AGENT/JOINT/CREATOR）与「顺便铸造 NFT」开关，
+      但 `sealChoice` / `mintChoice` 在**客户端与服务端都为 false**
+      （`envar-config.js` 里 `inUniapp ? false : undefined`，后端 `create_creation` 也校验 `wo.envar.sealChoice`），
+      即**自封模式与铸造开关在当前产品中根本不可达** → 本轮只实现 **AGENT** 路径，
+      不引入 `tic-crypto`；将来若启用自封，需先补 Dart 版加密（阶段四）。
+    - 成功流程含 `creationReward`（后端固定 100）弹窗「领取奖励」→ 跳作品详情
+    - 余额不足 → 复用 2C 的付费确认弹窗（源项目 `popDeposit`）
+    - 顺带修正：**品牌标签栏此前误用 Agidin 列表** → 改为按品牌（`BrandConfig.tabItems`），
+      Babelyx 顶栏现为 探索/遇见/AIGC，中间按钮图标与文案（火苗 / 创造）也对齐源项目
   - [ ] 批次4 付费与持有：`pay_to_{view,own,hold}` + 充值弹窗 `partDeposit`
   - [ ] 批次5 NFT 铸造：合约交互（**需先评审 Flutter web3/加密方案**，风险最高）
   - [ ] 批次6 创作者与社交：`showCreator` / `menuCreator` / `menuMarket` / `partCreator*`

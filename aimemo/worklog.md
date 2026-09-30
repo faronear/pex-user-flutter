@@ -408,3 +408,38 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **收尾**：批次 2 的 2A/2B/2C/2D/2E/2F/2G 七片**除「修改作品」外全部完成**；
   「修改」阻塞于批次 3 的 `partCreate`(1012 行)，届时与 `showCreationUpdate` 一并做。
+
+### 批次 3 · 创作与编辑（UGC 核心）
+
+- **侦察（关键，省掉一大块高风险工作）**：`partCreate.vue` 支持三种加密封印模式
+  （AGENT 委托 / JOINT 联合 / CREATOR 自主）与「顺便铸造 NFT」开关。但：
+  - `envar-config.js`：`sealChoice: inUniapp ? false : undefined`、`mintChoice: 同` → **客户端恒 false**；
+  - 后端 `create_creation` 同样 `if (!wo.envar.sealChoice) return BER_MINT_BY_CHOICE_DISALLOWED`
+    （服务端上下文同样 falsy）→ **非 AGENT 路径两端都不可达**；
+  - 且源项目里 `ticc`（tic-crypto）的 import 是**注释掉的**，`to_create_by_choice` 依赖它 → 本就跑不通。
+  → 结论：**AGENT-only，本轮零加密依赖**；`tic-crypto` 的 Dart 版留给将来（阶段四）。
+- **新增**：
+  - `widgets/part_create.dart`：创作编辑器（标题 / 封面上传 / 内容 story / 下一步）
+    + 合约弹窗（TVIEW/THOLD/TWORK/TOWN，按 `pactDict` 决定出现哪些）
+    + `submitCreation` / `showCreationFeeSheet`（余额不足复用 2C 付费确认）/ `afterCreation`
+  - `core/state/creation_draft_provider.dart`：草稿状态（`ctnCreate` / `ctnUpdate` 合一），
+    修改模式含「按 unid 装载 + 原创主/权利主权限校验」
+  - `pages/mid_babely_page.dart`（新建，Babelyx 中间按钮落地页；手机固定顶栏：返回/标题/跳最后一个标签）
+  - `pages/show_creation_update_page.dart`（修改），接上 2E 里搁置的「修改」按钮
+  - `widgets/part_linkhelp.dart`；`creation_api.createCreation`（**同接口兼作更新**，带 csid 即更新）
+  - `tool/check_create_creation.dart`
+- **顺带修的真问题**：
+  1. **品牌标签栏此前误用 Agidin 列表** → 新增 `BrandConfig.tabItems`，
+     Babelyx = 探索/遇见/AIGC/我的，TRYAPP = 探索/遇见/Aibot/我的；PC 顶栏现在按品牌渲染
+     （截图已验证：Babelyx 顶栏显示 Creations/Creators/AIGC）。
+  2. 中间按钮图标/文案：Babelyx 应为火苗 + 「创造」，TRYAPP 为火苗 + 「行动」，
+     此前都吃默认值（chatboxes + 对话）→ 已按 `pages.json` 修正。
+  3. `midBabely` 的标题「创造新可能」/图标 `fire-filled` 补进品牌配置。
+  4. `story_utils` 增 `isFilledSection` / `isEmptyStory`（对应 `wo.tt.is_filled_section` / `is_empty_story`）。
+- **实测**：`dart run tool/check_create_creation.dart` ——
+  注册用户 → 创建（`creationReward=100`、`userUpdated` 就位）→ 复查标题与 `pexdataUser` 一致
+  → 带 `csid` 再提交（更新）→ 复查标题已变 → **PASS**。
+  截图：手机（返回/标题/My→ + 标题/封面/内容/Next）与 PC（探索·遇见·AIGC + 火苗中间按钮）均正确。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **遗留（下一步候选）**：手机端**底部标签栏**尚未实现（源项目由 uni-app 原生 tabBar 承担，
+  Flutter 侧目前手机端没有标签栏）；`menuCreator` / `menuMarket` / `showCreator` / `menuUzone` 等页面未迁移。

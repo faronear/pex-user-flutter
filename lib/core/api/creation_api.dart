@@ -151,6 +151,17 @@ class CreationApi {
         apiWhat: <String, dynamic>{'fuelCsid': csid, 'priceToFuel': amount},
       );
 
+  /// 新建或更新作品（源项目 `partCreate` 的 `to_create_by_agent`）。
+  ///
+  /// 后端同一个接口兼作更新：请求体带 `csid` 即为更新（会校验权限）。
+  /// 参数为整份草稿 + `totalPriceToSeal` / `totalPriceToMint` / `mintNow`。
+  Future<Map<String, dynamic>> createCreation(Map<String, dynamic> what) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'create_creation',
+        apiWhat: what,
+      );
+
   /// 重新上架（源项目 `to_list_creation`）。
   Future<Map<String, dynamic>> listCreation(String csid) => _client.callBase(
         apiWho: who,

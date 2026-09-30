@@ -45,7 +45,7 @@ class PartWindowHeader extends ConsumerWidget {
           Row(
             children: <Widget>[
               _buildLogo(context, brand.logoAsset),
-              ..._buildTabs(context, lang),
+              ..._buildTabs(context, lang, brand.tabItems),
               const Spacer(),
               if (online)
                 ..._buildCreatorShortcuts(context, ref, brand.showCreatorShortcuts, user, lang, envar)
@@ -82,9 +82,10 @@ class PartWindowHeader extends ConsumerWidget {
     );
   }
 
-  List<Widget> _buildTabs(BuildContext context, String lang) {
+  /// 顶栏标签（源项目取 `tabBar.list` 去掉最后一项——最后一项由头像/登录图标代表）。
+  List<Widget> _buildTabs(BuildContext context, String lang, List<TabItem> tabs) {
     return <Widget>[
-      for (final TabItem tab in kTabItems.take(kTabItems.length - 1))
+      for (final TabItem tab in tabs.take(tabs.length > 1 ? tabs.length - 1 : tabs.length))
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: TextButton(

@@ -10,6 +10,7 @@ import '../core/i18n/i18n.dart';
 import '../core/icons/pex_icon.dart';
 import '../core/responsive/device_info.dart';
 import '../core/state/ai_provider.dart';
+import '../core/state/app_providers.dart';
 import '../theme/app_theme.dart';
 import '../widgets/part_aichat.dart';
 import '../widgets/part_window_layout.dart';
@@ -31,7 +32,8 @@ class MidAgidinPage extends ConsumerWidget {
       pageName: 'midAgidin',
       child: Column(
         children: <Widget>[
-          if (!device.inPc) _buildPhoneHeader(context, lang, aiName),
+          if (!device.inPc)
+            _buildPhoneHeader(context, lang, aiName, ref.watch(brandProvider).tabItems),
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(
@@ -46,9 +48,14 @@ class MidAgidinPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildPhoneHeader(BuildContext context, String lang, String aiName) {
-    final TabItem first = kTabItems.first;
-    final TabItem last = kTabItems.last;
+  Widget _buildPhoneHeader(
+    BuildContext context,
+    String lang,
+    String aiName,
+    List<TabItem> tabs,
+  ) {
+    final TabItem first = tabs.first;
+    final TabItem last = tabs.last;
     return Container(
       height: 44,
       color: PexColors.grey3,

@@ -12,7 +12,7 @@
 | `homePortal.vue` | 255 | `pages/home_portal_page.dart` | `[x]` 已实现（待视觉校验） |
 | `midAgidin.vue` | 82 | `pages/mid_agidin_page.dart` | `[x] 已迁移` |
 | `midAizoic.vue` | 12 | — | `[-]` Agidin 旧名遗留（评估后决定） |
-| `midBabely.vue` | 63 | `pages/mid_babely_page.dart` | `[ ]` |
+| `midBabely.vue` | 63 | `pages/mid_babely_page.dart` | `[x]` |
 | `midTryapp.vue` | 187 | `pages/mid_tryapp_page.dart` | `[ ]` |
 
 ### 身份认证（ident）
@@ -74,7 +74,7 @@
 | `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[ ]` |
 | `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
 | `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[>]` 2A 只读骨架已迁（评论/互动/付费/名单/分享举报待 2B–2F） |
-| `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[ ]` |
+| `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[x]` |
 | `showCreator.vue` | 712 | `pages/show_creator_page.dart` | `[ ]` |
 | `userResource.vue` | 133 | `pages/user_resource_page.dart` | `[x]` |
 | `userResourceDetail.vue` | 208 | `pages/user_resource_detail_page.dart` | `[x]` 含二维码（新增依赖 qr_flutter） |
@@ -103,7 +103,7 @@
 | `partNavibarPcFixed.vue` | 77 | `widgets/part_navibar_pc_fixed.dart` | `[x]` |
 | `partNavilink.vue` | 55 | `widgets/part_navilink.dart` | `[ ]` |
 | `partLinkview.vue` | 41 | `widgets/part_linkview.dart` | `[ ]` |
-| `partLinkhelp.vue` | 47 | `widgets/part_linkhelp.dart` | `[ ]` |
+| `partLinkhelp.vue` | 47 | `widgets/part_linkhelp.dart` | `[x]` |
 
 ### 通用 / UI
 | 源 | 行数 | 目标 | 状态 |
@@ -169,7 +169,7 @@
 ### 创作
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `partCreate.vue` | 1012 | `widgets/part_create.dart` | `[ ]` |
+| `partCreate.vue` | 1012 | `widgets/part_create.dart` | `[x]` AGENT 模式（自封/铸造开关产品未启用） |
 | `partCreationAll.vue` | 76 | `widgets/part_creation_all.dart` | `[x]` |
 | `partCreationAsCreator.vue` | 108 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
 | `partCreationAsFueler.vue` | 107 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |

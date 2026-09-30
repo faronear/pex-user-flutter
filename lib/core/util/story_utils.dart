@@ -1,6 +1,24 @@
 /// story（内容容器）相关的取用工具，对应源项目 `wo.tt.filter_story_*` / `is_autocontent` / `read_varchain`。
 library;
 
+import 'pex_toolkit.dart';
+
+/// 段落是否有实质内容（对应 `wo.tt.is_filled_section`）：
+/// 任一「非下划线开头」的键有非空值即为有内容。
+bool isFilledSection(Map<String, dynamic> section) => section.entries.any(
+      (MapEntry<String, dynamic> entry) =>
+          !entry.key.startsWith('_') && !isEmptyValue(entry.value),
+    );
+
+/// story 是否为空（对应 `wo.tt.is_empty_story`）。
+bool isEmptyStory(List<dynamic>? story) {
+  if (story == null || story.isEmpty) return true;
+  return !story.any(
+    (dynamic section) =>
+        section is Map && isFilledSection(section.cast<String, dynamic>()),
+  );
+}
+
 /// 取 story 中第一个图片地址（对应 `wo.tt.filter_story_image`）。
 String filterStoryImage(List<dynamic>? story) {
   if (story == null) return '';

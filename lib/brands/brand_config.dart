@@ -9,6 +9,7 @@ library;
 
 import 'package:flutter/material.dart';
 
+import '../core/appmeta/tab_bar.dart';
 import '../core/i18n/lang_text.dart';
 import 'brand_features.dart';
 
@@ -69,6 +70,17 @@ abstract class BrandConfig {
         jaJP: 'チャット',
         deDE: 'Chat',
       );
+
+  /// 中间按钮落地页的标题（源项目 `pages.json` 里 `midPage` 的 `i18nPageTitle`）。
+  /// 为空表示该品牌落地页没有标题。
+  LangText? get midPageTitle => null;
+
+  /// 中间按钮落地页的图标（源项目 `midPage` 的 `gotoIconType`）。
+  String get midPageIcon => '';
+
+  /// 顶部/底部标签栏条目（源项目 `pages.json` 的 `tabBar.list`，**分品牌**）。
+  /// 默认为 Agidin 的两项（Aibot 市场 + 我的空间）。
+  List<TabItem> get tabItems => kTabItems;
 
   /// 品牌功能开关（决定注册哪些业务域路由，配合入口级裁剪）。
   BrandFeatures get features;

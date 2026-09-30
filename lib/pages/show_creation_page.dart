@@ -1553,6 +1553,23 @@ class _CommentAreaState extends ConsumerState<_CommentArea> {
                     ? showFuelerListAction(context, ref, creation)
                     : payToFuelAction(context, ref, creation),
               ),
+              // 修改（源项目 `to_modify_my_creation` → showCreationUpdate）。
+              if (belongToMe)
+                _ActionButton(
+                  icon: PexIcons.uni('compose'),
+                  label: ll(
+                    lang,
+                    const LangText(
+                      zhCN: '修改',
+                      enUS: 'Modify',
+                      jaJP: '変更',
+                      deDE: 'Ändern',
+                    ),
+                  ),
+                  onTap: () => context.push(
+                    '/${AppRoutes.showCreationUpdate}?unid=${creation.csid}',
+                  ),
+                ),
               // 自己的作品：上架/下架（原创主或权利主均可）。
               if (belongToMe)
                 _ActionButton(
