@@ -125,7 +125,11 @@
       删除自己的评论；新增 `core/util/online_guard.dart`（对应 `wo.tt.check_online`）
     - [-] **点赞**：源项目 `showCreation.vue` 的点赞按钮**整块被注释掉**（`to_toggle_vote` 已无入口），
       故未实现；等老板确认是否要恢复点赞入口
-    - [ ] **2C 解锁与付费**：`pay_to_view` / `pay_to_own` / `pay_to_hold` + `partDeposit` 充值弹窗
+    - [x] **2C 解锁与付费**：`pay_to_view` / `pay_to_hold` / `pay_to_own` / `pay_to_fuel`
+      + 解密按钮（加密封面）+ pact 价格点击 + 赞赏按钮（金额可改）
+      + `widgets/part_pay_sheet.dart`（**付费确认**弹窗：标题/金额/说明/反馈/余额不足提示）
+      —— 完整 `partDeposit`（充值渠道/钱包）属资金域 3C，本轮不建
+      + 自检 `tool/check_creation_pay.dart`（注册用户 → 余额 100 → 付 68 → 内容解锁）
     - [ ] **2D 用户列表**：`partUserList`（观看者 / 持有者 / 赞赏者）
     - [ ] **2E 作者编辑与下架**：接入 `partStoryEditor` + `update_creation` / `unlist_creation`
       / `unhide_creation` / 删除

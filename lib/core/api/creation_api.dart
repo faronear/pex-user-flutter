@@ -118,6 +118,38 @@ class CreationApi {
         apiTodo: 'delete_comment',
         apiWhat: <String, dynamic>{'commentUuid': commentUuid},
       );
+
+  /// 付费解密（源项目 `to_pay_to_view`）。成功时返回 `pexdataUser`。
+  Future<Map<String, dynamic>> payToView(String csid) => _client.callBase(
+        apiWho: who,
+        apiTodo: 'pay_to_view',
+        apiWhat: <String, dynamic>{'viewCsid': csid},
+      );
+
+  /// 付费持有（源项目 `to_pay_to_hold`）。
+  Future<Map<String, dynamic>> payToHold(String csid) => _client.callBase(
+        apiWho: who,
+        apiTodo: 'pay_to_hold',
+        apiWhat: <String, dynamic>{'holdCsid': csid},
+      );
+
+  /// 付费收购（源项目 `to_pay_to_own`）。
+  Future<Map<String, dynamic>> payToOwn(String csid) => _client.callBase(
+        apiWho: who,
+        apiTodo: 'pay_to_own',
+        apiWhat: <String, dynamic>{'ownCsid': csid},
+      );
+
+  /// 赞赏（源项目 `to_fuel_creation`）。
+  Future<Map<String, dynamic>> payToFuel({
+    required String csid,
+    required num amount,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'pay_to_fuel',
+        apiWhat: <String, dynamic>{'fuelCsid': csid, 'priceToFuel': amount},
+      );
 }
 
 String? _nonEmpty(String? value) =>

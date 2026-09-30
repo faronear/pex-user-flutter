@@ -19,6 +19,9 @@ class AppRoutes {
   static const String menuAipp = 'menuAipp';
   static const String menuAippAichat = 'menuAippAichat';
 
+  // 资金域（页面尚未迁移，仅用于跳转占位）
+  static const String umyFund = 'umyFund';
+
   // 创作 / NFT 域（待迁移）
   static const String umyContact = 'umyContact';
   static const String menuCreation = 'menuCreation';

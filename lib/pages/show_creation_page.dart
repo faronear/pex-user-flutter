@@ -34,6 +34,7 @@ import '../data/creation.dart';
 import '../theme/app_theme.dart';
 import '../widgets/part_load_more.dart';
 import '../widgets/part_navibar_pc_fixed.dart';
+import '../widgets/part_pay_sheet.dart';
 import '../widgets/part_pexdata_summary.dart';
 import '../widgets/part_show_loading.dart';
 import '../widgets/part_story_editor.dart';
@@ -159,6 +160,55 @@ class ShowCreationTexts {
     enUS: 'Something malfunctioned, this comment is not deleted',
     jaJP: 'エラーが発生し、削除できませんでした',
     deDE: 'Es ist ein Fehler aufgetreten, dieser Kommentar wurde nicht gelöscht',
+  );
+
+  static const LangText decrypt = LangText(
+    zhCN: '解 密',
+    enUS: 'Decrypt',
+    jaJP: '解読',
+    deDE: 'Entschlüsseln',
+  );
+
+  static const LangText decrypted = LangText(
+    zhCN: '您已成功解密当前创作品！',
+    enUS: 'You have decrypted this creation!',
+  );
+
+  static const LangText held = LangText(
+    zhCN: '您已成功获得这个创作品！',
+    enUS: 'You have obtained this creation!',
+  );
+
+  static const LangText owned = LangText(
+    zhCN: '您已成功收购了这个创作品！',
+    enUS: 'You have owned this creation!',
+  );
+
+  static const LangText fueled = LangText(zhCN: '已成功为它赞赏', enUS: 'Fueled');
+
+  static const LangText buy = LangText(zhCN: '购 买', enUS: 'Buy', jaJP: '購入');
+
+  static const LangText acquire =
+      LangText(zhCN: '收 购', enUS: 'Acquire', jaJP: '買収');
+
+  static const LangText fuelAction = LangText(zhCN: '赞赏', enUS: 'Fuel', jaJP: '燃料');
+
+  static const LangText fuelPrompt = LangText(
+    zhCN: '请输入赞赏金额',
+    enUS: 'Enter the amount to fuel',
+    jaJP: '入金額を入力してください',
+    deDE: 'Geben Sie den Betrag zum Tanken ein',
+  );
+
+  static const LangText fuelTitle = LangText(
+    zhCN: '为创作品赞赏',
+    enUS: 'Fuel the Creation',
+  );
+
+  static const LangText fuelNotes = LangText(
+    zhCN: '喜欢它，就为它赞赏！\n您还可以修改赞赏金额，表达您的强烈支持。\n请注意，赞赏后无法撤销。',
+    enUS:
+        'Like it? Fuel it!\nYou can modify the fuel amount to express your strong support. Please be reminded that fueling is irreversible.',
   );
 }
 
@@ -497,7 +547,7 @@ class _CoverPanel extends ConsumerWidget {
       ShowCoverKind.censoring =>
         _DisabledPanel(text: ll(lang, ShowCreationTexts.censoring)),
       ShowCoverKind.content => _contentCover(lang),
-      ShowCoverKind.locked => _lockedCover(),
+      ShowCoverKind.locked => _lockedCover(context, ref),
     };
   }
 
@@ -536,12 +586,10 @@ class _CoverPanel extends ConsumerWidget {
     );
   }
 
-  /// 已加密：方形容器 + 封条文字 + 半透明摘要遮罩。
+  /// 已加密：方形容器 + 封条文字 + 半透明遮罩（摘要 + 解密按钮）。
   ///
   /// 背景优先用封面图，否则用 `static/matrix7.jpg`（与源项目一致，绿色封条文字才可见）。
-  /// 源项目在此遮罩内还有「解密」按钮；解密属于 2C（付费），本轮不渲染入口，
-  /// 避免出现无实际动作的按钮。
-  Widget _lockedCover() {
+  Widget _lockedCover(BuildContext context, WidgetRef ref) {
     return AspectRatio(
       aspectRatio: 1,
       child: ClipRRect(
@@ -573,7 +621,42 @@ class _CoverPanel extends ConsumerWidget {
               ColoredBox(
                 color: const Color(0x99000000),
                 child: Center(
-                  child: PartPexdataSummary(pexdataSum: creation.pexdataSum),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      // 源项目的解密按钮就在这个遮罩里（2C 才真正可用）。
+                      InkWell(
+                        borderRadius: BorderRadius.circular(30),
+                        onTap: () => payToViewAction(context, ref, creation),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              PexIcon.uni('eye', size: 22, color: Colors.white),
+                              const SizedBox(width: 6),
+                              Text(
+                                ll(ref.watch(languageProvider),
+                                    ShowCreationTexts.decrypt),
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      PartPexdataSummary(pexdataSum: creation.pexdataSum),
+                    ],
+                  ),
                 ),
               ),
           ],
@@ -686,13 +769,28 @@ class _SurroundingsPanel extends ConsumerWidget {
               _IpfsRow(creation: creation),
               if (_urlNft(ref, creation).isNotEmpty) _NftRow(creation: creation),
               if (pactDict['TVIEW'] != null)
-                _PactRow(creation: creation, pactKey: 'TVIEW', pact: creation.viewerPact),
+                _PactRow(
+                  creation: creation,
+                  pactKey: 'TVIEW',
+                  pact: creation.viewerPact,
+                  onPay: () => payToViewAction(context, ref, creation),
+                ),
               if (pactDict['THOLD'] != null)
-                _PactRow(creation: creation, pactKey: 'THOLD', pact: creation.holderPact),
+                _PactRow(
+                  creation: creation,
+                  pactKey: 'THOLD',
+                  pact: creation.holderPact,
+                  onPay: () => payToHoldAction(context, ref, creation),
+                ),
               if (pactDict['TWORK'] != null)
                 _PactRow(creation: creation, pactKey: 'TWORK', pact: creation.workerPact),
               if (pactDict['TOWN'] != null)
-                _PactRow(creation: creation, pactKey: 'TOWN', pact: creation.ownerPact),
+                _PactRow(
+                  creation: creation,
+                  pactKey: 'TOWN',
+                  pact: creation.ownerPact,
+                  onPay: () => payToOwnAction(context, ref, creation),
+                ),
             ],
           ),
         ),
@@ -866,11 +964,19 @@ class _NftRow extends ConsumerWidget {
 
 /// pact（合约）只读行：阅览权 / 持有权 / 代理权 / 所有权。
 class _PactRow extends ConsumerWidget {
-  const _PactRow({required this.creation, required this.pactKey, required this.pact});
+  const _PactRow({
+    required this.creation,
+    required this.pactKey,
+    required this.pact,
+    this.onPay,
+  });
 
   final Creation creation;
   final String pactKey;
   final Pact pact;
+
+  /// 点击「可付费」价格时的动作（解密 / 持有 / 收购）。
+  final VoidCallback? onPay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1007,11 +1113,8 @@ class _PactRow extends ConsumerWidget {
     if (pactKey == 'THOLD' && creation.stockNumber == 0) {
       return price;
     }
-    // 付费入口（解密/持有/收购）属于 2C，本轮仅以醒目样式展示价格。
-    if (pactKey == 'TVIEW' || pactKey == 'THOLD' || pactKey == 'TOWN') {
-      return _payablePrice(price);
-    }
-    return price;
+    if (onPay == null) return price;
+    return GestureDetector(onTap: onPay, child: _payablePrice(price));
   }
 
   String get _forbiddenKey => switch (pactKey) {
@@ -1316,12 +1419,16 @@ class _CommentAreaState extends ConsumerState<_CommentArea> {
     final Map<String, dynamic> commentIcon =
         (statDict['comment'] as Map?)?.cast<String, dynamic>() ??
             <String, dynamic>{};
+    final Map<String, dynamic> fuelIcon =
+        (statDict['fuel'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{};
     final bool commented = creation.raw['myCommentCount'] != null;
+    final String usid = ref.watch(onlineUserProvider)['usid']?.toString() ?? '';
+    final bool belongToMe = creation.belongToMe(usid);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        // 操作按钮行：本轮仅评论入口（赞赏→2C，分享→2F，修改/隐藏/举报→2E/2F）。
+        // 操作按钮行：评论 + 赞赏（分享→2F，修改/隐藏/举报→2E；赞赏者名单→2D）。
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Row(
@@ -1340,6 +1447,21 @@ class _CommentAreaState extends ConsumerState<_CommentArea> {
                     : ll(lang, ShowCreationTexts.actionComment),
                 onTap: () => _textFocusNode.requestFocus(),
               ),
+              // 自己的作品：赞赏按钮应展示赞赏者名单（2D），本轮不显示，避免出现死按钮。
+              if (!belongToMe)
+                _ActionButton(
+                  icon: PexIcons.uni(
+                    creation.raw['mytxFuel_txAmount'] != null
+                        ? (fuelIcon['iconTypeOn']?.toString() ??
+                            fuelIcon['iconType']?.toString() ??
+                            'heart')
+                        : (fuelIcon['iconType']?.toString() ?? 'heart'),
+                  ),
+                  label: creation.amountFuel > 0
+                      ? numberPrecision(creation.amountFuel).toString()
+                      : ll(lang, ShowCreationTexts.fuelAction),
+                  onTap: () => payToFuelAction(context, ref, creation),
+                ),
             ],
           ),
         ),
@@ -1540,9 +1662,220 @@ int _intOf(Object? value) {
   return int.tryParse(value?.toString() ?? '') ?? 0;
 }
 
+num _numOf(Object? value) {
+  if (value is num) return value;
+  return num.tryParse(value?.toString() ?? '') ?? 0;
+}
+
 /// 取 `Creation.uiStatDict`（服务端不发，来自本地预置层）。
 Map<String, dynamic> _statDict(Envar envar) {
   final Object? creation = envar.raw['Creation'];
   final Object? dict = creation is Map ? creation['uiStatDict'] : null;
   return dict is Map ? dict.cast<String, dynamic>() : <String, dynamic>{};
+}
+
+// ---------------------------------------------------------------------------
+// 付费动作（源项目 to_pay_to_view / to_pay_to_hold / to_pay_to_own / to_fuel_creation）
+// ---------------------------------------------------------------------------
+
+/// 统一的付费结果处理：成功则回写作品状态与余额并提示，失败则返回原因展示在弹窗内。
+Future<LangText?> _handlePayResult(
+  BuildContext context,
+  WidgetRef ref,
+  Map<String, dynamic> data,
+  Map<String, dynamic> patch,
+  LangText success, {
+  num spent = 0,
+}) {
+  if (bok(data['_state']?.toString())) {
+    ref.read(creationShowProvider.notifier).merge(patch);
+    _syncBalance(ref, data, spent);
+    if (context.mounted) showPexToast(context, ref, success);
+    return Future<LangText?>.value(null);
+  }
+  _syncBalance(ref, data, 0);
+  final LangText message = LangText.fromMap(data['_msg']);
+  return Future<LangText?>.value(
+    message.isEmpty ? PartTexts.systemDown : message,
+  );
+}
+
+/// 后端返回 `balanceTUC` 时以之为准；否则按源项目用「扣减」方式本地估算。
+void _syncBalance(WidgetRef ref, Map<String, dynamic> data, num spent) {
+  final Object? reported = data['balanceTUC'];
+  if (reported != null) {
+    ref.read(appStartupProvider.notifier).mergeOnlineUser(
+      <String, dynamic>{'balanceTUC': reported},
+    );
+    return;
+  }
+  if (spent == 0) return;
+  final num now = _numOf(ref.read(onlineUserProvider)['balanceTUC']);
+  ref.read(appStartupProvider.notifier).mergeOnlineUser(
+    <String, dynamic>{'balanceTUC': now - spent},
+  );
+}
+
+/// 付费解密。
+Future<void> payToViewAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  if (!await checkOnline(context, ref)) return;
+  if (!context.mounted) return;
+  final Map<String, dynamic> view = _pactItem(ref.read(envarProvider), 'TVIEW');
+  await showPaySheet(
+    context,
+    ref,
+    title: LangText.fromMap(view['VIEW_PAYTITLE']),
+    notes: LangText.fromMap(view['VIEW_PAYNOTES']),
+    amountInit: creation.viewerPact.amount,
+    submitText: ShowCreationTexts.decrypt,
+    onSubmit: (num amount) async {
+      final Map<String, dynamic> data =
+          await ref.read(creationApiProvider).payToView(creation.csid);
+      if (!context.mounted) return null;
+      return _handlePayResult(
+        context,
+        ref,
+        data,
+        <String, dynamic>{
+          if (data['pexdataUser'] != null) 'pexdataUser': data['pexdataUser'],
+          'countViewer': creation.countViewer + 1,
+          'mytxView_txAmount': amount,
+          'mytxView_txTimeUnix': DateTime.now().millisecondsSinceEpoch,
+        },
+        ShowCreationTexts.decrypted,
+        spent: amount,
+      );
+    },
+  );
+}
+
+/// 付费持有。
+Future<void> payToHoldAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  if (!await checkOnline(context, ref)) return;
+  if (!context.mounted) return;
+  final Map<String, dynamic> hold = _pactItem(ref.read(envarProvider), 'THOLD');
+  await showPaySheet(
+    context,
+    ref,
+    title: LangText.fromMap(hold['HOLD_PAYTITLE']),
+    notes: LangText.fromMap(hold['HOLD_PAYNOTES']),
+    amountInit: creation.holderPact.amount,
+    submitText: ShowCreationTexts.buy,
+    onSubmit: (num amount) async {
+      final Map<String, dynamic> data =
+          await ref.read(creationApiProvider).payToHold(creation.csid);
+      if (!context.mounted) return null;
+      return _handlePayResult(
+        context,
+        ref,
+        data,
+        <String, dynamic>{
+          'countHolder': creation.countHolder + 1,
+          'mytxHold_txAmount': amount,
+          'mytxHold_txTimeUnix': DateTime.now().millisecondsSinceEpoch,
+        },
+        ShowCreationTexts.held,
+        spent: amount,
+      );
+    },
+  );
+}
+
+/// 付费收购（后端会把 `ownerUsid` 改为买家）。
+Future<void> payToOwnAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  if (!await checkOnline(context, ref)) return;
+  if (!context.mounted) return;
+  final Map<String, dynamic> own = _pactItem(ref.read(envarProvider), 'TOWN');
+  final String usid = ref.read(onlineUserProvider)['usid']?.toString() ?? '';
+  await showPaySheet(
+    context,
+    ref,
+    title: LangText.fromMap(own['OWN_PAYTITLE']),
+    notes: LangText.fromMap(own['OWN_PAYNOTES']),
+    amountInit: creation.ownerPact.amount,
+    submitText: ShowCreationTexts.acquire,
+    onSubmit: (num amount) async {
+      final Map<String, dynamic> data =
+          await ref.read(creationApiProvider).payToOwn(creation.csid);
+      if (!context.mounted) return null;
+      return _handlePayResult(
+        context,
+        ref,
+        data,
+        <String, dynamic>{
+          'ownerUsid': usid,
+          'mytxOwn_txAmount': amount,
+          'mytxOwn_txTimeUnix': DateTime.now().millisecondsSinceEpoch,
+        },
+        ShowCreationTexts.owned,
+        spent: amount,
+      );
+    },
+  );
+}
+
+/// 赞赏（金额可改，不得少于 `priceFuelDefault`）。
+Future<void> payToFuelAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  if (!await checkOnline(context, ref)) return;
+  if (!context.mounted) return;
+  final Envar envar = ref.read(envarProvider);
+  final num minAmount = _numOf(envar.raw['priceFuelDefault']);
+  final Map<String, dynamic> fuel = _statDict(envar)['fuel'] is Map
+      ? (_statDict(envar)['fuel'] as Map).cast<String, dynamic>()
+      : <String, dynamic>{};
+  await showPaySheet(
+    context,
+    ref,
+    title: ShowCreationTexts.fuelTitle,
+    notes: ShowCreationTexts.fuelNotes,
+    amountInit: minAmount,
+    amountEditable: true,
+    amountPrompt: ShowCreationTexts.fuelPrompt,
+    submitText: ShowCreationTexts.fuelAction,
+    submitIcon: PexIcons.byPrefix(
+      fuel['iconPrefix']?.toString(),
+      fuel['iconType']?.toString(),
+    ),
+    onSubmit: (num amount) async {
+      if (amount < minAmount) {
+        return LangText.from(
+          '${ll(ref.read(languageProvider), ShowCreationTexts.fuelPrompt)}'
+          ' (>= $minAmount${envar.tucSymbol})',
+        );
+      }
+      final Map<String, dynamic> data =
+          await ref.read(creationApiProvider).payToFuel(
+                csid: creation.csid,
+                amount: amount,
+              );
+      if (!context.mounted) return null;
+      return _handlePayResult(
+        context,
+        ref,
+        data,
+        <String, dynamic>{
+          'amountFuel': creation.amountFuel + amount,
+          'mytxFuel_txAmount': _numOf(creation.raw['mytxFuel_txAmount']) + amount,
+        },
+        ShowCreationTexts.fueled,
+        spent: amount,
+      );
+    },
+  );
 }

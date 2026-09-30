@@ -312,3 +312,25 @@
 - **修复**：6 处改为 `await ....catch(ccerror)`（Creation.js 5 处 + User.js 1 处）。
 - **验证**：修复前连跑 3 次（1 成 2 败），修复后 **4/4 PASS**。
 - 提交：`pex-server-torm` `f51c129`；`backendTodo.md` B4 移入「已修」。
+
+### 创作/NFT 域 批次 2 · 2C 解锁与付费
+
+- **范围**：`pay_to_view` / `pay_to_hold` / `pay_to_own` / `pay_to_fuel` 四个付费动作，
+  以及三个入口：加密封面上的**解密按钮**、pact 行上的**可点击价格**、操作行的**赞赏按钮**（金额可改）。
+- **新增**：
+  - `widgets/part_pay_sheet.dart`：付费确认弹窗（标题/金额/说明/失败反馈/余额不足提示 +
+    「去充值」跳 `umyFund`）。**只做付费确认**——源项目 `partDeposit`(1066 行) 的
+    「选充值渠道/钱包地址/法币渠道」属资金域，留给 3C。
+  - `creation_api.dart`：`payToView/payToHold/payToOwn/payToFuel`。
+  - `app_routes.dart`：补 `umyFund`（仅作跳转目标，页面未迁移）。
+  - `tool/check_creation_pay.dart`：注册临时用户 → 找付费作品 → `pay_to_view` → 复查解锁。
+- **成功回写**（对齐源项目）：`pexdataUser`（解锁内容）、`countViewer/Holder`、
+  `mytx*_txAmount/_txTimeUnix`、`amountFuel`；`pay_to_own` 额外回写 `ownerUsid`（后端确实转移所有权）。
+  余额优先用响应里的 `balanceTUC`，否则本地扣减。
+- **实测**：`dart run tool/check_creation_pay.dart` —— 余额 100，解密价 68，支付后返回
+  `pexdataUser`，复查 `get_single_creation` 已解锁且 `mytxView_txAmount` 就位 → PASS。
+  headless 截图：解密按钮、5¢/10¢ 可点价格、Fuel 按钮、评论闭环同屏正常。
+- **说明**：`pay_to_hold/own/fuel` 与 `pay_to_view` 共用同一后端事务族（B4 已修），
+  契约一致；本轮以 `pay_to_view` 做端到端验收。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **下一片**：2D 用户名单（`partUserList`：观看者/持有者/赞赏者）+ 恢复点赞入口（待老板确认）。
