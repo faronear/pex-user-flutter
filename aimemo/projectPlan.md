@@ -130,7 +130,11 @@
       + `widgets/part_pay_sheet.dart`（**付费确认**弹窗：标题/金额/说明/反馈/余额不足提示）
       —— 完整 `partDeposit`（充值渠道/钱包）属资金域 3C，本轮不建
       + 自检 `tool/check_creation_pay.dart`（注册用户 → 余额 100 → 付 68 → 内容解锁）
-    - [ ] **2D 用户列表**：`partUserList`（观看者 / 持有者 / 赞赏者）
+    - [x] **2D 用户名单**：`part_user_list`（头像/昵称/时间/选集与圈子统计）+ `part_close_button`
+      + `part_user_list_sheet`（可复用名单弹窗：关闭按钮 + 标题 + 列表 + 加载更多）
+      + 接口 `get_{viewer,holder,fueler,liker}_list`；入口：pact 人数计数（仅作品相关人可点）、
+      赞赏按钮（自己的作品 → 赞赏者名单）
+      ——「点赞者名单」入口随点赞按钮一并搁置（源项目点赞按钮被注释）
     - [ ] **2E 作者编辑与下架**：接入 `partStoryEditor` + `update_creation` / `unlist_creation`
       / `unhide_creation` / 删除
     - [ ] **2F 分享与举报**：`partPopLink` / `partComplain` / `partIcontextPop` / `partIcontextCopy`

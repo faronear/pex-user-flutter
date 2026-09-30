@@ -334,3 +334,25 @@
   契约一致；本轮以 `pay_to_view` 做端到端验收。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **下一片**：2D 用户名单（`partUserList`：观看者/持有者/赞赏者）+ 恢复点赞入口（待老板确认）。
+
+### 创作/NFT 域 批次 2 · 2D 用户名单
+
+- **新增**：
+  - `widgets/part_user_list.dart`：头像 50 + 昵称 + 时间（`timeKey`/`timeIcon`）+ 统计行
+    （选集数 `count_creation_public`、圈子数 `countFollower+countFollowing`）；`userType === 'INVITEE'` 时隐藏统计。
+  - `widgets/part_close_button.dart`（弹窗右上角关闭）。
+  - `widgets/part_user_list_sheet.dart`：**可复用名单弹窗**——源项目里四个 `uni-popup`
+    （点赞者/赞赏者/解密者/持有者）结构完全一致，合并为一个组件（省 4 份重复）。
+  - 接口：`get_{viewer,holder,fueler,liker}_list`（含 `beforeTime` 游标分页）。
+  - `brand_config.dart` 增 `colorCollect` / `colorCircle`（源项目品牌主题 `--ColorCollect`/`--ColorCircle`，
+    仅 Babelyx 定义）；`pex_toolkit.dart` 增 `countCreationPublic`。
+- **入口**（对齐源项目）：pact 行的人数计数——仅「作品相关人（原创主/权利主）」可点，
+  可点时变蓝色（`.locCounterActive`）；赞赏按钮改为「自己的作品看名单 / 他人作品去赞赏」，不再是死按钮。
+- **就近声明**：`umyCollection`/`umyCircle` 的 `gotoIconType`（`images`/`staff`）——
+  这两页在源 `pages.json` 里受 `!ifA` 约束（非 Agidin），故未进生成式 `page_meta.dart`，
+  在 `part_user_list.dart` 里就近声明并注明。
+- **实测**：`dart run tool/check_creation_pay.dart`（已扩展）——
+  `get_viewer_list`/`get_holder_list`/`get_fueler_list`/`get_liker_list` 四个接口
+  均返回预期键（`viewerList`=2 / 其余=0）→ PASS。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功；headless 截图确认布局无回归。
+- **搁置**：点赞者名单入口（源项目点赞按钮整块被注释）；点赞相关功能待老板确认是否恢复。

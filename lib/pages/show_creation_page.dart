@@ -40,6 +40,7 @@ import '../widgets/part_show_loading.dart';
 import '../widgets/part_story_editor.dart';
 import '../widgets/part_story_reader.dart';
 import '../widgets/part_texts.dart';
+import '../widgets/part_user_list_sheet.dart';
 import '../widgets/part_window_layout.dart';
 
 class ShowCreationTexts {
@@ -774,6 +775,9 @@ class _SurroundingsPanel extends ConsumerWidget {
                   pactKey: 'TVIEW',
                   pact: creation.viewerPact,
                   onPay: () => payToViewAction(context, ref, creation),
+                  onShowList: creation.belongToMe(usid)
+                      ? () => showViewerListAction(context, ref, creation)
+                      : null,
                 ),
               if (pactDict['THOLD'] != null)
                 _PactRow(
@@ -781,6 +785,9 @@ class _SurroundingsPanel extends ConsumerWidget {
                   pactKey: 'THOLD',
                   pact: creation.holderPact,
                   onPay: () => payToHoldAction(context, ref, creation),
+                  onShowList: creation.belongToMe(usid)
+                      ? () => showHolderListAction(context, ref, creation)
+                      : null,
                 ),
               if (pactDict['TWORK'] != null)
                 _PactRow(creation: creation, pactKey: 'TWORK', pact: creation.workerPact),
@@ -969,6 +976,7 @@ class _PactRow extends ConsumerWidget {
     required this.pactKey,
     required this.pact,
     this.onPay,
+    this.onShowList,
   });
 
   final Creation creation;
@@ -977,6 +985,9 @@ class _PactRow extends ConsumerWidget {
 
   /// 点击「可付费」价格时的动作（解密 / 持有 / 收购）。
   final VoidCallback? onPay;
+
+  /// 点击人数计数时的动作（我的作品 → 查看名单）。
+  final VoidCallback? onShowList;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1043,15 +1054,9 @@ class _PactRow extends ConsumerWidget {
     if (pact.forbidden) return const SizedBox.shrink();
     if (pactKey == 'TVIEW') {
       if (pact.amount == 0) return const SizedBox.shrink();
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            PexIcon.uni('staff', size: 18, color: PexColors.greyA),
-            const SizedBox(width: 2),
-            Text('${creation.countViewer}', style: _counterStyle),
-          ],
-        ),
+      return _counter(
+        icon: PexIcons.uni('staff'),
+        count: creation.countViewer,
       );
     }
     if (pactKey == 'THOLD') {
@@ -1059,14 +1064,16 @@ class _PactRow extends ConsumerWidget {
       final String stockText = stock == null
           ? ll(lang, LangText.fromMap(item['HOLD_QUOTA_INFINITE']))
           : numberPrecision(stock).toString();
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
+      return _counter(
+        icon: PexIcons.uni('staff'),
+        count: creation.countHolder,
+        extra: Row(
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            PexIcon.uni('staff', size: 18, color: PexColors.greyA),
-            const SizedBox(width: 2),
-            Text('${creation.countHolder}', style: _counterStyle),
-            const Text('/', style: _counterStyle),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Text('/', style: _counterStyle),
+            ),
             PexIcon.icont('icont-quota', size: 14, color: PexColors.greyA),
             const SizedBox(width: 2),
             Text(stockText, style: _counterStyle),
@@ -1075,6 +1082,33 @@ class _PactRow extends ConsumerWidget {
       );
     }
     return const SizedBox.shrink();
+  }
+
+  /// 人数计数：传了 [onShowList] 才可点（源项目 `.locCounterActive`）。
+  Widget _counter({required PexGlyph? icon, required int count, Widget? extra}) {
+    final bool active = onShowList != null && count > 0;
+    final Widget content = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        PexIcon(icon, size: 18, color: active ? PexColors.blueMy : PexColors.greyA),
+        const SizedBox(width: 2),
+        Text('$count', style: active ? _counterActiveStyle : _counterStyle),
+        ?extra,
+      ],
+    );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: active
+          ? InkWell(
+              borderRadius: BorderRadius.circular(15),
+              onTap: onShowList,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                child: content,
+              ),
+            )
+          : content,
+    );
   }
 
   Widget _pactFooter(
@@ -1134,6 +1168,9 @@ class _PactRow extends ConsumerWidget {
 }
 
 const TextStyle _counterStyle = TextStyle(fontSize: 13, color: PexColors.greyA);
+
+const TextStyle _counterActiveStyle =
+    TextStyle(fontSize: 13, color: PexColors.blueMy);
 
 Widget _tag(String lang, LangText text) => Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -1447,21 +1484,22 @@ class _CommentAreaState extends ConsumerState<_CommentArea> {
                     : ll(lang, ShowCreationTexts.actionComment),
                 onTap: () => _textFocusNode.requestFocus(),
               ),
-              // 自己的作品：赞赏按钮应展示赞赏者名单（2D），本轮不显示，避免出现死按钮。
-              if (!belongToMe)
-                _ActionButton(
-                  icon: PexIcons.uni(
-                    creation.raw['mytxFuel_txAmount'] != null
-                        ? (fuelIcon['iconTypeOn']?.toString() ??
-                            fuelIcon['iconType']?.toString() ??
-                            'heart')
-                        : (fuelIcon['iconType']?.toString() ?? 'heart'),
-                  ),
-                  label: creation.amountFuel > 0
-                      ? numberPrecision(creation.amountFuel).toString()
-                      : ll(lang, ShowCreationTexts.fuelAction),
-                  onTap: () => payToFuelAction(context, ref, creation),
+              // 自己的作品 → 赞赏者名单；他人作品 → 赞赏（源项目同一按钮两种行为）。
+              _ActionButton(
+                icon: PexIcons.uni(
+                  creation.raw['mytxFuel_txAmount'] != null
+                      ? (fuelIcon['iconTypeOn']?.toString() ??
+                          fuelIcon['iconType']?.toString() ??
+                          'heart')
+                      : (fuelIcon['iconType']?.toString() ?? 'heart'),
                 ),
+                label: creation.amountFuel > 0
+                    ? numberPrecision(creation.amountFuel).toString()
+                    : ll(lang, ShowCreationTexts.fuelAction),
+                onTap: () => belongToMe
+                    ? showFuelerListAction(context, ref, creation)
+                    : payToFuelAction(context, ref, creation),
+              ),
             ],
           ),
         ),
@@ -1877,5 +1915,80 @@ Future<void> payToFuelAction(
         spent: amount,
       );
     },
+  );
+}
+
+// ---------------------------------------------------------------------------
+// 名单动作（源项目 show_viewer_list / show_holder_list / show_fueler_list）
+// ---------------------------------------------------------------------------
+
+/// 解密者名单（仅作品相关人可看）。
+Future<void> showViewerListAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  final Envar envar = ref.read(envarProvider);
+  final Map<String, dynamic> item = _pactItem(envar, 'TVIEW');
+  await showUserListSheet(
+    context,
+    ref,
+    title: LangText.fromMap(item['VIEWER_LIST']),
+    listKey: 'viewerList',
+    timeKey: 'txTimeUnix',
+    timeIcon: item['iconType']?.toString() ?? '',
+    timePrefix: item['iconPrefix']?.toString() ?? '',
+    fetch: (int? beforeTime) => ref.read(creationApiProvider).getViewerList(
+          csid: creation.csid,
+          beforeTime: beforeTime,
+        ),
+  );
+}
+
+/// 持有者名单。
+Future<void> showHolderListAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  final Envar envar = ref.read(envarProvider);
+  final Map<String, dynamic> item = _pactItem(envar, 'THOLD');
+  await showUserListSheet(
+    context,
+    ref,
+    title: LangText.fromMap(item['HOLDER_LIST']),
+    listKey: 'holderList',
+    timeKey: 'txTimeUnix',
+    timeIcon: item['iconType']?.toString() ?? '',
+    timePrefix: item['iconPrefix']?.toString() ?? '',
+    fetch: (int? beforeTime) => ref.read(creationApiProvider).getHolderList(
+          csid: creation.csid,
+          beforeTime: beforeTime,
+        ),
+  );
+}
+
+/// 赞赏者名单。
+Future<void> showFuelerListAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  await showUserListSheet(
+    context,
+    ref,
+    title: const LangText(
+      zhCN: '赞赏者',
+      enUS: 'Who fueled it',
+      deDE: 'Wer hat es getankt',
+      jaJP: '誰がこの创作品に燃料を入れましたか',
+    ),
+    listKey: 'fuelerList',
+    timeKey: 'txTimeUnix',
+    timeIcon: 'hand-up',
+    fetch: (int? beforeTime) => ref.read(creationApiProvider).getFuelerList(
+          csid: creation.csid,
+          beforeTime: beforeTime,
+        ),
   );
 }

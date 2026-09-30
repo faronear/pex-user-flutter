@@ -131,7 +131,30 @@ Future<void> main(List<String> args) async {
     final bool myView = c['mytxView_txAmount'] != null;
     print('  pexdataUser? $unlocked   mytxView_txAmount? $myView   countViewer=${c['countViewer']}');
 
-    print(hasPexdata && unlocked ? 'PASS  解密支付链路契约正确' : 'FAIL  解密后内容仍不可见');
+    print('--- 5) 名单接口（2D）契约核对');
+    final List<(String, String, String)> lists = <(String, String, String)>[
+      ('get_viewer_list', 'viewerList', 'viewCsid'),
+      ('get_holder_list', 'holderList', 'holdCsid'),
+      ('get_fueler_list', 'fuelerList', 'fuelCsid'),
+      ('get_liker_list', 'likerList', 'likeCsid'),
+    ];
+    bool listsOk = true;
+    for (final (String api, String key, String param) in lists) {
+      final Map<String, dynamic> data = await post(
+          client,
+          baseUrl,
+          'Creation',
+          api,
+          <String, dynamic>{param: csid, 'takeLimit': 5},
+          passtoken);
+      final bool isList = data[key] is List;
+      if (!isList) listsOk = false;
+      print('  $api _state=${data['_state']}  $key=${isList ? (data[key] as List).length : data[key]}');
+    }
+
+    print(hasPexdata && unlocked && listsOk
+        ? 'PASS  解密支付 + 名单接口契约正确'
+        : 'FAIL  解密或名单接口有异常');
   } finally {
     client.close(force: true);
   }

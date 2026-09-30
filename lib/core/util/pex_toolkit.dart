@@ -116,3 +116,24 @@ String segmentNumber(Object? sizeBytes) {
       size >= 100 || unit == 0 ? size.toStringAsFixed(0) : size.toStringAsFixed(2);
   return '$text${units[unit]}';
 }
+
+/// 公开作品数，对应 `wo.tt.count_creation_public`：
+/// 有 `countCtnPublic` 用它，否则由原创/权利/下架/封禁数推算。
+int countCreationPublic(Map<String, dynamic> user) {
+  final Object? published = user['countCtnPublic'];
+  if (published != null && published.toString().isNotEmpty) {
+    return (published is num)
+        ? published.toInt()
+        : int.tryParse(published.toString()) ?? 0;
+  }
+  int of(String key) {
+    final Object? value = user[key];
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  return of('countAsCreator') +
+      of('countAsOwner') -
+      of('countCtnRemove') -
+      of('countCtnBanned');
+}

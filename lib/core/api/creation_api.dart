@@ -150,6 +150,70 @@ class CreationApi {
         apiTodo: 'pay_to_fuel',
         apiWhat: <String, dynamic>{'fuelCsid': csid, 'priceToFuel': amount},
       );
+
+  /// 解密者名单。[beforeTime] 为向下翻页游标。
+  Future<Map<String, dynamic>> getViewerList({
+    required String csid,
+    int? beforeTime,
+    int takeLimit = 10,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_viewer_list',
+        apiWhat: <String, dynamic>{
+          'viewCsid': csid,
+          'beforeTime': ?beforeTime,
+          'takeLimit': takeLimit,
+        },
+      );
+
+  /// 持有者名单。
+  Future<Map<String, dynamic>> getHolderList({
+    required String csid,
+    int? beforeTime,
+    int takeLimit = 10,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_holder_list',
+        apiWhat: <String, dynamic>{
+          'holdCsid': csid,
+          'beforeTime': ?beforeTime,
+          'takeLimit': takeLimit,
+        },
+      );
+
+  /// 赞赏者名单。
+  Future<Map<String, dynamic>> getFuelerList({
+    required String csid,
+    int? beforeTime,
+    int takeLimit = 10,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_fueler_list',
+        apiWhat: <String, dynamic>{
+          'fuelCsid': csid,
+          'beforeTime': ?beforeTime,
+          'takeLimit': takeLimit,
+        },
+      );
+
+  /// 点赞者名单。
+  Future<Map<String, dynamic>> getLikerList({
+    required String csid,
+    int? beforeTime,
+    int takeLimit = 10,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_liker_list',
+        apiWhat: <String, dynamic>{
+          'likeCsid': csid,
+          'beforeTime': ?beforeTime,
+          'takeLimit': takeLimit,
+        },
+      );
 }
 
 String? _nonEmpty(String? value) =>
