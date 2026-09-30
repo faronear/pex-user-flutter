@@ -142,7 +142,10 @@
       + `creation_provider` 增列表同步（`updateItem` / `removeItem`）
       - [⏸] **修改作品**：源项目 `to_modify_my_creation` → `showCreationUpdate` → **`partCreate`(1012 行)**，
         而 `partCreate` 属**批次 3**（UGC 创作核心）；故「修改」按钮与 `showCreationUpdate` 一并留待批次 3
-    - [ ] **2F 分享与举报**：`partPopLink` / `partComplain` / `partIcontextPop` / `partIcontextCopy`
+    - [x] **2F 分享与举报**：`part_pop_link`（logo+称谓+标题+二维码+链接+复制）、
+      `part_complain`（理由输入 + `User/report_complain`）、`part_icontext_copy`（含 pop 两按钮）；
+      IPFS/NFT 行加复制与分享、操作行加分享与举报；`userResourceDetail` 的复制也改用该组件
+      —— 系统分享（`uni.shareWithSystem`，源项目仅 App 端）留待阶段四
     - [x] **2G 资源页**：`userResource` / `userResourceDetail`
       （分组/子项切换、安卓应用市场选择、版本比对、二维码 qr_flutter、链接复制；
       分享图标 partIcontextCopyshare 待 2F）

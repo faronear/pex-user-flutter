@@ -19,8 +19,8 @@ import '../core/responsive/device_info.dart';
 import '../core/router/app_router.dart';
 import '../core/state/app_startup_notifier.dart';
 import '../core/state/envar_provider.dart';
-import '../core/util/feedback.dart';
 import '../theme/app_theme.dart';
+import '../widgets/part_icontext_copy.dart';
 import '../widgets/part_lang_table.dart';
 import '../widgets/part_navibar_pc_fixed.dart';
 import '../widgets/part_show_loading.dart';
@@ -40,8 +40,6 @@ const LangText _kBestVersion = LangText(
 );
 
 const LangText _kStandardApk = LangText(zhCN: '标准安装包', enUS: 'Standard APK');
-
-const LangText _kCopied = LangText(zhCN: '已复制到剪贴板', enUS: 'Copied to clipboard');
 
 /// 源项目 `appMarketNow` 的默认值：直装包（不走应用市场）。
 const String kRawApk = 'RAWAPK';
@@ -466,16 +464,9 @@ class _LinkRow extends ConsumerWidget {
               ),
             ),
           ),
-          IconButton(
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 40),
-            icon: PexIcon.icont('icont-copy-text-line', size: 20, color: PexColors.grey9),
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: linkUrl));
-              if (context.mounted) {
-                showPexToast(context, ref, _kCopied);
-              }
-            },
+          // 源项目用 `partIcontextCopyshare`（复制 + 系统分享；系统分享仅 App 端，待阶段四）。
+          PartIcontextCopy(
+            onCopy: () => Clipboard.setData(ClipboardData(text: linkUrl)),
           ),
         ],
       ),

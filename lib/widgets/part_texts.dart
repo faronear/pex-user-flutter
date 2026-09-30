@@ -13,6 +13,15 @@ class PartTexts {
 
   static const LangText back = LangText(zhCN: '返回', enUS: 'Back');
 
+  static const LangText copied = LangText(zhCN: '已复制到剪贴板', enUS: 'Copied to clipboard');
+
+  static const LangText cancel = LangText(
+    zhCN: '取消',
+    enUS: 'Cancel',
+    jaJP: 'キャンセル',
+    deDE: 'Abbrechen',
+  );
+
   static const LangText forward = LangText(zhCN: '下一步', enUS: 'Next');
 
   static const LangText sendPasscode =

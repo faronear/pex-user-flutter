@@ -386,3 +386,25 @@
   均返回 `ERROR_UNAUTHORIZED_USER`（参数名与鉴权均正确）→ PASS。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **下一片**：2F 分享与举报（`partPopLink` / `partComplain` / `partIcontextCopy` / `partIcontextPop`）。
+
+### 创作/NFT 域 批次 2 · 2F 分享与举报
+
+- **新增**：
+  - `widgets/part_icontext_copy.dart`：`PartIcontextCopy`（复制）+ `PartIcontextPop`（分享）两个 40×40 小按钮，
+    图标取源项目 `wo.ss.iconCopy`/`iconPop`（客户端常量，`App.data.js` 里定义、不随配置下发，故就近声明）。
+  - `widgets/part_pop_link.dart`：分享弹窗（品牌 logo + 称谓 + 标题 + 二维码 + 可点链接 + 复制）。
+    复制的文案按源项目拼 `url?_ut=\n<品牌-标题>`（粘到地址栏会被浏览器替换成空格）。
+  - `widgets/part_complain.dart`：举报弹窗（理由输入 512 字 + 取消/举报）。
+  - `core/api/user_api.dart`：`User/report_complain`（账户域第一个接口）。
+  - `part_texts.dart` 增 `copied` / `cancel`。
+- **接线**：
+  - IPFS 行 → 复制 CID + 分享 `ipfsLens/<cid>`（标题 `byxCertFullname`）
+  - NFT 行 → 复制 tokenId + 分享 `nftLens/nft/<contract>/<toid>`（标题 `byxTokenFullname`）
+  - 操作行 → **分享**（标题=作品标题，链接=`https://goto.<webDomain>/creation/<csid>`，带 `inhaid`）
+    + **举报**（仅他人作品，`reportTargetType: 'CREATION'`）
+  - `userResourceDetail` 的复制按钮改用 `PartIcontextCopy`（原先是自制 IconButton）
+- **实测**：`dart run tool/check_creation_pay.dart`（再扩展）——`User/report_complain` → `SUCCESS`；
+  至此该脚本一次跑通 **解密支付 + 4 个名单 + 2E 上下架/隐藏 + 2F 举报** 全链路 → PASS。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **收尾**：批次 2 的 2A/2B/2C/2D/2E/2F/2G 七片**除「修改作品」外全部完成**；
+  「修改」阻塞于批次 3 的 `partCreate`(1012 行)，届时与 `showCreationUpdate` 一并做。

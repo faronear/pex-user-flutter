@@ -188,8 +188,23 @@ Future<void> main(List<String> args) async {
       print('  $api _state=${data['_state']}（期望 $expect）${ok ? ' OK' : ' ✗'}');
     }
 
-    print(hasPexdata && unlocked && listsOk && e2Ok
-        ? 'PASS  解密支付 + 名单接口 + 2E 接口契约均正确'
+    print('--- 7) 2F 举报接口（User/report_complain）');
+    final Map<String, dynamic> reported = await post(
+        client,
+        baseUrl,
+        'User',
+        'report_complain',
+        <String, dynamic>{
+          'reportTargetId': csid,
+          'reportTargetType': 'CREATION',
+          'reportReason': 'contract check ${DateTime.now().millisecondsSinceEpoch}',
+        },
+        passtoken);
+    print('  _state=${reported['_state']}  _msg=${reported['_msg']}');
+    final bool reportOk = reported['_state'] == 'SUCCESS';
+
+    print(hasPexdata && unlocked && listsOk && e2Ok && reportOk
+        ? 'PASS  解密支付 + 名单 + 2E + 2F 举报契约均正确'
         : 'FAIL  存在异常');
   } finally {
     client.close(force: true);

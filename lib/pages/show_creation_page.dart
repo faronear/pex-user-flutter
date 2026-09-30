@@ -10,6 +10,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -34,9 +35,12 @@ import '../core/util/server_url.dart';
 import '../data/creation.dart';
 import '../theme/app_theme.dart';
 import '../widgets/part_load_more.dart';
+import '../widgets/part_complain.dart';
+import '../widgets/part_icontext_copy.dart';
 import '../widgets/part_navibar_pc_fixed.dart';
 import '../widgets/part_pay_sheet.dart';
 import '../widgets/part_pexdata_summary.dart';
+import '../widgets/part_pop_link.dart';
 import '../widgets/part_show_loading.dart';
 import '../widgets/part_story_editor.dart';
 import '../widgets/part_story_reader.dart';
@@ -811,10 +815,11 @@ class _SurroundingsPanel extends ConsumerWidget {
 
 /// 通用信息行（源项目 `uni-list-item`）。
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.leading, this.body});
+  const _InfoRow({required this.leading, this.body, this.trailing});
 
   final Widget leading;
   final Widget? body;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -827,6 +832,7 @@ class _InfoRow extends StatelessWidget {
         children: <Widget>[
           leading,
           if (body != null) Expanded(child: body!),
+          ?trailing,
         ],
       ),
     );
@@ -927,6 +933,24 @@ class _IpfsRow extends ConsumerWidget {
           ],
         ),
       ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          PartIcontextCopy(
+            onCopy: () => Clipboard.setData(
+              ClipboardData(text: creation.pexBaseCidNow),
+            ),
+          ),
+          PartIcontextPop(
+            onPop: () => showPopLinkSheet(
+              context,
+              ref,
+              shareTitle: envar.raw['byxCertFullname'],
+              shareUrl: url,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -965,6 +989,24 @@ class _NftRow extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          PartIcontextCopy(
+            onCopy: () => Clipboard.setData(
+              ClipboardData(text: creation.nftToid),
+            ),
+          ),
+          PartIcontextPop(
+            onPop: () => showPopLinkSheet(
+              context,
+              ref,
+              shareTitle: envar.raw['byxTokenFullname'],
+              shareUrl: url,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1203,6 +1245,16 @@ Map<String, dynamic> _pactItem(Envar envar, String key) {
   if (dict is! Map) return <String, dynamic>{};
   final Object? item = dict[key];
   return item is Map ? item.cast<String, dynamic>() : <String, dynamic>{};
+}
+
+/// 对外分享链接（源项目 `urlCreation`）：`https://goto.<webDomain>/creation/<csid>`。
+String _urlCreation(WidgetRef ref, Creation creation) {
+  final Envar envar = ref.read(envarProvider);
+  final String domain = envar.raw['webDomain']?.toString() ?? '';
+  final String haid =
+      ref.read(onlineUserProvider)['haid']?.toString() ?? '';
+  return 'https://goto.$domain/creation/${creation.csid}'
+      '${haid.isNotEmpty ? '?inhaid=$haid' : ''}';
 }
 
 String _urlIpfs(Envar envar, Creation creation) {
@@ -1522,6 +1574,40 @@ class _CommentAreaState extends ConsumerState<_CommentArea> {
                       ? ll(lang, const LangText(zhCN: '显示', enUS: 'Show', jaJP: '表示', deDE: 'Anzeigen'))
                       : ll(lang, const LangText(zhCN: '隐藏', enUS: 'Hide', jaJP: '非表示', deDE: 'Ausblenden')),
                   onTap: () => toggleCreationHide(context, ref, creation),
+                ),
+              // 分享（源项目 `popShare`：标题 + `goto.<domain>/creation/<csid>`）。
+              _ActionButton(
+                icon: iconPopGlyph(),
+                label: ll(
+                  lang,
+                  const LangText(zhCN: '分享', enUS: 'Share', jaJP: 'シェア', deDE: 'Teilen'),
+                ),
+                onTap: () => showPopLinkSheet(
+                  context,
+                  ref,
+                  shareTitle: creation.displayTitle(lang),
+                  shareUrl: _urlCreation(ref, creation),
+                ),
+              ),
+              // 举报（仅他人作品；源项目 `popComplain`）。
+              if (!belongToMe)
+                _ActionButton(
+                  icon: PexIcons.uni('hand-down'),
+                  label: ll(
+                    lang,
+                    const LangText(
+                      zhCN: '举报',
+                      enUS: 'Report',
+                      jaJP: '報告',
+                      deDE: 'Melden',
+                    ),
+                  ),
+                  onTap: () => showComplainSheet(
+                    context,
+                    ref,
+                    reportTargetId: creation.csid,
+                    reportTargetType: 'CREATION',
+                  ),
                 ),
               // 彻底删除：源项目按「本人下架」或「已隐藏」两种情形分别调用不同接口。
               if (envar.boolOf('ctnDeletable') &&

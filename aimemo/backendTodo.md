@@ -62,6 +62,17 @@
 - **同类历史**：2026-08-23 AKAIZOIC→AKAGIDIN 迁移后也发生过同类 MODULE_NOT_FOUND（见 uniapp worklog）。
 - **正常流程**：`deploy` 会把前端 `${brand}/cfstore/versionCode-*` 拷到后端 `envar/`；本次显然未跑。
 
+## 环境事实（重要，省得下次再验证）
+
+- **本机（iMac）上运行中的后端，就是我的工作目录这一份**：
+  证据有二 —— ① 我改 `api/Creation.js` 存盘后，nodemon 自动重启、`7739` 短暂不可用后恢复；
+  ② 我用 HTTP 新建的评论/用户，直接出现在
+  `/Volumes/repodisk/productX/pex/pex-server-torm/_datastore/pex.sqlite.db` 里。
+  → 因此**后端小修可即时生效、可即时验证**，不需要老板手动操作。
+- 老板在 B3 里提到的 `/Users/Shared/productX/pex/pex-server-torm` 是本机 **`/Users/Shared` 下并不存在**
+  （已实测：只有 adi/Adobe/Key-Base 等），那是 **MacBook Air** 的路径；两台机器靠 Seafile 同步，
+  `_logstore/` 里的日志跨机器不可信。
+
 ## 已修
 
 ### B4. ✅ 事务内未 await 的并发写 → SAVEPOINT 计数错乱（2026-09-30 已修，commit `f51c129` @ pex-server-torm）
