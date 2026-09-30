@@ -6,24 +6,6 @@
 
 ## 待办
 
-### B4. `delete_comment` 事务已全部生效却返回 `ERROR_FAILED_DELETE_COMMENT`（前端按错误提示，非阻塞）
-- **发现**：2026-09-30，用 `tool/check_creation_comments.dart` 端到端验证评论链路时发现。
-- **现象**：`Creation/delete_comment` 返回 `_state: ERROR_FAILED_DELETE_COMMENT`（无 `_msg`），
-  但**三条写操作全部已提交**——在 `_datastore/pex.sqlite.db` 核实：
-  - `user_comment_creation.commentState = 'DELETED'` ✅
-  - `creation.countComment` 已减 1 ✅
-  - `user.countComment2Del` 已加 1 ✅
-- **代码位置**：`api/Creation.js:1387` `DAD.api.delete_comment`，
-  `wo.dataStore.transaction(...).catch(expt => ({_state: 'ERROR_FAILED_DELETE_COMMENT'}))`。
-  事务体三步都已落库，说明异常发生在**事务提交之后、回调返回值被吞掉**（catch 覆盖了 SUCCESS）。
-  疑似 TypeORM `DataSource.transaction` 在 SQLite 下返回值/释放连接环节抛错，或 `txman` 生命周期问题。
-- **影响（前端）**：Flutter 侧按 `bok(_state)` 判定 → 会弹「删除失败」toast，
-  但刷新后评论确实消失。前端**保持契约严格判定不改**（见 `pages/show_creation_page.dart` `_deleteComment`），
-  待后端修复后自然正确。
-- **修复建议**：在老板运行的终端看一次该异常栈（`wo.ccerror` 输出），定位后修正
-  （例如改为 `await wo.dataStore.transaction(...)` 不依赖返回值、或显式 `return await ...`）。
-- **复现**：`cd pex-user-flutter && dart run tool/check_creation_comments.dart`
-
 ### B1. AI 模型连接过时（老板已知，优先级最高）
 - **现象**：`Aimodel/reply_challenge` 返回 `_state: ERROR` / `_msg: Bad request for dependent service.`
 - **影响**：所有 AI 对话无法真正出结果（前端契约本身正确，已用 `tool/check_ai_flow.dart` 验证）
@@ -72,6 +54,24 @@
   该路径我无法访问，需老板侧执行拷贝。
 - **同类历史**：2026-08-23 AKAIZOIC→AKAGIDIN 迁移后也发生过同类 MODULE_NOT_FOUND（见 uniapp worklog）。
 - **正常流程**：`deploy` 会把前端 `${brand}/cfstore/versionCode-*` 拷到后端 `envar/`；本次显然未跑。
+
+## 已修
+
+### B4. ✅ 事务内未 await 的并发写 → SAVEPOINT 计数错乱（2026-09-30 已修，commit `f51c129` @ pex-server-torm）
+- **现象**：`delete_comment` 间歇性返回 `ERROR_FAILED_DELETE_COMMENT`；
+  加诊断后拿到真实异常：**`SQLITE_ERROR: no such savepoint: typeorm_5`**
+  （另一形态：`Transaction is not started yet...`）。失败时**写操作其实已提交**，
+  于是前端按 `bok(_state)` 提示失败、刷新后数据却已变。
+- **根因**：`api/Creation.js` 与 `api/User.js` 里有 **6 处 `wo.Mia.api.send_mia(...)` 没有 await**，
+  且都位于 `wo.dataStore.transaction(async (txman) => {...})` 事务体内。
+  `send_mia` 走 `wo.dataStore.getRepository(...)`，即**同一条 SQLite 连接上的另一个 query runner**；
+  在事务未提交时就并发写，会打乱 TypeORM 的 SAVEPOINT 深度计数，
+  导致**下一次**事务 commit 时 `RELEASE SAVEPOINT typeorm_N` 找不到对应 savepoint。
+- **修复**：6 处统一改为 `await wo.Mia.api.send_mia({...}).catch((expt) => wo.ccerror(expt))`
+  （`comment_creation` / `pay_to_fuel` / `pay_to_view` / `pay_to_hold` / `pay_to_own` /
+  `DAD.sysapi.pass_kyc`）。顺序化后不再交错。
+- **验证**：`dart run tool/check_creation_comments.dart` 修复前 3 次跑 1 成功 2 失败；修复后 **4/4 PASS**。
+- **顺带受益**：`pay_to_view/hold/own/fuel`（前端 2C 片）原本也有同样的隐患。
 
 ## 已评估但决定不做
 

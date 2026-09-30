@@ -301,3 +301,14 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功；
   `dart run tool/check_creation_comments.dart` 发表/列表/删除三步契约正确；
   headless 截图确认编辑器、发表按钮、刷新按钮、评论入口渲染正常。
+
+### 后端 B4 修复（老板授权「随手修掉后台小错误」）
+
+- **诊断手法**：先把 `catch` 里的异常 `expt.message` 临时塞进响应 `_msg`（后端由 nodemon 托管，
+  存盘即自动重启），跑一次 `tool/check_creation_comments.dart` 就拿到了真实异常，
+  随后移除诊断代码。**比猜 TypeORM 内部行为高效得多**，以后后端问题可沿用。
+- **根因**：事务体内 6 处 `wo.Mia.api.send_mia()` **没有 await** → 并发写同一条 SQLite 连接
+  → 打乱 SAVEPOINT 深度 → 下一个事务 commit 时报 `no such savepoint: typeorm_N`。
+- **修复**：6 处改为 `await ....catch(ccerror)`（Creation.js 5 处 + User.js 1 处）。
+- **验证**：修复前连跑 3 次（1 成 2 败），修复后 **4/4 PASS**。
+- 提交：`pex-server-torm` `f51c129`；`backendTodo.md` B4 移入「已修」。
