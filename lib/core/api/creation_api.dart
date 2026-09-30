@@ -76,6 +76,48 @@ class CreationApi {
           'unid': ?_nonEmpty(unid),
         },
       );
+
+  /// 评论列表。[beforeTime] 为向下翻页游标（最后一条的 `commentTimeUnix`）。
+  Future<Map<String, dynamic>> getCommentList({
+    required String commentTarget,
+    required String commentCsid,
+    int? beforeTime,
+    int takeLimit = 10,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_comment_list',
+        apiWhat: <String, dynamic>{
+          'commentTarget': commentTarget,
+          'commentCsid': commentCsid,
+          'beforeTime': ?beforeTime,
+          'takeLimit': takeLimit,
+        },
+      );
+
+  /// 发表评论（源项目 `to_comment_creation`）。
+  Future<Map<String, dynamic>> commentCreation({
+    required List<Map<String, dynamic>> commentStory,
+    required String commentTarget,
+    required String commentCsid,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'comment_creation',
+        apiWhat: <String, dynamic>{
+          'commentStory': commentStory,
+          'commentTarget': commentTarget,
+          'commentCsid': commentCsid,
+        },
+      );
+
+  /// 删除自己的评论。
+  Future<Map<String, dynamic>> deleteComment(String commentUuid) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'delete_comment',
+        apiWhat: <String, dynamic>{'commentUuid': commentUuid},
+      );
 }
 
 String? _nonEmpty(String? value) =>

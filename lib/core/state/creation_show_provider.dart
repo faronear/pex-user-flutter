@@ -37,6 +37,21 @@ class CreationShowState {
 
   /// 是否取到了目标作品。
   bool get found => creation.csid.isNotEmpty;
+
+  CreationShowState copyWith({
+    Map<String, dynamic>? raw,
+    List<Map<String, dynamic>>? commentList,
+    bool? readyShow,
+    bool? loading,
+    bool? failed,
+  }) =>
+      CreationShowState(
+        raw: raw ?? this.raw,
+        commentList: commentList ?? this.commentList,
+        readyShow: readyShow ?? this.readyShow,
+        loading: loading ?? this.loading,
+        failed: failed ?? this.failed,
+      );
 }
 
 class CreationShowNotifier extends Notifier<CreationShowState> {
@@ -85,13 +100,40 @@ class CreationShowNotifier extends Notifier<CreationShowState> {
 
   /// 局部更新当前作品（如点赞、隐藏后回写状态）。
   void merge(Map<String, dynamic> patch) {
-    state = CreationShowState(
-      raw: <String, dynamic>{...state.raw, ...patch},
-      commentList: state.commentList,
-      readyShow: state.readyShow,
-      loading: state.loading,
-      failed: state.failed,
+    state = state.copyWith(raw: <String, dynamic>{...state.raw, ...patch});
+  }
+
+  /// 整表替换评论（首屏 / 刷新）。
+  void setComments(List<Map<String, dynamic>> comments) {
+    state = state.copyWith(commentList: comments);
+  }
+
+  /// 追加更早的评论（去重，见 `tool/check_creation_show.dart` 的说明）。
+  void appendComments(List<Map<String, dynamic>> comments) {
+    if (comments.isEmpty) return;
+    final List<String> known = <String>[
+      for (final Map<String, dynamic> comment in state.commentList)
+        comment['commentUuid']?.toString() ?? '',
+    ];
+    state = state.copyWith(commentList: <Map<String, dynamic>>[
+      ...state.commentList,
+      for (final Map<String, dynamic> comment in comments)
+        if (!known.contains(comment['commentUuid']?.toString())) comment,
+    ]);
+  }
+
+  /// 把新发表的评论插到最前（源项目 `commentList.unshift(comment)`）。
+  void prependComment(Map<String, dynamic> comment) {
+    state = state.copyWith(
+      commentList: <Map<String, dynamic>>[comment, ...state.commentList],
     );
+  }
+
+  void removeCommentAt(int index) {
+    state = state.copyWith(commentList: <Map<String, dynamic>>[
+      ...state.commentList.take(index),
+      ...state.commentList.skip(index + 1),
+    ]);
   }
 
   void clear() => state = const CreationShowState();

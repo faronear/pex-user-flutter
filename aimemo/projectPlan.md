@@ -120,7 +120,11 @@
       + `get_single_creation`（`creationShowProvider` 对应 `wo.ss.Creation.ctnShow`）
       + 组件 `part_pexdata_summary`；新工具 `tool/check_creation_show.dart`
       （2A 不渲染任何会死的交互入口：解密按钮留待 2C，评论编辑器/操作按钮留待 2B/2E/2F）
-    - [ ] **2B 统计与互动（只读侧）**：点赞 `upvote_creation`、评论列表 `get_comment_list` 展示
+    - [x] **2B 评论闭环**：操作按钮行（评论入口）、`partStoryEditor` 评论编辑器、
+      `comment_creation` 发表、评论列表（`get_comment_list` 刷新 / 追加更早）、
+      删除自己的评论；新增 `core/util/online_guard.dart`（对应 `wo.tt.check_online`）
+    - [-] **点赞**：源项目 `showCreation.vue` 的点赞按钮**整块被注释掉**（`to_toggle_vote` 已无入口），
+      故未实现；等老板确认是否要恢复点赞入口
     - [ ] **2C 解锁与付费**：`pay_to_view` / `pay_to_own` / `pay_to_hold` + `partDeposit` 充值弹窗
     - [ ] **2D 用户列表**：`partUserList`（观看者 / 持有者 / 赞赏者）
     - [ ] **2E 作者编辑与下架**：接入 `partStoryEditor` + `update_creation` / `unlist_creation`

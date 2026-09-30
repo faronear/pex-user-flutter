@@ -274,3 +274,30 @@
   链接 `https://apk.babelyx.com`（注意：后端按 `_clientInfo.webDomain` 动态拼链接，
   之前的 curl 样例没传 webDomain 才显示 `undefined`，App 内正常）。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+
+### 创作/NFT 域 批次 2 · 2B 评论闭环（showCreation 互动区）
+
+- **范围**（比计划更完整，避免做出「只能看不能写」的半截页面）：
+  操作按钮行（评论入口，点击聚焦编辑器）→ `partStoryEditor` 评论编辑器
+  （允许类型取自后台 `commentText/Image/Video/Speak/File/Link`、`commentMaxSections`）
+  → `comment_creation` 发表 → 评论列表（`get_comment_list` 刷新 / 追加更早）
+  → 删除自己的评论（`delete_comment`，带确认弹窗）。
+- **新增**：
+  - `core/util/online_guard.dart`：对应 `wo.tt.check_online()`，未登录弹「请先登录」并跳 `identBegin`
+    （源项目还会记 `routeAfterLogin` 以便登录后回原页，尚未迁移）。
+  - `creation_api.dart`：`get_comment_list` / `comment_creation` / `delete_comment`。
+  - `creation_show_provider.dart`：`copyWith` + `setComments` / `appendComments` /
+    `prependComment` / `removeCommentAt`。
+  - `part_story_editor.dart` 增 `textFocusNode`（对应源项目 `isFocused`）。
+  - `tool/check_creation_comments.dart`：注册临时用户 → 发表 → 列表 → 删除 → 复查。
+- **有意偏离**：加载更早评论时，源项目是**整表替换**（`this.commentList = commentList`），
+  会丢掉已加载的较新评论；Flutter 侧改为**按 commentUuid 去重后追加**。
+- **⚠️ 发现后端缺陷 B4（已记 `backendTodo.md`）**：`delete_comment` 返回
+  `ERROR_FAILED_DELETE_COMMENT`，但**三条写操作全部已提交**（已在 `pex.sqlite.db` 核实
+  commentState=DELETED / countComment-1 / countComment2Del+1）。
+  前端保持契约严格判定**不改**（会提示删除失败，刷新后其实已删），待后端修。
+- **未做**：点赞 —— 源项目 `showCreation.vue` 的点赞按钮**整块被注释**（1851–1859 行），
+  `to_toggle_vote` 已无入口，等老板确认是否恢复。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功；
+  `dart run tool/check_creation_comments.dart` 发表/列表/删除三步契约正确；
+  headless 截图确认编辑器、发表按钮、刷新按钮、评论入口渲染正常。

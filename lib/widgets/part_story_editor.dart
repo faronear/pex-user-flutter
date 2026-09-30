@@ -58,6 +58,7 @@ class PartStoryEditor extends ConsumerStatefulWidget {
     this.publishing = false,
     this.onPublish,
     this.busy = false,
+    this.textFocusNode,
   });
 
   /// 段落数组（受控）。
@@ -79,6 +80,9 @@ class PartStoryEditor extends ConsumerStatefulWidget {
   final bool publishing;
   final VoidCallback? onPublish;
   final bool busy;
+
+  /// 聚焦第一个文本段（源项目 `isFocused` 的等价物，由调用方控制）。
+  final FocusNode? textFocusNode;
 
   @override
   ConsumerState<PartStoryEditor> createState() => _PartStoryEditorState();
@@ -203,6 +207,7 @@ class _PartStoryEditorState extends ConsumerState<PartStoryEditor> {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         child: TextField(
           controller: _controllers[index],
+          focusNode: index == 0 ? widget.textFocusNode : null,
           maxLines: null,
           minLines: 1,
           style: const TextStyle(fontSize: 15),

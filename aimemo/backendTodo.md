@@ -2,9 +2,27 @@
 
 > 由前端迁移过程中发现、**需要后端配合**的事项。
 > 原则：前端迁移优先，后端改动集中清账；以下均**不阻塞**前端继续推进（除注明外）。
-> 最后更新：2026-09-29
+> 最后更新：2026-09-30
 
 ## 待办
+
+### B4. `delete_comment` 事务已全部生效却返回 `ERROR_FAILED_DELETE_COMMENT`（前端按错误提示，非阻塞）
+- **发现**：2026-09-30，用 `tool/check_creation_comments.dart` 端到端验证评论链路时发现。
+- **现象**：`Creation/delete_comment` 返回 `_state: ERROR_FAILED_DELETE_COMMENT`（无 `_msg`），
+  但**三条写操作全部已提交**——在 `_datastore/pex.sqlite.db` 核实：
+  - `user_comment_creation.commentState = 'DELETED'` ✅
+  - `creation.countComment` 已减 1 ✅
+  - `user.countComment2Del` 已加 1 ✅
+- **代码位置**：`api/Creation.js:1387` `DAD.api.delete_comment`，
+  `wo.dataStore.transaction(...).catch(expt => ({_state: 'ERROR_FAILED_DELETE_COMMENT'}))`。
+  事务体三步都已落库，说明异常发生在**事务提交之后、回调返回值被吞掉**（catch 覆盖了 SUCCESS）。
+  疑似 TypeORM `DataSource.transaction` 在 SQLite 下返回值/释放连接环节抛错，或 `txman` 生命周期问题。
+- **影响（前端）**：Flutter 侧按 `bok(_state)` 判定 → 会弹「删除失败」toast，
+  但刷新后评论确实消失。前端**保持契约严格判定不改**（见 `pages/show_creation_page.dart` `_deleteComment`），
+  待后端修复后自然正确。
+- **修复建议**：在老板运行的终端看一次该异常栈（`wo.ccerror` 输出），定位后修正
+  （例如改为 `await wo.dataStore.transaction(...)` 不依赖返回值、或显式 `return await ...`）。
+- **复现**：`cd pex-user-flutter && dart run tool/check_creation_comments.dart`
 
 ### B1. AI 模型连接过时（老板已知，优先级最高）
 - **现象**：`Aimodel/reply_challenge` 返回 `_state: ERROR` / `_msg: Bad request for dependent service.`

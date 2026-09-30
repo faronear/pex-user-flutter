@@ -14,6 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/api/api_client.dart';
+import '../core/api/creation_api.dart';
 import '../core/i18n/i18n.dart';
 import '../core/i18n/lang_text.dart';
 import '../core/icons/icont_icons.dart';
@@ -24,14 +26,19 @@ import '../core/state/app_startup_notifier.dart';
 import '../core/state/creation_show_provider.dart';
 import '../core/state/envar_provider.dart';
 import '../core/state/region_provider.dart';
+import '../core/util/feedback.dart';
+import '../core/util/online_guard.dart';
 import '../core/util/pex_toolkit.dart';
 import '../core/util/server_url.dart';
 import '../data/creation.dart';
 import '../theme/app_theme.dart';
+import '../widgets/part_load_more.dart';
 import '../widgets/part_navibar_pc_fixed.dart';
 import '../widgets/part_pexdata_summary.dart';
 import '../widgets/part_show_loading.dart';
+import '../widgets/part_story_editor.dart';
 import '../widgets/part_story_reader.dart';
+import '../widgets/part_texts.dart';
 import '../widgets/part_window_layout.dart';
 
 class ShowCreationTexts {
@@ -107,6 +114,52 @@ class ShowCreationTexts {
   );
 
   static const LangText noContent = LangText(zhCN: '没有内容', enUS: 'No Content');
+
+  static const LangText actionComment =
+      LangText(zhCN: '评论', enUS: 'Comment', jaJP: 'コメント', deDE: 'Kommentieren');
+
+  static const LangText commentEmpty = LangText(
+    zhCN: '评论是空的。请先写点儿什么！',
+    enUS: 'Comment is empty. Please write something!',
+    jaJP: 'コメントが空です。何か書いてください！',
+    deDE: 'Kommentar ist leer. Bitte schreiben Sie etwas!',
+  );
+
+  static const LangText commentPublished = LangText(
+    zhCN: '您的评论已发表。',
+    enUS: 'Your comment is published.',
+    jaJP: 'あなたのコメントは公開されました。',
+    deDE: 'Ihr Kommentar wurde veröffentlicht.',
+  );
+
+  static const LangText refreshComments = LangText(
+    zhCN: '刷新评论列表',
+    enUS: 'Refresh Comments',
+  );
+
+  static const LangText deleteCommentTitle = LangText(
+    zhCN: '删除这个评论吗？',
+    enUS: 'Delete this comment?',
+    jaJP: 'このコメントを削除しますか？',
+    deDE: 'Diesen Kommentar löschen?',
+  );
+
+  static const LangText deleteConfirm =
+      LangText(zhCN: '删除', enUS: 'Delete', jaJP: '削除', deDE: 'Löschen');
+
+  static const LangText commentDeleted = LangText(
+    zhCN: '已成功删除',
+    enUS: 'Deleted successfully',
+    jaJP: '削除しました',
+    deDE: 'Erfolgreich gelöscht',
+  );
+
+  static const LangText commentDeleteFailed = LangText(
+    zhCN: '发生故障，没有删除',
+    enUS: 'Something malfunctioned, this comment is not deleted',
+    jaJP: 'エラーが発生し、削除できませんでした',
+    deDE: 'Es ist ein Fehler aufgetreten, dieser Kommentar wurde nicht gelöscht',
+  );
 }
 
 /// 页面入口参数（对应源项目 `onLoad` 的 query）。
@@ -609,6 +662,10 @@ class _SurroundingsPanel extends ConsumerWidget {
     final Map<String, dynamic> pactDict =
         (ref.watch(envarProvider).raw['pactDict'] as Map?)?.cast<String, dynamic>() ??
             <String, dynamic>{};
+    final String usid = ref.watch(onlineUserProvider)['usid']?.toString() ?? '';
+    // 源项目：被彻底删除或被拒绝服务的作品不再显示互动区。
+    final bool interactable =
+        !creation.bannedBySystem && !creation.deletedByMe(usid);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -639,6 +696,8 @@ class _SurroundingsPanel extends ConsumerWidget {
             ],
           ),
         ),
+        // 互动区（源项目里位于「创作品周边」栏内）：评论发表 + 评论列表。
+        if (interactable) _CommentArea(creation: creation),
       ],
     );
   }
@@ -1037,4 +1096,453 @@ Future<void> _openUrl(String url) async {
   final Uri? uri = Uri.tryParse(url);
   if (uri == null) return;
   await launchUrl(uri, mode: LaunchMode.externalApplication);
+}
+
+// ---------------------------------------------------------------------------
+// 互动区：评论发表 + 评论列表（源项目 2B 片）
+// ---------------------------------------------------------------------------
+
+/// 评论发表与评论列表（源项目 `partStoryEditor` + `partLoadMore` + 评论列表）。
+class _CommentArea extends ConsumerStatefulWidget {
+  const _CommentArea({required this.creation});
+
+  final Creation creation;
+
+  @override
+  ConsumerState<_CommentArea> createState() => _CommentAreaState();
+}
+
+class _CommentAreaState extends ConsumerState<_CommentArea> {
+  static const int _takeLimit = 10;
+
+  final FocusNode _textFocusNode = FocusNode();
+  List<Map<String, dynamic>> _commentStory = <Map<String, dynamic>>[
+    <String, dynamic>{'text': ''},
+  ];
+  bool _publishing = false;
+  bool _refreshing = false;
+  LoadState _olderState = LoadState.noMore;
+  LangText? _feedback;
+
+  @override
+  void initState() {
+    super.initState();
+    final int initial =
+        ref.read(creationShowProvider).commentList.length;
+    _olderState = initial < _takeLimit ? LoadState.noMore : LoadState.loadUp;
+  }
+
+  @override
+  void dispose() {
+    _textFocusNode.dispose();
+    super.dispose();
+  }
+
+  Creation get creation => widget.creation;
+
+  /// 发布评论（源项目 `to_comment_creation`）。
+  Future<void> _publish() async {
+    if (!await checkOnline(context, ref)) return;
+    final List<Map<String, dynamic>> story = _commentStory
+        .map((Map<String, dynamic> section) =>
+            Map<String, dynamic>.from(section))
+        .toList();
+    for (final Map<String, dynamic> section in story) {
+      final String text = section['text']?.toString() ?? '';
+      if (text.trim().isEmpty) section.remove('text');
+    }
+    story.removeWhere((Map<String, dynamic> section) => section.isEmpty);
+    if (story.isEmpty) {
+      setState(() => _feedback = ShowCreationTexts.commentEmpty);
+      return;
+    }
+
+    setState(() {
+      _publishing = true;
+      _feedback = null;
+    });
+    final Map<String, dynamic> data =
+        await ref.read(creationApiProvider).commentCreation(
+              commentStory: story,
+              commentTarget: creation.pexdataCidHashRoot,
+              commentCsid: creation.csid,
+            );
+    if (!mounted) return;
+    setState(() => _publishing = false);
+
+    if (bok(data['_state']?.toString())) {
+      final Map<String, dynamic> comment =
+          (data['comment'] as Map?)?.cast<String, dynamic>() ??
+              <String, dynamic>{};
+      final Map<String, dynamic> user = ref.read(onlineUserProvider);
+      comment['nickname'] = user['nickname'];
+      comment['portrait'] = user['portrait'];
+      ref.read(creationShowProvider.notifier).prependComment(comment);
+      ref.read(creationShowProvider.notifier).merge(<String, dynamic>{
+        'countComment': creation.countComment + 1,
+        'myCommentCount': _intOf(creation.raw['myCommentCount']) + 1,
+      });
+      setState(() {
+        _commentStory = <Map<String, dynamic>>[<String, dynamic>{'text': ''}];
+      });
+      showPexToast(context, ref, ShowCreationTexts.commentPublished);
+    } else {
+      setState(() {
+        _feedback = LangText.fromMap(data['rejectReason'] ?? data['_msg']);
+        if (_feedback != null && _feedback!.isEmpty) {
+          _feedback = PartTexts.systemDown;
+        }
+      });
+    }
+  }
+
+  /// 刷新评论列表（源项目 `to_get_newest_comments`）。
+  Future<void> _refreshComments() async {
+    if (_refreshing) return;
+    setState(() => _refreshing = true);
+    final Map<String, dynamic> data =
+        await ref.read(creationApiProvider).getCommentList(
+              commentTarget: creation.pexdataCidHashRoot,
+              commentCsid: creation.csid,
+              takeLimit: _takeLimit,
+            );
+    if (!mounted) return;
+    setState(() => _refreshing = false);
+    if (bok(data['_state']?.toString())) {
+      final List<Map<String, dynamic>> list =
+          (data['commentList'] as List?)?.cast<Map<String, dynamic>>() ??
+              <Map<String, dynamic>>[];
+      ref.read(creationShowProvider.notifier).setComments(list);
+      setState(() =>
+          _olderState = list.length < _takeLimit ? LoadState.noMore : LoadState.loadUp);
+    } else {
+      _showError(data);
+    }
+  }
+
+  /// 加载更早的评论（源项目 `to_get_older_comments`；源实现为整表替换，这里改为追加）。
+  Future<void> _olderComments() async {
+    if (_olderState == LoadState.loading) return;
+    setState(() => _olderState = LoadState.loading);
+    final List<Map<String, dynamic>> current =
+        ref.read(creationShowProvider).commentList;
+    final int? beforeTime = current.isEmpty
+        ? null
+        : _intOf(current.last['commentTimeUnix']);
+    final Map<String, dynamic> data =
+        await ref.read(creationApiProvider).getCommentList(
+              commentTarget: creation.pexdataCidHashRoot,
+              commentCsid: creation.csid,
+              beforeTime: beforeTime,
+              takeLimit: _takeLimit,
+            );
+    if (!mounted) return;
+    if (bok(data['_state']?.toString())) {
+      final List<Map<String, dynamic>> list =
+          (data['commentList'] as List?)?.cast<Map<String, dynamic>>() ??
+              <Map<String, dynamic>>[];
+      ref.read(creationShowProvider.notifier).appendComments(list);
+      setState(() =>
+          _olderState = list.length < _takeLimit ? LoadState.noMore : LoadState.loadUp);
+    } else {
+      setState(() => _olderState = LoadState.loadUp);
+      _showError(data);
+    }
+  }
+
+  /// 删除自己的评论（源项目 `to_delete_comment`）。
+  Future<void> _deleteComment(Map<String, dynamic> comment, int index) async {
+    if (!await checkOnline(context, ref)) return;
+    if (!mounted) return;
+    final String fromUsid = comment['commentFromUsid']?.toString() ?? '';
+    final String usid = ref.read(onlineUserProvider)['usid']?.toString() ?? '';
+    if (fromUsid.isEmpty || usid != fromUsid) return;
+
+    final List<dynamic> story =
+        (comment['commentStory'] as List?) ?? <dynamic>[];
+    final String content = story.isNotEmpty && story.first is Map
+        ? ((story.first as Map).values.isEmpty
+            ? ''
+            : (story.first as Map).values.first.toString())
+        : '';
+    final bool confirmed = await showPexModal(
+      context,
+      ref,
+      title: ShowCreationTexts.deleteCommentTitle,
+      content: content.isEmpty ? null : LangText.from(content),
+      confirmText: ShowCreationTexts.deleteConfirm,
+      showCancel: true,
+    );
+    if (!confirmed || !mounted) return;
+
+    final Map<String, dynamic> data = await ref
+        .read(creationApiProvider)
+        .deleteComment(comment['commentUuid']?.toString() ?? '');
+    if (!mounted) return;
+    if (bok(data['_state']?.toString())) {
+      ref.read(creationShowProvider.notifier).removeCommentAt(index);
+      ref.read(creationShowProvider.notifier).merge(<String, dynamic>{
+        'countComment': creation.countComment > 0 ? creation.countComment - 1 : 0,
+      });
+      showPexToast(context, ref, ShowCreationTexts.commentDeleted);
+    } else {
+      showPexToast(
+        context,
+        ref,
+        LangText.fromMap(data['_msg']).isEmpty
+            ? ShowCreationTexts.commentDeleteFailed
+            : LangText.fromMap(data['_msg']),
+      );
+    }
+  }
+
+  void _showError(Map<String, dynamic> data) {
+    final LangText message = LangText.fromMap(data['_msg']);
+    showPexToast(
+      context,
+      ref,
+      message.isEmpty ? PartTexts.systemDown : message,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final String lang = ref.watch(languageProvider);
+    final Envar envar = ref.watch(envarProvider);
+    final List<Map<String, dynamic>> comments =
+        ref.watch(creationShowProvider).commentList;
+    final Map<String, dynamic> statDict =
+        _statDict(ref.watch(envarProvider));
+    final Map<String, dynamic> commentIcon =
+        (statDict['comment'] as Map?)?.cast<String, dynamic>() ??
+            <String, dynamic>{};
+    final bool commented = creation.raw['myCommentCount'] != null;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        // 操作按钮行：本轮仅评论入口（赞赏→2C，分享→2F，修改/隐藏/举报→2E/2F）。
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _ActionButton(
+                icon: PexIcons.uni(
+                  commented
+                      ? (commentIcon['iconTypeOn']?.toString() ??
+                          commentIcon['iconType']?.toString() ??
+                          'chat')
+                      : (commentIcon['iconType']?.toString() ?? 'chat'),
+                ),
+                label: creation.countComment > 0
+                    ? '${creation.countComment}'
+                    : ll(lang, ShowCreationTexts.actionComment),
+                onTap: () => _textFocusNode.requestFocus(),
+              ),
+            ],
+          ),
+        ),
+
+        // 评论编辑器（允许类型取自后台 `comment*` 配置）。
+        PartStoryEditor(
+          story: _commentStory,
+          onStoryChanged: (List<Map<String, dynamic>> next) =>
+              setState(() => _commentStory = next),
+          allowText: envar.boolOf('commentText', true),
+          allowImage: envar.boolOf('commentImage'),
+          allowVideo: envar.boolOf('commentVideo'),
+          allowAudio: envar.boolOf('commentSpeak'),
+          allowFile: envar.boolOf('commentFile'),
+          allowLink: envar.boolOf('commentLink'),
+          maxSections: envar.intOf('commentMaxSections', 2),
+          publishing: _publishing,
+          onPublish: _publish,
+          textFocusNode: _textFocusNode,
+        ),
+        if (_feedback != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 6, 5, 0),
+            child: Text(
+              ll(lang, _feedback!),
+              style: const TextStyle(fontSize: 12, color: Color(0xFFDD6161)),
+            ),
+          ),
+
+        // 刷新 + 评论列表 + 更早评论。
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: TextButton(
+            onPressed: _refreshing ? null : _refreshComments,
+            child: _refreshing
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : Text(
+                    ll(lang, ShowCreationTexts.refreshComments),
+                    style: const TextStyle(fontSize: 14),
+                  ),
+          ),
+        ),
+        for (int i = 0; i < comments.length; i++)
+          _CommentItem(
+            comment: comments[i],
+            index: i,
+            onDelete: () => _deleteComment(comments[i], i),
+          ),
+        if (comments.isNotEmpty)
+          PartLoadMore(loadState: _olderState, onLoad: _olderComments),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+}
+
+/// 操作按钮（源项目 `.locActionButton`）。
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({required this.icon, required this.label, required this.onTap});
+
+  final PexGlyph? icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            PexIcon(icon, size: 30),
+            const SizedBox(height: 2),
+            Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// 评论条目（源项目评论列表的 `uni-list-item`）。
+class _CommentItem extends ConsumerWidget {
+  const _CommentItem({
+    required this.comment,
+    required this.index,
+    required this.onDelete,
+  });
+
+  final Map<String, dynamic> comment;
+  final int index;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String usid = ref.watch(onlineUserProvider)['usid']?.toString() ?? '';
+    final String fromUsid = comment['commentFromUsid']?.toString() ?? '';
+    final String portrait = comment['portrait']?.toString() ?? '';
+    final String nickname = comment['nickname']?.toString() ?? '';
+    final List<dynamic> story =
+        (comment['commentStory'] as List?) ?? <dynamic>[];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: PexColors.greyE, width: 0.5)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // 作者头像（点击进创作者主页）。
+          GestureDetector(
+            onTap: () => context.push('/showCreator?unid=$fromUsid'),
+            child: Container(
+              width: 40,
+              height: 40,
+              margin: const EdgeInsets.only(right: 5),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: <BoxShadow>[BoxShadow(color: Color(0x4D000000), blurRadius: 10)],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: portrait.isEmpty
+                  ? Center(
+                      child: PexIcon.uni('person', size: 24, color: const Color(0xFFD3D3D3)),
+                    )
+                  : ServerImage(portrait, fit: BoxFit.cover),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(4),
+                        onTap: () => context.push('/showCreator?unid=$fromUsid'),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Text(
+                            nickname,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: PexColors.blueMy,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text(
+                      formatDate(comment['commentTimeUnix'], 'yyyy-mm-dd HH:MM'),
+                      style: const TextStyle(fontSize: 12, color: PexColors.grey9),
+                    ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: PartStoryReader(story: story),
+                      ),
+                    ),
+                    if (usid.isNotEmpty && usid == fromUsid)
+                      IconButton(
+                        padding: const EdgeInsets.all(5),
+                        constraints: const BoxConstraints(minWidth: 36),
+                        icon: PexIcon.uni('trash', size: 20),
+                        onPressed: onDelete,
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+int _intOf(Object? value) {
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  return int.tryParse(value?.toString() ?? '') ?? 0;
+}
+
+/// 取 `Creation.uiStatDict`（服务端不发，来自本地预置层）。
+Map<String, dynamic> _statDict(Envar envar) {
+  final Object? creation = envar.raw['Creation'];
+  final Object? dict = creation is Map ? creation['uiStatDict'] : null;
+  return dict is Map ? dict.cast<String, dynamic>() : <String, dynamic>{};
 }
