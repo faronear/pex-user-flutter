@@ -113,13 +113,15 @@ Future<void> main(List<String> args) async {
     print('  register _state=${registered['_state']}');
 
     print('--- 2) create_creation（新建，AGENT 模式）');
-    final String title = 'create check ${DateTime.now().millisecondsSinceEpoch}';
+    // 注意：后端按**内容**去重（`ERROR_DUPLICATE_CREATION`），故正文也要带时间戳。
+    final int stamp = DateTime.now().millisecondsSinceEpoch;
+    final String title = 'create check $stamp';
     final Map<String, dynamic> created = await post(
         client,
         baseUrl,
         'Creation',
         'create_creation',
-        draft(title: title, text: '为了验证创建链路而写的内容。'),
+        draft(title: title, text: '为了验证创建链路而写的内容。$stamp'),
         passtoken);
     print('  _state=${created['_state']}  _msg=${created['_msg']}');
     if (created['_state'] != 'SUCCESS') {
@@ -157,7 +159,11 @@ Future<void> main(List<String> args) async {
         'create_creation',
         <String, dynamic>{
           ...fetched,
-          ...draft(title: newTitle, text: '更新后的内容。', viewAmount: 2),
+          ...draft(
+            title: newTitle,
+            text: '更新后的内容。$stamp',
+            viewAmount: 2,
+          ),
           'csid': csid,
         },
         passtoken);
@@ -172,9 +178,34 @@ Future<void> main(List<String> args) async {
     final bool newTitleOk = after['openTitle']?.toString() == newTitle;
     print('  更新后标题=$newTitle? $newTitleOk');
 
-    print(titleOk && hasContent && updatedOk && newTitleOk
-        ? 'PASS  创作链路（新建 + 更新）契约正确'
-        : 'FAIL  创作链路有异常');
+    print('--- 5) 创作者列表（menuCreator）契约核对');
+    final Map<String, dynamic> creators = await post(client, baseUrl, 'User',
+        'get_creator_list', <String, dynamic>{'takeLimit': 12}, passtoken);
+    final List<dynamic> creatorList =
+        (creators['creatorList'] as List?) ?? <dynamic>[];
+    print('  _state=${creators['_state']}  creatorList=${creatorList.length}');
+    bool creatorOk = creators['_state'] == 'SUCCESS' && creatorList.isNotEmpty;
+    if (creatorList.isNotEmpty) {
+      final Map<String, dynamic> first =
+          (creatorList.first as Map).cast<String, dynamic>();
+      final List<(String, bool)> fields = <(String, bool)>[
+        ('usid', (first['usid']?.toString() ?? '').isNotEmpty),
+        ('nickname', first.containsKey('nickname')),
+        ('portrait', first.containsKey('portrait')),
+        ('countCtnPublic', first.containsKey('countCtnPublic')),
+        ('countFollower', first.containsKey('countFollower')),
+        ('countFollowing', first.containsKey('countFollowing')),
+        ('collectList', first['collectList'] is List),
+      ];
+      for (final (String name, bool present) in fields) {
+        if (!present) creatorOk = false;
+        print('  ${present ? 'OK  ' : 'MISS'} $name');
+      }
+    }
+
+    print(titleOk && hasContent && updatedOk && newTitleOk && creatorOk
+        ? 'PASS  创作链路（新建 + 更新）+ 创作者列表契约正确'
+        : 'FAIL  存在异常');
   } finally {
     client.close(force: true);
   }

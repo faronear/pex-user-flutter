@@ -443,3 +443,30 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **遗留（下一步候选）**：手机端**底部标签栏**尚未实现（源项目由 uni-app 原生 tabBar 承担，
   Flutter 侧目前手机端没有标签栏）；`menuCreator` / `menuMarket` / `showCreator` / `menuUzone` 等页面未迁移。
+
+### 手机端底部标签栏 + 创作者域首片（menuCreator）
+
+- **背景**：批次 3 时发现**手机端根本没有标签栏**（源项目的标签栏是 uni-app 原生 tabBar，
+  Flutter 侧一直没做）→ 老板确认「手机端要有底部标签栏」。
+- **架构冲突与老板决策**：源项目 Babelyx 标签栏是 4 个（探索/遇见/**AIGC**/我的），
+  但我们的 Babelyx 入口**故意不含 AI 域**（`main_babelyx.dart` 不 import `route_ai`，产物小 147KB）。
+  → 老板 2026-09-30 决定：**去掉 AIGC，只留 3 个**（保持裁剪）；TRYAPP 因入口只注册了 AI+公共域，
+  标签栏暂列 2 项（`menuAipp` / `menuUzone`），等 TRYAPP 定位明确再定。
+- **新增 `widgets/part_tab_bar_phone.dart`**：底色 `#303133`、未选中 `#c0c0c0`、选中 `#ffffff`、
+  图标 26px、文字 12px；中间凸起按钮 = 白底圆内品牌 logo + 「创造/对话/行动」，
+  占第 `length ~/ 2` 位（uni-app 的 midButton 规则：3 标签→1左2右，2 标签→1左1右）。
+  - `TabItem` 增 `iconTypeOn`（源项目 `selectedText`）；`BrandConfig.tabItems` 品牌化（Agidin 2 / Babelyx 3）。
+  - 由 tab 页面显式开启：`PartWindowLayout(showTabBar: true)`（`menuCreation`/`menuCreator`/`menuAipp`），
+    普通页（`midBabely`/`showCreation` 等）不显示——与源项目「只有 tabBar 页面才有标签栏」一致。
+- **顺带补齐创作者域首片**（否则 Babelyx 标签栏 3 个里有 2 个是死标签）：
+  - `core/api/creator_api.dart`（`get_creator_list` / `get_single_creator`）
+  - `core/state/creator_provider.dart`（对应 `wo.ss.Creator`）
+  - `widgets/part_creator_all.dart` / `part_creator_card_list.dart`（卡片=头像+昵称+选集/圈子统计+
+    该创作者的作品小卡片；被屏蔽时显示「该用户已被您屏蔽」）
+  - `pages/menu_creator_page.dart`（遇见；顶栏分类 + 「我的圈子」入口）
+- **实测**：`tool/check_create_creation.dart` 扩展第 5 步 —— `User/get_creator_list` 返回 12 位创作者，
+  卡片所需 7 个字段（usid/nickname/portrait/countCtnPublic/countFollower/countFollowing/collectList）齐全 → PASS。
+  另修脚本一处：后端按**内容**去重（`ERROR_DUPLICATE_CREATION`），故正文也要带时间戳。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **遗留**：`menuUzone`（我的空间，675 行，属账户/社交域）未迁移 → 「我的」标签暂落到占位页；
+  这是下一步最该做的（标签栏可见性最高）。

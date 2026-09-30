@@ -25,6 +25,9 @@ class AppRoutes {
   // 标签栏页（部分尚未迁移，仅用于跳转占位）
   static const String menuUzone = 'menuUzone';
 
+  // 社交页（尚未迁移，仅用于跳转占位）
+  static const String umyCircle = 'umyCircle';
+
   // 创作 / NFT 域（待迁移）
   static const String midBabely = 'midBabely';
   static const String umyContact = 'umyContact';

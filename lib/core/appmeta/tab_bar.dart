@@ -11,11 +11,17 @@ class TabItem {
     required this.pageName,
     required this.i18nText,
     required this.iconType,
+    this.iconTypeOn = '',
   });
 
   final String pageName;
   final LangText i18nText;
+
+  /// 未选中图标（源项目 `tabBar.list[].iconfont.text` 的 `uniui-*` 名）。
   final String iconType;
+
+  /// 选中图标（源项目 `selectedText`）。
+  final String iconTypeOn;
 }
 
 const List<TabItem> kTabItems = <TabItem>[
@@ -23,10 +29,12 @@ const List<TabItem> kTabItems = <TabItem>[
     pageName: 'menuAipp',
     i18nText: LangText(zhCN: '智能市场', enUS: 'Aibot Market', jaJP: 'Aibot マーケット'),
     iconType: 'calendar',
+    iconTypeOn: 'calendar-filled',
   ),
   TabItem(
     pageName: 'menuUzone',
     i18nText: LangText(zhCN: '我的空间', enUS: 'My Zone', jaJP: 'マイゾーン'),
     iconType: 'person',
+    iconTypeOn: 'person-filled',
   ),
 ];

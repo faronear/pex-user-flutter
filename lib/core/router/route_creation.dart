@@ -6,6 +6,7 @@ library;
 import 'package:go_router/go_router.dart';
 
 import '../../pages/menu_creation_page.dart';
+import '../../pages/menu_creator_page.dart';
 import '../../pages/mid_babely_page.dart';
 import '../../pages/show_creation_update_page.dart';
 import '../../pages/show_creation_page.dart';
@@ -31,6 +32,11 @@ List<RouteBase> creationRoutes() => <RouteBase>[
         name: AppRoutes.showCreation,
         builder: (_, GoRouterState state) =>
             ShowCreationPage(queryParameters: state.uri.queryParameters),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.menuCreator),
+        name: AppRoutes.menuCreator,
+        builder: (_, _) => const MenuCreatorPage(),
       ),
       GoRoute(
         path: AppRoutes.path(AppRoutes.midBabely),

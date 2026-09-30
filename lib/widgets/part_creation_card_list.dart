@@ -18,6 +18,7 @@ import '../core/util/pex_toolkit.dart';
 import '../core/util/server_url.dart';
 import '../data/creation.dart';
 import '../theme/app_theme.dart';
+import 'part_pexdata_summary.dart';
 import 'part_text_reader.dart';
 
 const LangText _kNoContent = LangText(zhCN: '没有内容', enUS: 'No Content');
@@ -196,7 +197,6 @@ class _Cover extends ConsumerWidget {
 
   /// 加密封面：显示封条文字 + 半透明遮罩里的摘要。
   Widget _lockedCover(WidgetRef ref, String lang) {
-    final Envar envar = ref.watch(envarProvider);
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
@@ -219,10 +219,7 @@ class _Cover extends ConsumerWidget {
         ColoredBox(
           color: const Color(0x99000000),
           child: Center(
-            child: Text(
-              pexdataSummaryText(creation.pexdataSum, envar.tucSymbol),
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
+            child: PartPexdataSummary(pexdataSum: creation.pexdataSum),
           ),
         ),
       ],
@@ -257,10 +254,7 @@ class _Cover extends ConsumerWidget {
                       (section['textIpfs']?.toString() ?? '').isNotEmpty))
               ? PartTextReader(section: section)
               : Center(
-                  child: Text(
-                    pexdataSummaryText(creation.pexdataSum, ref.watch(envarProvider).tucSymbol),
-                    style: const TextStyle(color: Color(0xFF909399), fontSize: 14),
-                  ),
+                  child: PartPexdataSummary(pexdataSum: creation.pexdataSum),
                 ),
     );
   }
@@ -443,16 +437,4 @@ Object? readStatDict(Envar envar) {
   return creation is Map ? creation['uiStatDict'] : null;
 }
 
-/// 摘要文案（无真实内容时展示，替代源项目的 `partPexdataSummary`）。
-String pexdataSummaryText(Map<String, dynamic> sum, String tucSymbol) {
-  if (sum.isEmpty) return '';
-  final List<String> parts = <String>[];
-  for (final MapEntry<String, dynamic> entry in sum.entries) {
-    final Object? value = entry.value;
-    final String text = value is Map
-        ? (value['amount'] ?? value['count'] ?? '').toString()
-        : (value ?? '').toString();
-    if (text.isNotEmpty && text != '0') parts.add('${entry.key}: $text');
-  }
-  return parts.isEmpty ? '' : parts.join('  ');
-}
+

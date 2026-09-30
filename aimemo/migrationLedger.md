@@ -71,7 +71,7 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[x]` |
-| `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[ ]` |
+| `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[x]` |
 | `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
 | `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[>]` 2A 只读骨架已迁（评论/互动/付费/名单/分享举报待 2B–2F） |
 | `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[x]` |
@@ -177,8 +177,8 @@
 | `partCreationAsOwner.vue` | 107 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
 | `partCreationAsViewer.vue` | 107 | `widgets/part_creation_as_list.dart`（5 个合并为参数化组件） | `[x]` |
 | `partCreationCardList.vue` | 363 | `widgets/part_creation_card_list.dart` | `[x]` |
-| `partCreatorAll.vue` | 72 | `widgets/part_creator_all.dart` | `[ ]` |
-| `partCreatorCardList.vue` | 116 | `widgets/part_creator_card_list.dart` | `[ ]` |
+| `partCreatorAll.vue` | 72 | `widgets/part_creator_all.dart` | `[x]` |
+| `partCreatorCardList.vue` | 116 | `widgets/part_creator_card_list.dart` | `[x]` |
 | `partCreatorMyFollowers.vue` | 98 | `widgets/part_creator_my_followers.dart` | `[ ]` |
 | `partCreatorMyFollowings.vue` | 98 | `widgets/part_creator_my_followings.dart` | `[ ]` |
 | `partCreatorMyInvitees.vue` | 144 | `widgets/part_creator_my_invitees.dart` | `[ ]` |

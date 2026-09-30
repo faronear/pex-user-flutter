@@ -62,6 +62,7 @@ class _MenuAippPageState extends ConsumerState<MenuAippPage> {
 
     return PartWindowLayout(
       pageName: 'menuAipp',
+      showTabBar: true,
       child: Column(
         children: <Widget>[
           _buildTopBar(context, lang, tagNow, device),

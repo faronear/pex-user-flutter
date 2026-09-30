@@ -38,6 +38,7 @@ class MenuCreationPage extends ConsumerWidget {
 
     return PartWindowLayout(
       pageName: AppRoutes.menuCreation,
+      showTabBar: true,
       child: Column(
         children: <Widget>[
           Container(

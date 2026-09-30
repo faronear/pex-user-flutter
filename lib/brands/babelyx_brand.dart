@@ -83,7 +83,10 @@ class BabelyxBrand extends BrandConfig {
       );
 
 
-  /// 标签栏（源项目 `pages.json` 的 `tabBar.list`）：探索 / 遇见 / AIGC / 我的。
+  /// 标签栏（源项目 `pages.json` 的 `tabBar.list`）：探索 / 遇见 / 我的。
+  ///
+  /// 源项目还有第 4 项 AIGC（`menuAipp`），但老板 2026-09-30 决定**去掉**：
+  /// Babelyx 入口不含 AI 域（入口级裁剪省 ~147KB），等 AIGC 在 Babelyx 的方向明确后再加。
   @override
   List<TabItem> get tabItems => <TabItem>[
         TabItem(
@@ -95,6 +98,7 @@ class BabelyxBrand extends BrandConfig {
             jaJP: '探索',
           ),
           iconType: 'navigate',
+          iconTypeOn: 'navigate-filled',
         ),
         TabItem(
           pageName: 'menuCreator',
@@ -105,11 +109,7 @@ class BabelyxBrand extends BrandConfig {
             jaJP: '出会い',
           ),
           iconType: 'staff',
-        ),
-        TabItem(
-          pageName: 'menuAipp',
-          i18nText: const LangText(zhCN: 'AIGC', enUS: 'AIGC', deDE: 'AIGC', jaJP: 'AIGC'),
-          iconType: '',
+          iconTypeOn: 'staff-filled',
         ),
         TabItem(
           pageName: 'menuUzone',
@@ -120,6 +120,7 @@ class BabelyxBrand extends BrandConfig {
             jaJP: 'マイ',
           ),
           iconType: 'person',
+          iconTypeOn: 'person-filled',
         ),
       ];
 

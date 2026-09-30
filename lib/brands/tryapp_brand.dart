@@ -56,32 +56,17 @@ class TryappBrand extends BrandConfig {
   @override
   String get midPage => 'midTryapp';
   /// 标签栏（源项目 `pages.json` 的 `tabBar.list`）：探索 / 遇见 / Aibot / 我的。
+  ///
+  /// 注意：TRYAPP 入口目前**只注册了 AI 域 + 公共域**（`main_tryapp.dart`），
+  /// `menuCreation` / `menuCreator` 尚未注册，故此处只列已存在的两项；
+  /// TRYAPP 的整体定位（是否要创作域、`midTryapp` 是否迁移）待后续确认。
   @override
   List<TabItem> get tabItems => <TabItem>[
         TabItem(
-          pageName: 'menuCreation',
-          i18nText: const LangText(
-            zhCN: '探索',
-            enUS: 'Creations',
-            deDE: 'Kreation',
-            jaJP: '探索',
-          ),
-          iconType: 'navigate',
-        ),
-        TabItem(
-          pageName: 'menuCreator',
-          i18nText: const LangText(
-            zhCN: '遇见',
-            enUS: 'Creators',
-            deDE: 'Ersteller',
-            jaJP: '出会い',
-          ),
-          iconType: 'staff',
-        ),
-        TabItem(
           pageName: 'menuAipp',
-          i18nText: const LangText(zhCN: 'Aibot', enUS: 'Aibot', deDE: 'Aibot', jaJP: 'Aibot'),
-          iconType: '',
+          i18nText: const LangText(zhCN: 'Aibot', enUS: 'Aibot', jaJP: 'Aibot'),
+          iconType: 'shop',
+          iconTypeOn: 'shop-filled',
         ),
         TabItem(
           pageName: 'menuUzone',
@@ -92,24 +77,9 @@ class TryappBrand extends BrandConfig {
             jaJP: 'マイ',
           ),
           iconType: 'person',
+          iconTypeOn: 'person-filled',
         ),
       ];
-
-
-  // 源项目 `tabBar.midButton`：TRYAPP 同为火苗图标，文案「行动」。
-  @override
-  String get midButtonIcon => 'fire';
-
-  @override
-  String get midButtonIconOn => 'fire-filled';
-
-  @override
-  LangText get midButtonText => const LangText(
-        zhCN: '行动',
-        enUS: 'Act',
-        deDE: 'Handeln',
-        jaJP: '行動',
-      );
 
   @override
   String get coinCode => '';
