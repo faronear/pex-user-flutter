@@ -15,6 +15,13 @@ class LocalStore {
   static const String keyMylang = 'mylang';
   static const String keyUserlandCode = 'userlandCode';
 
+  /// 用户在「我的设置」里选定的法币 / 加密币代码。
+  ///
+  /// 源项目只改内存、不落地（`umyConfig` 里写着「todo: 通知后台修改」），
+  /// 刷新即丢；迁移版**存本地**，这是老板 2026-09-30 确认的有意改进。
+  static const String keyBankcoinCode = 'bankcoinCode';
+  static const String keyCryptocoinCode = 'cryptocoinCode';
+
   /// 上一次成功拉取的 `first_touch.envarBase`（JSON 字符串）。
   /// 断线时用它兜底，使首屏仍显示**上次真实**的新闻/文案（方案 E 的轻量缓存层）。
   static const String keyEnvarCache = 'envarCache';

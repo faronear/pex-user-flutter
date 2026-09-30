@@ -29,6 +29,7 @@ import '../core/state/app_startup_notifier.dart';
 import '../core/state/creation_draft_provider.dart';
 import '../core/state/creation_provider.dart';
 import '../core/state/creator_provider.dart';
+import '../core/state/coin_provider.dart';
 import '../core/state/envar_provider.dart';
 import '../core/util/feedback.dart';
 import '../core/util/file_utils.dart';
@@ -794,8 +795,12 @@ class _MenuUzonePageState extends ConsumerState<MenuUzonePage> {
           _listRow(
             icon: PexIcons.uni('gear'),
             title: pageMetaOf('umyConfig')?.i18nListTitle,
-            // 源项目还有法币 / 加密币代码，但那属于 `umyConfig`（设置）域，尚未迁移。
-            footer: Text('${kLangNative[lang] ?? lang} | ${ref.watch(brandProvider).coinCode}'),
+            // 与源项目一致：语言 | 法币 | 加密币（后两者可在「我的设置」里改）。
+            footer: Text(
+              '${kLangNative[lang] ?? lang}'
+              ' | ${ref.watch(coinProvider).bankCoin.coinCode}'
+              ' | ${ref.watch(coinProvider).cryptoCoin.coinCode}',
+            ),
             onTap: () => context.push('/${AppRoutes.umyConfig}'),
           ),
           _listRow(

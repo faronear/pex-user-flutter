@@ -6,9 +6,11 @@
 // 本脚本用真实时间等待，并可按顺序注入鼠标点击，适合验证弹窗/交互态。
 //
 // 用法：
-//   node tool/cdpShot.js <url> <outPrefix> [x,y ...] [--w=500] [--h=800] [--wait=11000]
+//   node tool/cdpShot.js <url> <outPrefix> [step ...] [--w=500] [--h=800] [--wait=11000]
+//   步骤：`x,y` = 点击该坐标；`type:文本` = 往当前焦点输入文本（通常接在点击输入框之后）
 // 例：
 //   node tool/cdpShot.js "http://localhost:8090/#/menuUzone" /tmp/shot "142,31" "200,101"
+//   node tool/cdpShot.js "http://localhost:8090/#/umyContact" /tmp/c "200,300" "type:你好"
 //
 // 依赖：Node 18+（自带 fetch 与 WebSocket）、macOS 上的 Google Chrome。
 // 注意：CDP 的 `Input.dispatchMouseEvent` 坐标是 **CSS 像素**（不要乘 dpr）。
@@ -27,14 +29,17 @@ const positional = argv.filter((a) => !a.startsWith('--'));
 
 const url = positional[0];
 const outPrefix = positional[1] || '/tmp/cdpShot';
-const clicks = positional.slice(2).map((s) => s.split(',').map(Number));
+// 步骤：{kind:'click',x,y} 或 {kind:'type',text}
+const steps = positional.slice(2).map((s) => s.startsWith('type:')
+  ? { kind: 'type', text: s.slice(5) }
+  : { kind: 'click', xy: s.split(',').map(Number) });
 const width = flag('w', 500);
 const height = flag('h', 800);
 const waitMs = flag('wait', 11000);
 const stepMs = flag('step', 2500);
 
 if (!url) {
-  console.error('用法：node tool/cdpShot.js <url> <outPrefix> [x,y ...]');
+  console.error('用法：node tool/cdpShot.js <url> <outPrefix> [x,y | type:文本 ...]');
   process.exit(1);
 }
 
@@ -96,13 +101,19 @@ async function main() {
   };
   await shot('0');
 
-  for (let i = 0; i < clicks.length; i++) {
-    const [x, y] = clicks[i];
-    await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
-    for (const type of ['mousePressed', 'mouseReleased']) {
-      await send('Input.dispatchMouseEvent', {
-        type, x, y, button: 'left', clickCount: 1,
-      });
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    if (step.kind === 'click') {
+      const [x, y] = step.xy;
+      await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+      for (const type of ['mousePressed', 'mouseReleased']) {
+        await send('Input.dispatchMouseEvent', {
+          type, x, y, button: 'left', clickCount: 1,
+        });
+      }
+    } else {
+      // 往当前焦点插入文本（Flutter web 的输入框靠 key events 驱动）。
+      await send('Input.insertText', { text: step.text });
     }
     await sleep(stepMs);
     await shot(String(i + 1));

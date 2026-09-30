@@ -35,8 +35,8 @@
 | `umyAccountPassword.vue` | 158 | `pages/umy_account_password_page.dart` | `[ ]` |
 | `umyAccountTerminate.vue` | 124 | `pages/umy_account_terminate_page.dart` | `[ ]` |
 | `umyKyc.vue` | 435 | `pages/umy_kyc_page.dart` | `[ ]` |
-| `umyConfig.vue` | 83 | `pages/umy_config_page.dart` | `[ ]` |
-| `umyContact.vue` | 158 | `pages/umy_contact_page.dart` | `[ ]` |
+| `umyConfig.vue` | 83 | `pages/umy_config_page.dart` | `[x]` 换币**存本地**（源项目是内存态 todo） |
+| `umyContact.vue` | 158 | `pages/umy_contact_page.dart` | `[x]` |
 
 ### 资金
 | 源 | 行数 | 目标 | 状态 |
@@ -136,7 +136,7 @@
 | `partLangTable.vue` | 161 | `widgets/part_lang_table.dart` | `[x]` |
 | `partLandTable.vue` | 127 | `widgets/part_land_table.dart` | `[x]` |
 | `partCoinPicker.vue` | 55 | `widgets/part_coin_picker.dart` | `[ ]` |
-| `partCoinTable.vue` | 99 | `widgets/part_coin_table.dart` | `[ ]` |
+| `partCoinTable.vue` | 99 | `widgets/part_coin_table.dart` | `[x]`（可排序表 + 选择弹窗） |
 
 ### 身份
 | 源 | 行数 | 目标 | 状态 |

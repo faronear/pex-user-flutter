@@ -15,6 +15,8 @@ import '../../pages/ident_old_login_page.dart';
 import '../../pages/ident_old_passcode_page.dart';
 import '../../pages/ident_old_reset_page.dart';
 import '../../pages/menu_uzone_page.dart';
+import '../../pages/umy_config_page.dart';
+import '../../pages/umy_contact_page.dart';
 import 'app_routes.dart';
 
 /// 首页门户 + 账户/登录注册闭环 + 我的空间。
@@ -29,6 +31,17 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         path: AppRoutes.path(AppRoutes.menuUzone),
         name: AppRoutes.menuUzone,
         builder: (_, _) => const MenuUzonePage(),
+      ),
+      // 「我的设置」「联系客服」也是三品牌共用的账户域页面。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyConfig),
+        name: AppRoutes.umyConfig,
+        builder: (_, _) => const UmyConfigPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyContact),
+        name: AppRoutes.umyContact,
+        builder: (_, _) => const UmyContactPage(),
       ),
       GoRoute(
         path: AppRoutes.path(AppRoutes.identBegin),

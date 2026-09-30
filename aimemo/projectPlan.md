@@ -171,9 +171,17 @@
     + 未登录分支（注册引导，对应 `partWindowLayoutUser`）
     - **老板决定（2026-09-30）**：清单里指向**尚未迁移页面**的行**全部渲染、跳现有占位页**
       （复用 `app_router` 的兜底路由，占位页显示「XX 尚未迁移」），迁移后自动生效、零回改
-    - 待续：`umyAccount*` / `umyKyc` / `umyInvite*` / `umyCircle` / `umyContact` / `umyConfig` /
-      `umyMia*` / `umyAccountTerminate` / `midTryapp`；组件 `partIdentCommid`
-      （`umyCollection` / `partComplain` 已在批次 2 完成）
+  - [x] **`umyConfig`（我的设置）**：界面语言 / 银行货币 / 加密货币，换币走
+    `core/state/coin_provider.dart`（`partCoinTable` 可排序选择弹窗）
+    - **有意改进（老板 2026-09-30 确认）**：源项目换币只改内存（`todo: 通知后台修改`），刷新即丢；
+      迁移版**写本地存储**（`bankcoinCode` / `cryptocoinCode`）
+    - 新增 `core/i18n/coins.dart`（由 `tool/genCoins.js` 从 `wo-core-i18n` 生成：法定货币 180 种 + 加密币 9 种）
+  - [x] **`umyContact`（联系客服）**：邮箱 + 留言 → `System/contact_csr`（后端发信），
+    另列团队电话/邮箱/地址；新增 `core/api/system_api.dart`
+    - 顺带把 `menuUzone` 设置行补回源项目的三段式「语言 | 法币 | 加密币」
+  - 待续：`umyAccount*` / `umyKyc` / `umyInvite*` / `umyCircle` / `umyMia*` /
+    `umyAccountTerminate` / `midTryapp`；组件 `partIdentCommid`
+    （`umyCollection` / `partComplain` 已在批次 2 完成）
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

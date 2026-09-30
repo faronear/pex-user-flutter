@@ -510,3 +510,32 @@
      我第一次就是这样误点到「My Circles」徽标、结果验证了徽标跳转是好的）。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **遗留**：清单里 7 个目标页仍未迁移（点了看占位页）；`umyConfig` 迁移时补设置行的法币/加密币段。
+
+### 账户域 · umyConfig（我的设置）+ umyContact（联系客服）
+
+- **老板决策（2026-09-30）**：`umyConfig` 的货币选择「**完整实现 + 本地持久化**」。
+  背景：源项目 `to_change_bankcoin/cryptocoin` 只改内存变量、底下写着 `todo: 通知后台修改`，
+  **既不通知后端也不存本地，刷新即丢**；迁移版写本地存储（`bankcoinCode` / `cryptocoinCode`），
+  默认值仍与源项目一致（法币按地区 CN→CNY、其余→USD；加密币 TUC）。
+- **新增**：
+  - `core/i18n/coins.dart`（**生成物**）：法定货币 180 种 + 加密币 9 种 + 地区→法币映射；
+    生成器 `tool/genCoins.js`（数据源 = 源项目依赖包 `wo-core-i18n`，只留页面用得到的字段，约 22KB）
+  - `core/state/coin_provider.dart`（对应 `wo.ss.i18n.bankcoinNow/cryptocoinNow`）
+  - `widgets/part_coin_table.dart`（对应 `partCoinTable.vue`：符号/名称/代号三列 + 名称·代号可排序 + 选择弹窗）
+  - `pages/umy_config_page.dart`（三行：界面语言 / 银行货币 / 加密货币）
+  - `pages/umy_contact_page.dart`（邮箱 + 留言 → `System/contact_csr`；团队电话/邮箱/地址；手机端语言表）
+  - `core/api/system_api.dart`（`contactCsr`，账户域之外第一个 `System` 接口）
+  - 两者都注册在 `route_common.dart`（三品牌共用的账户域页）
+- **顺带补齐**：`menuUzone` 设置行恢复源项目的三段式「语言 | 法币 | 加密币」
+  （上一片我把法币/加密币省掉了，注明「待 umyConfig 迁移时补」，现在补上了）。
+- **实测**：
+  - `dart run tool/check_contact_csr.dart` → `contact_csr` SUCCESS → **PASS**
+  - 视觉（headless + `tool/cdpShot.js`）：设置页三行与图标、货币弹窗（可排序，Name/Code 带升降箭头）、
+    选中后行内文案更新、**重新加载后仍是所选货币（持久化生效）**；
+    客服页表单、未填写时「发送」置灰、填写后变品牌色可点、团队邮箱链接、手机端语言表。
+  - `tool/cdpShot.js` 增 `type:文本` 步骤（用 CDP `Input.insertText`）——**Flutter web 输入框可用**，
+    以后表单类页面可以端到端验证「填写 → 按钮态 → 提交」。
+- **注意（副作用）**：`System/contact_csr` 会**真的发邮件**给后端 `oncallMessage.to`（值班邮箱），
+  且后端**不做入参校验**（空内容也发）。验证期间共发出 2 封测试邮件（1 次 curl + 1 次脚本），
+  脚本内已注明「别在循环里跑」。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
