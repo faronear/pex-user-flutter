@@ -80,6 +80,18 @@ class Envar {
     final Object? subtags = groupValue['subtags'];
     return subtags is Map ? subtags.cast<String, dynamic>() : <String, dynamic>{};
   }
+
+  /// 分组节点本身（含 `iName` / `hiddenGroup` / `subtags`）。
+  Map<String, dynamic> linkGroup(String group) {
+    final Object? value = linkTree[group];
+    return value is Map ? value.cast<String, dynamic>() : <String, dynamic>{};
+  }
+
+  /// 分组是否被后台隐藏（源项目 `hiddenGroup`）。
+  bool isLinkGroupHidden(String group) => _isTrue(linkGroup(group)['hiddenGroup']);
+
+  static bool _isTrue(Object? value) =>
+      value == true || value?.toString() == 'true';
 }
 
 /// 当前生效配置：**本地预置层 → 后端下发层覆盖**（方案 E）。

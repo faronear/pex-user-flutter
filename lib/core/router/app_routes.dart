@@ -20,6 +20,7 @@ class AppRoutes {
   static const String menuAippAichat = 'menuAippAichat';
 
   // 创作 / NFT 域（待迁移）
+  static const String umyContact = 'umyContact';
   static const String menuCreation = 'menuCreation';
   static const String umyCollection = 'umyCollection';
   static const String menuCreator = 'menuCreator';

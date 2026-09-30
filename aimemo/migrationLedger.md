@@ -76,8 +76,8 @@
 | `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[>]` 2A 只读骨架已迁（评论/互动/付费/名单/分享举报待 2B–2F） |
 | `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[ ]` |
 | `showCreator.vue` | 712 | `pages/show_creator_page.dart` | `[ ]` |
-| `userResource.vue` | 133 | `pages/user_resource_page.dart` | `[ ]` |
-| `userResourceDetail.vue` | 208 | `pages/user_resource_detail_page.dart` | `[ ]` |
+| `userResource.vue` | 133 | `pages/user_resource_page.dart` | `[x]` |
+| `userResourceDetail.vue` | 208 | `pages/user_resource_detail_page.dart` | `[x]` 含二维码（新增依赖 qr_flutter） |
 
 ### 其它
 | 源 | 行数 | 目标 | 状态 |

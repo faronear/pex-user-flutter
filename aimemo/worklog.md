@@ -256,3 +256,21 @@
   - 修掉一处真 bug：加密封面兜底背景误用纯绿色导致封条文字不可见，已改回 `matrix7.jpg`。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功；`dart run tool/check_creation_show.dart` PASS。
 - **下一片**：按既定顺序 **2G 资源页 → 2B 统计与互动**（评论列表 + 点赞）。
+
+### 创作/NFT 域 批次 2 · 2G 资源页（userResource / userResourceDetail）
+
+- **新增**：
+  - `pages/user_resource_page.dart`：按 `linkTree` 分组渲染图标入口
+    （`hiddenGroup` 隐藏整组；apps 组按平台过滤；recos 组排除本品牌，均与源项目一致）；
+    底部 Customer Service 入口 + 手机端语言选择器。
+  - `pages/user_resource_detail_page.dart`：两层切换条（分组 / 子项）+
+    安卓应用市场下拉（RAWAPK + `appMarket`）+ `infoTitle` 说明 +
+    「官方版本 / 本机版本 / 更新建议」（本机版本仅原生 App 内显示，与 `#ifdef APP` 对齐）+
+    **二维码** + 可点击/可复制的链接。
+  - `core/state/envar_provider.dart` 增 `linkGroup` / `isLinkGroupHidden`。
+  - **新增依赖 `qr_flutter ^4.1.0`**（老板确认采用）；复制用 Flutter 内置 `Clipboard`（零依赖）。
+- **实测**：headless 截图手机 500 宽——列表页三组图标与过滤正确（recos 隐藏）；
+  安卓详情页：分组/子项选中态、市场下拉、官方版本号 26082314、二维码、
+  链接 `https://apk.babelyx.com`（注意：后端按 `_clientInfo.webDomain` 动态拼链接，
+  之前的 curl 样例没传 webDomain 才显示 `undefined`，App 内正常）。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。

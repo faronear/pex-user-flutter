@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 import '../../pages/menu_creation_page.dart';
 import '../../pages/show_creation_page.dart';
 import '../../pages/umy_collection_page.dart';
+import '../../pages/user_resource_detail_page.dart';
+import '../../pages/user_resource_page.dart';
 import 'app_routes.dart';
 
 /// 创作、创作者、市场、作品详情等。
@@ -28,6 +30,17 @@ List<RouteBase> creationRoutes() => <RouteBase>[
         builder: (_, GoRouterState state) =>
             ShowCreationPage(queryParameters: state.uri.queryParameters),
       ),
-      // showCreationUpdate / menuCreator / showCreator / menuMarket
-      // / userResource / userResourceDetail 待后续批次加入
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.userResource),
+        name: AppRoutes.userResource,
+        builder: (_, _) => const UserResourcePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.userResourceDetail),
+        name: AppRoutes.userResourceDetail,
+        builder: (_, GoRouterState state) => UserResourceDetailPage(
+          tagNow: state.uri.queryParameters['tagnow'] ?? '',
+        ),
+      ),
+      // showCreationUpdate / menuCreator / showCreator / menuMarket 待后续批次加入
     ];

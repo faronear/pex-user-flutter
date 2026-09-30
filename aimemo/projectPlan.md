@@ -126,7 +126,9 @@
     - [ ] **2E 作者编辑与下架**：接入 `partStoryEditor` + `update_creation` / `unlist_creation`
       / `unhide_creation` / 删除
     - [ ] **2F 分享与举报**：`partPopLink` / `partComplain` / `partIcontextPop` / `partIcontextCopy`
-    - [ ] **2G 资源页**：`userResource`(133) / `userResourceDetail`(208) —— 小而独立，可随时插入
+    - [x] **2G 资源页**：`userResource` / `userResourceDetail`
+      （分组/子项切换、安卓应用市场选择、版本比对、二维码 qr_flutter、链接复制；
+      分享图标 partIcontextCopyshare 待 2F）
     - 建议顺序：2A → 2G → 2B → 2D → 2F → 2C → 2E（先只读闭环，再交互，最后付费/编辑）
   - [ ] 批次3 **创作与编辑（UGC 核心）**：`partCreate` + `partStoryEditor` 完整版 + `story_to_cid` + `create_creation`
   - [ ] 批次4 付费与持有：`pay_to_{view,own,hold}` + 充值弹窗 `partDeposit`
