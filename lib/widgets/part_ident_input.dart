@@ -21,6 +21,7 @@ class PartIdentInput extends ConsumerWidget {
     this.keyboardType,
     this.inputFormatters,
     this.onChanged,
+    this.autofocus = false,
     this.hasError = false,
     this.textAlign = TextAlign.start,
     this.fontSize = 20,
@@ -36,6 +37,9 @@ class PartIdentInput extends ConsumerWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final ValueChanged<String>? onChanged;
+
+  /// 进入页面即聚焦（对应源项目 `uni-easyinput` 的 `:focus` 属性）。
+  final bool autofocus;
   /// 为 true 时边框变红（对应源项目 `:errorMessage` 控制输入框变红）。
   final bool hasError;
   final TextAlign textAlign;
@@ -58,6 +62,7 @@ class PartIdentInput extends ConsumerWidget {
       child: TextField(
         controller: controller,
         focusNode: focusNode,
+        autofocus: autofocus,
         enabled: enabled,
         obscureText: obscure,
         textAlign: textAlign,

@@ -24,6 +24,10 @@ class AppRoutes {
 
   // 账户 / 社交域（页面尚未迁移，仅用于跳转占位）
   static const String umyAccount = 'umyAccount';
+  static const String umyAccountPassword = 'umyAccountPassword';
+  static const String umyAccountCommid = 'umyAccountCommid';
+  static const String umyAccountCommidNew = 'umyAccountCommidNew';
+  static const String umyAccountTerminate = 'umyAccountTerminate';
   static const String umyKyc = 'umyKyc';
   static const String umyMia = 'umyMia';
   static const String umyConfig = 'umyConfig';

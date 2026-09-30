@@ -15,6 +15,11 @@ import '../../pages/ident_old_login_page.dart';
 import '../../pages/ident_old_passcode_page.dart';
 import '../../pages/ident_old_reset_page.dart';
 import '../../pages/menu_uzone_page.dart';
+import '../../pages/umy_account_commid_new_page.dart';
+import '../../pages/umy_account_commid_page.dart';
+import '../../pages/umy_account_page.dart';
+import '../../pages/umy_account_password_page.dart';
+import '../../pages/umy_account_terminate_page.dart';
 import '../../pages/umy_config_page.dart';
 import '../../pages/umy_contact_page.dart';
 import 'app_routes.dart';
@@ -31,6 +36,32 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         path: AppRoutes.path(AppRoutes.menuUzone),
         name: AppRoutes.menuUzone,
         builder: (_, _) => const MenuUzonePage(),
+      ),
+      // 账号安全闭环（三品牌共用）：账号 / 改密码 / 验证当前账号 / 设置新账号 / 销毁账号。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyAccount),
+        name: AppRoutes.umyAccount,
+        builder: (_, _) => const UmyAccountPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyAccountPassword),
+        name: AppRoutes.umyAccountPassword,
+        builder: (_, _) => const UmyAccountPasswordPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyAccountCommid),
+        name: AppRoutes.umyAccountCommid,
+        builder: (_, _) => const UmyAccountCommidPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyAccountCommidNew),
+        name: AppRoutes.umyAccountCommidNew,
+        builder: (_, _) => const UmyAccountCommidNewPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyAccountTerminate),
+        name: AppRoutes.umyAccountTerminate,
+        builder: (_, _) => const UmyAccountTerminatePage(),
       ),
       // 「我的设置」「联系客服」也是三品牌共用的账户域页面。
       GoRoute(

@@ -1,6 +1,9 @@
-/// 验证码发送 + 校验的通用块，供「新用户注册验证」与「老用户重设密码验证」复用。
+/// 验证码发送 + 校验的通用块。
 ///
-/// 对应源项目 `pages/identNewPasscode.vue` 与 `pages/identOldPasscode.vue` 的共同逻辑。
+/// 最初服务于「新用户注册验证」与「老用户重设密码验证」
+/// （源项目 `pages/identNewPasscode.vue` / `identOldPasscode.vue`）；
+/// 账户域的「验证当前账号」「设置新账号」（`umyAccountCommid(.New)`）也复用同一套逻辑，
+/// 故 [commid] / [usid] / [header] / [onVerified] 均可外部传入（不传则沿用 ident 域的行为）。
 library;
 
 import 'dart:async';
@@ -66,18 +69,44 @@ class PartPasscodeVerify extends ConsumerStatefulWidget {
   const PartPasscodeVerify({
     super.key,
     required this.passcodeType,
-    required this.successRoute,
+    this.successRoute = '',
     this.extraWhat = const <String, dynamic>{},
+    this.commid,
+    this.usid,
+    this.header,
+    this.onVerified,
+    this.onPasscodeSent,
+    this.sendDisabled = false,
   });
 
-  /// `REGISTER`（新用户）或 `RESETPWD`（重设密码）。
+  /// `REGISTER`（新用户）/ `RESETPWD`（重设密码）/ `CHECK_OLD`（验证当前账号）
+  /// / `CHECK_NEW`（验证新账号）。
   final String passcodeType;
 
-  /// 校验通过后跳转的路由名。
+  /// 校验通过后跳转的路由名（与 [onVerified] 二选一）。
   final String successRoute;
 
   /// 校验请求额外参数（如新用户的 `inviterHaid`）。
   final Map<String, dynamic> extraWhat;
+
+  /// 收验证码的账号；不传则取 `identProvider.commid`。
+  final String? commid;
+
+  /// 参与验证码哈希的用户标识；不传则取 `identProvider.usid`。
+  final String? usid;
+
+  /// 顶部自定义内容；不传则显示 [PartIdentCommid]（ident 域用）。
+  final Widget? header;
+
+  /// 校验通过后的回调（与 [successRoute] 二选一，优先本项）。
+  final VoidCallback? onVerified;
+
+  /// 验证码发送成功后回调，参数为本次验证码的过期时间戳。
+  /// 「设置新账号」页用它把 `Ident.verifyExpireAt` 一并延长（对齐源项目）。
+  final ValueChanged<int>? onPasscodeSent;
+
+  /// 额外的「不可发送」条件（账户域：连手机和邮箱都没有时）。
+  final bool sendDisabled;
 
   @override
   ConsumerState<PartPasscodeVerify> createState() => _PartPasscodeVerifyState();
@@ -101,7 +130,11 @@ class _PartPasscodeVerifyState extends ConsumerState<PartPasscodeVerify> {
     super.initState();
     // 源项目在 onLoad 中延迟 100ms 自动发送。
     Future<void>.delayed(const Duration(milliseconds: 100), () {
-      if (mounted && ref.read(identProvider).commid.isNotEmpty) _sendPasscode();
+      final String commid = widget.commid ?? ref.read(identProvider).commid;
+      if (mounted && commid.isNotEmpty && widget.commid == null) {
+        // 仅 ident 域沿用「进页面自动发送」；账户域由用户点按钮触发。
+        _sendPasscode();
+      }
     });
   }
 
@@ -134,8 +167,8 @@ class _PartPasscodeVerifyState extends ConsumerState<PartPasscodeVerify> {
       _feedbackRemote = null;
     });
 
-    final String commid = ref.read(identProvider).commid;
-    if (ref.read(identProvider).usid.isEmpty) {
+    final String commid = widget.commid ?? ref.read(identProvider).commid;
+    if (usid.isEmpty) {
       setState(() => _feedbackBad = _kUnknownUser);
       return;
     }
@@ -162,6 +195,7 @@ class _PartPasscodeVerifyState extends ConsumerState<PartPasscodeVerify> {
             ? _kPasscodeSent
             : LangText.fromMap(data['_msg']);
       });
+      widget.onPasscodeSent?.call(_passcodeExpireAt);
       // 开发环境后端直接下发验证码。
       if (!kReleaseMode && data['passcode'] != null) {
         showPexToast(
@@ -184,9 +218,11 @@ class _PartPasscodeVerifyState extends ConsumerState<PartPasscodeVerify> {
     }
   }
 
+  /// 参与验证码哈希的用户标识（账户域传入 `onlineUser.usid`）。
+  String get usid => widget.usid ?? ref.read(identProvider).usid;
+
   Future<void> _verify() async {
-    final String commid = ref.read(identProvider).commid;
-    final String usid = ref.read(identProvider).usid;
+    final String commid = widget.commid ?? ref.read(identProvider).commid;
 
     if (_passcodeHash.isEmpty) {
       setState(() => _feedbackRemote = _kNeedPasscode);
@@ -229,7 +265,11 @@ class _PartPasscodeVerifyState extends ConsumerState<PartPasscodeVerify> {
       ref
           .read(identProvider.notifier)
           .setVerifyExpireAt(int.tryParse('${data['verifyExpireAt']}') ?? 0);
-      context.push(AppRoutes.path(widget.successRoute));
+      if (widget.onVerified != null) {
+        widget.onVerified!();
+      } else {
+        context.push(AppRoutes.path(widget.successRoute));
+      }
     } else {
       setState(() {
         _feedbackRemote = data['_msg'] == null
@@ -250,12 +290,13 @@ class _PartPasscodeVerifyState extends ConsumerState<PartPasscodeVerify> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        const PartIdentCommid(),
+        widget.header ?? const PartIdentCommid(),
         Padding(
           padding: const EdgeInsets.only(bottom: 32),
           child: Center(
             child: PartButtonPasscode(
               onPressed: _sendPasscode,
+              disabled: widget.sendDisabled,
               loading: _sending,
               remainingSeconds: _remainingSeconds,
             ),

@@ -539,3 +539,40 @@
   且后端**不做入参校验**（空内容也发）。验证期间共发出 2 封测试邮件（1 次 curl + 1 次脚本），
   脚本内已注明「别在循环里跑」。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+
+### 账户域 · 账号安全闭环（umyAccount 5 页）
+
+- **页面**：`umy_account_page`（用户号/手机/邮箱/密码/注销 五行）
+  · `umy_account_password_page`（改密码，两项哈希 + 6 位下限 + 新旧不同 + 两次一致）
+  · `umy_account_commid_page`（验证当前账号：手机/邮箱分段选择 + 大字账号 + 验证码）
+  · `umy_account_commid_new_page`（设置新账号：地区选择 + 新手机/邮箱 + 验证码）
+  · `umy_account_terminate_page`（销毁账号：密码 + 二次确认 + 7 天冷静期说明）
+  五页全部注册在 `route_common.dart`（三品牌共用）。
+- **复用（本片的主要工程决策）**：`part_passcode_verify` 原本硬绑 `identProvider`，
+  泛化为可传 `commid` / `usid` / `header` / `onVerified` / `onPasscodeSent` / `sendDisabled`
+  ——**ident 两页一行未改**，账户域两页直接复用，避免再写第二份「发码 + 校验」逻辑。
+  - 有意简化：源项目在 CommidNew 里**先**用 `Ident.verifyExpireAt` 做客户端过期判断，
+    迁移版依赖后端返回 `OLD_VERIFY_EXPIRED`（**后端本来就有这道校验**，且带原因文案），
+    少一个参数、行为一致。
+- **新增**：
+  - `core/state/session_reset.dart`：把「重置会话缓存」（源项目 vuex `reset_all`）收成一处，
+    `menuUzone` 的重启与 `umyAccountTerminate` 的注销共用（此前是 menuUzone 里的私有方法）
+  - `user_api`：`changePassword` / `terminateAccount` / `sendPasscode` / `verifyPasscode`
+  - `part_ident_input` 增 `autofocus`（对应源项目 `uni-easyinput` 的 `:focus`）
+- **顺带修**：`showPexModal` 的弹窗底色从 M3 品牌染色改为**白色**（源项目为白）——
+  这条影响全站所有确认弹窗（此前截图里偏粉）。
+- **源项目缺口**：`wo.ss.tTerminate`（注销页的说明段）在 `envar-config.js` 里恒为 `undefined`，
+  **从未被定义过** → 迁移版照此留空（代码注释写明：后台一填就会显示）。若你希望给用户一段
+  明确的注销须知，需要产品文案。
+- **实测**：
+  - `dart run tool/check_account.dart` —— 注册 → 改密码（错密码 `PASSWORD_UNMATCH` / 对的 `SUCCESS`）
+    → **用新密码复登 `LOGIN_SUCCESS`**（证明改动真生效）→ CHECK_OLD 发码 + 本地哈希比对 + 校验
+    （`VERIFY_SUCCESS`，带 `verifyExpireAt`）→ CHECK_NEW 改邮箱并复查已更新
+    → 销毁账号（错 `PASSWORD_UNMATCH` / 对 `SUCCESS`）→ **PASS**
+  - 视觉（CDP 截图，手机 500）：5 页布局；改密码页「三个框填写 → 按钮由灰变品牌色 → 提交出成功弹窗」；
+    验证当前账号页「发码成功（绿字）+ 倒计时 + 输入 6 位错误码 → 红字 Passcode is mismatched」（客户端哈希闸门生效）；
+    设置新账号页「填邮箱 → 发码按钮变可用」+ 地区选择表（搜索 + 国旗 + 区号）；
+    销毁账号页「填密码 → 二次确认弹窗（白色，含昵称 + 7 天警告）」
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **遗留**：`umyKyc`(435) / `umyInvite*` / `umyCircle` / `umyMia*` / `midTryapp` 未迁移；
+  `umyAccount` 里「手机/邮箱」两行都指向 `umyAccountCommid`（与源项目一致）。

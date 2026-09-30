@@ -42,6 +42,8 @@ Future<bool> showPexModal(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) => AlertDialog(
+      // 源项目弹窗底色为白色；M3 默认会给 surface 染上品牌色。
+      backgroundColor: Colors.white,
       title: title == null ? null : Text(resolve(title)!),
       content: content == null ? null : Text(resolve(content)!),
       actions: <Widget>[

@@ -179,8 +179,18 @@
   - [x] **`umyContact`（联系客服）**：邮箱 + 留言 → `System/contact_csr`（后端发信），
     另列团队电话/邮箱/地址；新增 `core/api/system_api.dart`
     - 顺带把 `menuUzone` 设置行补回源项目的三段式「语言 | 法币 | 加密币」
-  - 待续：`umyAccount*` / `umyKyc` / `umyInvite*` / `umyCircle` / `umyMia*` /
-    `umyAccountTerminate` / `midTryapp`；组件 `partIdentCommid`
+  - [x] **账号安全闭环（5 页）**：`umyAccount`（5 行清单）· `umyAccountPassword`（改密码）·
+    `umyAccountCommid`（验证当前账号）· `umyAccountCommidNew`（设置新账号：地区 + 新手机/邮箱）·
+    `umyAccountTerminate`（销毁账号）
+    - **复用**：把 `part_passcode_verify`（验证码发送 + 校验块）**泛化**为可传入
+      `commid`/`usid`/`header`/`onVerified`/`onPasscodeSent`/`sendDisabled`——
+      ident 两页行为不变，账户域两页直接复用，避免第二份验证码逻辑
+    - 新增 `core/state/session_reset.dart`：把「重置会话缓存」（源项目 vuex `reset_all`）
+      收成一处，`menuUzone` 重启与 `umyAccountTerminate` 注销共用
+    - **源项目缺口**：`wo.ss.tTerminate`（注销页说明文案）在 `envar-config.js` 里恒为 `undefined`，
+      从未被定义 → 迁移版照此留空（后台一填就会显示）
+    - 顺带：`showPexModal` 的弹窗底色由 M3 品牌染色改为**白色**（源项目为白）
+  - 待续：`umyKyc` / `umyInvite*` / `umyCircle` / `umyMia*` / `midTryapp`；组件 `partIdentCommid`
     （`umyCollection` / `partComplain` 已在批次 2 完成）
 - [ ] 其余：`showWebview`（webview 容器）
 

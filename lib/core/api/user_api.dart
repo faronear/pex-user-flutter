@@ -60,6 +60,55 @@ class UserApi {
   /// 退出登录（源项目 `to_logout`；服务端注销 socket 并换发一个已登出的凭据）。
   Future<Map<String, dynamic>> logoutUser() =>
       _client.callBase(apiWho: who, apiTodo: 'logout_user');
+
+  /// 修改密码（源项目 `umyAccountPassword` 的 `to_change_password`）。
+  /// 两个密码都需先用 `hashStable(密码 + usid)` 处理。
+  Future<Map<String, dynamic>> changePassword({
+    required String passwordClient,
+    required String passwordNewClient,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'changePassword',
+        apiWhat: <String, dynamic>{
+          'passwordClient': passwordClient,
+          'passwordNewClient': passwordNewClient,
+        },
+      );
+
+  /// 注销账号（源项目 `umyAccountTerminate` 的 `to_terminate_account`）。
+  /// 后端只写入 `terminateTimeUnix`，7 天后真正清空；期内重新登录即取消。
+  Future<Map<String, dynamic>> terminateAccount({
+    required String passwordClient,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'terminate_account',
+        apiWhat: <String, dynamic>{'passwordClient': passwordClient},
+      );
+
+  /// 发送验证码（源项目 `send_passcode`）。[passcodeType] 见后端注释：
+  /// `REGISTER` / `RESETPWD` / `CHECK_OLD`（验证当前账号）/ `CHECK_NEW`（验证新账号）。
+  Future<Map<String, dynamic>> sendPasscode({
+    required String passcodeType,
+    required String commid,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'send_passcode',
+        apiWhat: <String, dynamic>{
+          'passcodeType': passcodeType,
+          'commid': commid,
+        },
+      );
+
+  /// 校验验证码（源项目 `verify_passcode`）。
+  Future<Map<String, dynamic>> verifyPasscode({required String passcode}) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'verify_passcode',
+        apiWhat: <String, dynamic>{'passcode': passcode},
+      );
 }
 
 final Provider<UserApi> userApiProvider =

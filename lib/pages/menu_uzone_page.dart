@@ -26,11 +26,9 @@ import '../core/responsive/device_info.dart';
 import '../core/router/app_router.dart';
 import '../core/state/app_providers.dart';
 import '../core/state/app_startup_notifier.dart';
-import '../core/state/creation_draft_provider.dart';
-import '../core/state/creation_provider.dart';
-import '../core/state/creator_provider.dart';
 import '../core/state/coin_provider.dart';
 import '../core/state/envar_provider.dart';
+import '../core/state/session_reset.dart';
 import '../core/util/feedback.dart';
 import '../core/util/file_utils.dart';
 import '../core/util/pex_file_picker.dart';
@@ -306,7 +304,7 @@ class _MenuUzonePageState extends ConsumerState<MenuUzonePage> {
     // 源项目 `logout_local_account`：清本地凭据 + 清缓存 + 不再自动登录 + 回落地页。
     await ref.read(localStoreProvider).clearPasstoken();
     ref.read(appStartupProvider.notifier).logout();
-    _resetDomainCaches();
+    resetSessionCaches(ref);
     if (!mounted) return;
     context.go(
       AppRoutes.path(ref.read(brandProvider).appLandPage),
@@ -315,20 +313,10 @@ class _MenuUzonePageState extends ConsumerState<MenuUzonePage> {
 
   /// 重启应用（源项目 `reset_all` + `reLaunch(homePortal)`）。
   Future<void> _restart() async {
-    _resetDomainCaches();
+    resetSessionCaches(ref);
     await ref.read(appStartupProvider.notifier).restart();
     if (!mounted) return;
     context.go(AppRoutes.path(AppRoutes.homePortal));
-  }
-
-  /// 清空各业务域的会话内缓存。
-  ///
-  /// 源项目 `reset_all` 还会重置 AI 对话与交易流水；这两域的页面尚未迁移，
-  /// 待迁移时一并补上（见 `aimemo/projectPlan.md`）。
-  void _resetDomainCaches() {
-    ref.invalidate(creationProvider);
-    ref.invalidate(creatorProvider);
-    ref.invalidate(creationDraftProvider);
   }
 
   @override
