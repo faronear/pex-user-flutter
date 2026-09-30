@@ -356,3 +356,33 @@
   均返回预期键（`viewerList`=2 / 其余=0）→ PASS。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功；headless 截图确认布局无回归。
 - **搁置**：点赞者名单入口（源项目点赞按钮整块被注释）；点赞相关功能待老板确认是否恢复。
+
+### 老板决策记录：点赞不做（2026-09-30）
+
+老板说明：**点赞是故意消除的**——按 Babelyx 的产品定位，强调「有价值的内容」，
+因此把点赞换成 **fuel/加油，必须支付一定费用**。→ 不恢复点赞按钮，
+点赞者名单入口也不迁移（`get_liker_list` 接口已封装好，将来若需要可直接用）。
+已同步 `projectPlan.md`（该分片标为 `[-]` 并注明产品理由）与长期记忆。
+
+### 创作/NFT 域 批次 2 · 2E 上下架 / 隐藏 / 删除
+
+- **范围**：源项目 `to_toggle_creation_listing` / `to_toggle_hide` /
+  `to_delete_creation_from_{hide,remove}`。
+- **新增**：
+  - `creation_api.dart`：`listCreation` / `unlistCreation` / `hideCreation` / `unhideCreation` /
+    `deleteCreationFromHide` / `deleteCreationFromRemove`（参数名逐一对照后端确认）。
+  - `creation_provider.dart`：`updateItem(csid, patch)` / `removeItem(csid)`，
+    对应源项目在各操作后对 `myCollectionAs*` / `creationListAll` 的同步。
+  - 操作行按钮（源项目同款门控）：
+    - 自己的作品 → **上架/下架**（按 `unlistedByMe`）+ **删除**（`ctnDeletable && unlistedByMe`）
+    - 他人作品 → **隐藏/显示**（按 `hideState`）+ **删除**（`ctnDeletable && hideState==='HIDED'`）
+    - 隐藏提示按源项目拼接「已购买可重新显示」；隐藏后把该作品从探索列表移除。
+- **⏸ 修改作品未做（阻塞于批次 3）**：源项目「修改」跳 `showCreationUpdate`，
+  而该页主体是 **`partCreate`(1012 行)**——那是批次 3「创作与编辑（UGC 核心）」的核心组件。
+  故「修改」按钮与 `showCreationUpdate` 页一并留待批次 3，避免做半截编辑页。
+- **实测**：`dart run tool/check_creation_pay.dart`（再扩展）——
+  `hide_creation`/`unhide_creation` 可逆往返均 SUCCESS；
+  `unlist_creation`/`list_creation`/`delete_creation_from_remove` 对非本人作品
+  均返回 `ERROR_UNAUTHORIZED_USER`（参数名与鉴权均正确）→ PASS。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **下一片**：2F 分享与举报（`partPopLink` / `partComplain` / `partIcontextCopy` / `partIcontextPop`）。

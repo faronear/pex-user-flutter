@@ -151,6 +151,61 @@ class CreationApi {
         apiWhat: <String, dynamic>{'fuelCsid': csid, 'priceToFuel': amount},
       );
 
+  /// 重新上架（源项目 `to_list_creation`）。
+  Future<Map<String, dynamic>> listCreation(String csid) => _client.callBase(
+        apiWho: who,
+        apiTodo: 'list_creation',
+        apiWhat: <String, dynamic>{'listCsid': csid},
+      );
+
+  /// 下架（源项目 `to_unlist_creation`）。
+  Future<Map<String, dynamic>> unlistCreation(String csid) => _client.callBase(
+        apiWho: who,
+        apiTodo: 'unlist_creation',
+        apiWhat: <String, dynamic>{'unlistCsid': csid},
+      );
+
+  /// 隐藏（仅对自己生效，源项目 `to_hide_creation`）。
+  Future<Map<String, dynamic>> hideCreation({
+    required String csid,
+    required String hideTarget,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'hide_creation',
+        apiWhat: <String, dynamic>{'hideTarget': hideTarget, 'hideCsid': csid},
+      );
+
+  /// 取消隐藏（源项目 `to_unhide_creation`）。
+  Future<Map<String, dynamic>> unhideCreation({
+    required String csid,
+    required String hideTarget,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'unhide_creation',
+        apiWhat: <String, dynamic>{'hideTarget': hideTarget, 'hideCsid': csid},
+      );
+
+  /// 从「已隐藏」里彻底删除（源项目 `to_delete_creation_from_hide`）。
+  Future<Map<String, dynamic>> deleteCreationFromHide({
+    required String csid,
+    required String hideTarget,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'delete_creation_from_hide',
+        apiWhat: <String, dynamic>{'hideTarget': hideTarget, 'hideCsid': csid},
+      );
+
+  /// 从「已下架」里彻底删除（源项目 `to_delete_creation_from_remove`）。
+  Future<Map<String, dynamic>> deleteCreationFromRemove(String csid) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'delete_creation_from_remove',
+        apiWhat: <String, dynamic>{'delCsid': csid},
+      );
+
   /// 解密者名单。[beforeTime] 为向下翻页游标。
   Future<Map<String, dynamic>> getViewerList({
     required String csid,

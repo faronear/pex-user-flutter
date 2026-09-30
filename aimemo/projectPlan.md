@@ -123,8 +123,9 @@
     - [x] **2B 评论闭环**：操作按钮行（评论入口）、`partStoryEditor` 评论编辑器、
       `comment_creation` 发表、评论列表（`get_comment_list` 刷新 / 追加更早）、
       删除自己的评论；新增 `core/util/online_guard.dart`（对应 `wo.tt.check_online`）
-    - [-] **点赞**：源项目 `showCreation.vue` 的点赞按钮**整块被注释掉**（`to_toggle_vote` 已无入口），
-      故未实现；等老板确认是否要恢复点赞入口
+    - [-] **点赞（不做，产品决策）**：源项目 `showCreation.vue` 的点赞按钮整块被注释；
+      老板 2026-09-30 确认：**Babelyx 强调「有价值的内容」，点赞被付费的 fuel/加油 取代，故意移除**，
+      不需要恢复。→ 点赞按钮、点赞者名单入口均不迁移（`get_liker_list` 接口已封装备用）
     - [x] **2C 解锁与付费**：`pay_to_view` / `pay_to_hold` / `pay_to_own` / `pay_to_fuel`
       + 解密按钮（加密封面）+ pact 价格点击 + 赞赏按钮（金额可改）
       + `widgets/part_pay_sheet.dart`（**付费确认**弹窗：标题/金额/说明/反馈/余额不足提示）
@@ -135,8 +136,12 @@
       + 接口 `get_{viewer,holder,fueler,liker}_list`；入口：pact 人数计数（仅作品相关人可点）、
       赞赏按钮（自己的作品 → 赞赏者名单）
       ——「点赞者名单」入口随点赞按钮一并搁置（源项目点赞按钮被注释）
-    - [ ] **2E 作者编辑与下架**：接入 `partStoryEditor` + `update_creation` / `unlist_creation`
-      / `unhide_creation` / 删除
+    - [x] **2E 上下架 / 隐藏 / 删除**：`list_creation` / `unlist_creation` /
+      `hide_creation` / `unhide_creation` / `delete_creation_from_{hide,remove}`
+      + 操作行按钮（自己的作品：上架·下架 + 删除；他人作品：隐藏·显示 + 删除）
+      + `creation_provider` 增列表同步（`updateItem` / `removeItem`）
+      - [⏸] **修改作品**：源项目 `to_modify_my_creation` → `showCreationUpdate` → **`partCreate`(1012 行)**，
+        而 `partCreate` 属**批次 3**（UGC 创作核心）；故「修改」按钮与 `showCreationUpdate` 一并留待批次 3
     - [ ] **2F 分享与举报**：`partPopLink` / `partComplain` / `partIcontextPop` / `partIcontextCopy`
     - [x] **2G 资源页**：`userResource` / `userResourceDetail`
       （分组/子项切换、安卓应用市场选择、版本比对、二维码 qr_flutter、链接复制；

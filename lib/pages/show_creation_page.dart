@@ -22,6 +22,7 @@ import '../core/icons/icont_icons.dart';
 import '../core/icons/pex_icon.dart';
 import '../core/responsive/device_info.dart';
 import '../core/router/app_router.dart';
+import '../core/state/creation_provider.dart';
 import '../core/state/app_startup_notifier.dart';
 import '../core/state/creation_show_provider.dart';
 import '../core/state/envar_provider.dart';
@@ -1500,6 +1501,43 @@ class _CommentAreaState extends ConsumerState<_CommentArea> {
                     ? showFuelerListAction(context, ref, creation)
                     : payToFuelAction(context, ref, creation),
               ),
+              // 自己的作品：上架/下架（原创主或权利主均可）。
+              if (belongToMe)
+                _ActionButton(
+                  icon: PexIcons.uni(
+                    creation.unlistedByMe(usid) ? 'upload' : 'download',
+                  ),
+                  label: creation.unlistedByMe(usid)
+                      ? ll(lang, const LangText(zhCN: '上架', enUS: 'List', deDE: 'Auflisten'))
+                      : ll(lang, const LangText(zhCN: '下架', enUS: 'Unlist', deDE: 'Entfernen')),
+                  onTap: () => toggleCreationListing(context, ref, creation),
+                )
+              else
+                // 他人的作品：隐藏/显示（只对自己生效）。
+                _ActionButton(
+                  icon: PexIcons.uni(
+                    creation.hideState == 'HIDED' ? 'eye' : 'eye-slash',
+                  ),
+                  label: creation.hideState == 'HIDED'
+                      ? ll(lang, const LangText(zhCN: '显示', enUS: 'Show', jaJP: '表示', deDE: 'Anzeigen'))
+                      : ll(lang, const LangText(zhCN: '隐藏', enUS: 'Hide', jaJP: '非表示', deDE: 'Ausblenden')),
+                  onTap: () => toggleCreationHide(context, ref, creation),
+                ),
+              // 彻底删除：源项目按「本人下架」或「已隐藏」两种情形分别调用不同接口。
+              if (envar.boolOf('ctnDeletable') &&
+                  (belongToMe
+                      ? creation.unlistedByMe(usid)
+                      : creation.hideState == 'HIDED'))
+                _ActionButton(
+                  icon: PexIcons.uni('trash'),
+                  label: ll(lang, const LangText(zhCN: '删除', enUS: 'Delete', jaJP: '削除', deDE: 'Löschen')),
+                  onTap: () => deleteCreationAction(
+                    context,
+                    ref,
+                    creation,
+                    fromHide: !belongToMe,
+                  ),
+                ),
             ],
           ),
         ),
@@ -1991,4 +2029,317 @@ Future<void> showFuelerListAction(
           beforeTime: beforeTime,
         ),
   );
+}
+
+// ---------------------------------------------------------------------------
+// 上下架 / 隐藏 / 删除（源项目 2E 片）
+// ---------------------------------------------------------------------------
+
+const LangText _kListTitle = LangText(
+  zhCN: '重新上架这个创作品吗？',
+  enUS: 'Restore this creation?',
+);
+
+const LangText _kListContent = LangText(
+  zhCN: '重新上架这个创作品，让其他人能够发现它。',
+  enUS: 'Restore this creation to exhibition and everyone will be able to find it.',
+);
+
+const LangText _kListConfirm = LangText(zhCN: '上架', enUS: 'List');
+
+const LangText _kListed = LangText(zhCN: '已成功上架。', enUS: 'Listed successfully.');
+
+const LangText _kListFailed = LangText(
+  zhCN: '发生了故障，这个创作品没有完成上架。',
+  enUS: 'Something malfuntioned, this creation is not listed.',
+);
+
+const LangText _kUnlistTitle = LangText(
+  zhCN: '下架这个创作品吗？',
+  enUS: 'Unlist this creation?',
+  deDE: 'Diese Kreation entfernen?',
+);
+
+const LangText _kUnlistContent = LangText(
+  zhCN: '这个创作品将被下架，其他人将无法浏览它。如果您将来改变了想法，您可以随时重新上架。',
+  enUS:
+      'This creation will be unlisted from your exhibition. Should you change mind in the future, you can list it again.',
+);
+
+const LangText _kUnlistConfirm = LangText(zhCN: '下架', enUS: 'Unlist', deDE: 'Entfernen');
+
+const LangText _kUnlisted = LangText(
+  zhCN: '已成功下架。',
+  enUS: 'Unlisted successfully.',
+);
+
+const LangText _kUnlistFailed = LangText(
+  zhCN: '发生故障，没有完成下架.',
+  enUS: 'Something malfuntioned, this creation is not unlisted.',
+);
+
+const LangText _kHideTitle =
+    LangText(zhCN: '隐藏这个创作品吗？', enUS: 'Hide this creation?', jaJP: 'この创作品を非表示にしますか？', deDE: 'Diese Kreation ausblenden?');
+
+const LangText _kHideContent = LangText(
+  zhCN: '当前创作品的内容将对您隐藏。',
+  enUS: "You will no longer see this creation's content.",
+  jaJP: 'この创作品は表示されなくなります。',
+  deDE: 'Sie werden den Inhalt dieser Kreation nicht mehr sehen.',
+);
+
+const LangText _kHideContentRecallable = LangText(
+  zhCN: '如果将来您改变了想法，您可以重新显示它。',
+  enUS: ' Should you change mind in the future, you can show it again.',
+  jaJP: '気が変わったら、いつでも表示を復元できます。',
+  deDE: ' Wenn Sie Ihre Meinung ändern, können Sie sie wieder sichtbar machen.',
+);
+
+const LangText _kHideConfirm =
+    LangText(zhCN: '隐藏', enUS: 'Hide', jaJP: '非表示', deDE: 'Ausblenden');
+
+const LangText _kHidden = LangText(
+  zhCN: '已成功隐藏。',
+  enUS: 'Hidden successfully.',
+  jaJP: '非表示にしました。',
+  deDE: 'Erfolgreich ausgeblendet.',
+);
+
+const LangText _kHideFailed = LangText(
+  zhCN: '发生了故障，这个创作品没有被隐藏。',
+  enUS: 'Something malfuntioned, this creation is not hidden.',
+);
+
+const LangText _kShowTitle = LangText(
+  zhCN: '重新显示这个创作品吗？',
+  enUS: 'Show this creation?',
+  jaJP: 'この创作品を表示しますか？',
+  deDE: 'Diese Kreation sichtbar machen?',
+);
+
+const LangText _kShowContent = LangText(
+  zhCN: '您将能够查看这个创作品的内容。如果您将来改变了想法，您可以随时再次隐藏它。',
+  enUS:
+      "You will be able to see this creation's content. Should you change mind in the future, you can hide it again at any time",
+  jaJP: 'この创作品を表示できるようになります。気が変わったら、いつでも非表示にできます',
+  deDE:
+      'Sie können den Inhalt dieser Kreation sehen. Wenn Sie Ihre Meinung ändern, können Sie sie wieder ausblenden',
+);
+
+const LangText _kShowConfirm =
+    LangText(zhCN: '显示', enUS: 'Show', jaJP: '表示', deDE: 'Anzeigen');
+
+const LangText _kShowDone = LangText(
+  zhCN: '这个创作品已重新显示。',
+  enUS: 'This creation is shown successfully.',
+);
+
+const LangText _kShowFailed = LangText(
+  zhCN: '发生了故障，这个创作品没有被重新显示。',
+  enUS: 'Something malfuntioned, this creation is not reset to show.',
+);
+
+const LangText _kDeleteTitle = LangText(
+  zhCN: '删除这个创作品吗？',
+  enUS: 'Delete this creation?',
+  jaJP: 'この创作品を完全に削除しますか？',
+  deDE: 'Diese Kreation endgültig löschen?',
+);
+
+const LangText _kDeleteContent = LangText(
+  zhCN: '删除后，这个创作品将从您的列表中消失，您无法再找回它。',
+  enUS:
+      'After deletion of this creation, it will no longer appear in your collections and you cannot recover it again.',
+  jaJP: '完全に削除すると、この创作品はあなたのコレクションから消え、二度と表示できなくなります。',
+  deDE:
+      'Nach dem Löschen wird diese Kreation aus Ihren Sammlungen verschwinden und kann nicht wiederhergestellt werden.',
+);
+
+const LangText _kDeleteConfirm =
+    LangText(zhCN: '删除', enUS: 'Delete', jaJP: '削除', deDE: 'Löschen');
+
+const LangText _kDeleted = LangText(
+  zhCN: '已成功删除。',
+  enUS: 'Deleted successfully.',
+  jaJP: '削除しました。',
+  deDE: 'Erfolgreich gelöscht.',
+);
+
+const LangText _kDeleteFailed = LangText(
+  zhCN: '发生了故障，这个创作品没有被删除。',
+  enUS: 'Something malfuntioned, this creation is not deleted.',
+);
+
+/// 上架 / 下架（源项目 `to_toggle_creation_listing`）。
+Future<void> toggleCreationListing(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  if (!await checkOnline(context, ref)) return;
+  if (!context.mounted) return;
+  final String usid = ref.read(onlineUserProvider)['usid']?.toString() ?? '';
+  final bool unlisted = creation.unlistedByMe(usid);
+
+  final bool confirmed = await showPexModal(
+    context,
+    ref,
+    title: unlisted ? _kListTitle : _kUnlistTitle,
+    content: unlisted ? _kListContent : _kUnlistContent,
+    confirmText: unlisted ? _kListConfirm : _kUnlistConfirm,
+    showCancel: true,
+  );
+  if (!confirmed || !context.mounted) return;
+
+  final CreationApi api = ref.read(creationApiProvider);
+  final Map<String, dynamic> data = unlisted
+      ? await api.listCreation(creation.csid)
+      : await api.unlistCreation(creation.csid);
+  if (!context.mounted) return;
+
+  if (!bok(data['_state']?.toString())) {
+    showPexToast(context, ref, unlisted ? _kListFailed : _kUnlistFailed);
+    return;
+  }
+  final Map<String, dynamic> updated =
+      (data['creation'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{};
+
+  // 源项目：更新 ownerState/creatorState；用户统计由 userUpdated 或本地增减。
+  final Map<String, dynamic> patch = <String, dynamic>{
+    if (updated['ownerState'] != null) 'ownerState': updated['ownerState'],
+    if (updated['creatorState'] != null) 'creatorState': updated['creatorState'],
+  };
+  ref.read(creationShowProvider.notifier).merge(patch);
+  ref.read(creationProvider.notifier).updateItem(creation.csid, patch);
+
+  final Map<String, dynamic> userUpdated =
+      (data['userUpdated'] as Map?)?.cast<String, dynamic>() ??
+          <String, dynamic>{};
+  if (userUpdated.isNotEmpty) {
+    ref.read(appStartupProvider.notifier).mergeOnlineUser(userUpdated);
+  } else {
+    final Map<String, dynamic> user = ref.read(onlineUserProvider);
+    ref.read(appStartupProvider.notifier).mergeOnlineUser(<String, dynamic>{
+      'countCtnRemove': _intOf(user['countCtnRemove']) + (unlisted ? -1 : 1),
+      'countCtnPublic': _intOf(user['countCtnPublic']) + (unlisted ? 1 : -1),
+    });
+  }
+  showPexToast(context, ref, unlisted ? _kListed : _kUnlisted);
+}
+
+/// 隐藏 / 显示（源项目 `to_toggle_hide`）。
+Future<void> toggleCreationHide(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation,
+) async {
+  if (!await checkOnline(context, ref)) return;
+  if (!context.mounted) return;
+  final bool hidden = creation.hideState == 'HIDED';
+  if (!hidden && creation.hideState == 'HIDE2DEL') {
+    showPexToast(
+      context,
+      ref,
+      const LangText(
+        zhCN: '不能恢复已被您彻底删除的创作品。',
+        enUS: 'Cannot recover a creation that was already deleted by you.',
+      ),
+    );
+    return;
+  }
+
+  final bool confirmed = await showPexModal(
+    context,
+    ref,
+    title: hidden ? _kShowTitle : _kHideTitle,
+    content: hidden
+        ? _kShowContent
+        : LangText.from(
+            '${ll(ref.read(languageProvider), _kHideContent)}'
+            '${creation.linkedByMe ? ll(ref.read(languageProvider), _kHideContentRecallable) : ''}',
+          ),
+    confirmText: hidden ? _kShowConfirm : _kHideConfirm,
+    showCancel: true,
+  );
+  if (!confirmed || !context.mounted) return;
+
+  final CreationApi api = ref.read(creationApiProvider);
+  final Map<String, dynamic> data = hidden
+      ? await api.unhideCreation(
+          csid: creation.csid,
+          hideTarget: creation.pexdataCidHashRoot,
+        )
+      : await api.hideCreation(
+          csid: creation.csid,
+          hideTarget: creation.pexdataCidHashRoot,
+        );
+  if (!context.mounted) return;
+
+  if (!bok(data['_state']?.toString())) {
+    showPexToast(context, ref, hidden ? _kShowFailed : _kHideFailed);
+    return;
+  }
+  final Map<String, dynamic> patch = <String, dynamic>{
+    'hideState': hidden ? 'UNHIDED' : 'HIDED',
+    'countHide': hidden
+        ? (creation.raw['countHide'] == null
+            ? null
+            : _intOf(creation.raw['countHide']) - 1)
+        : _intOf(creation.raw['countHide']) + 1,
+  }..removeWhere((String key, Object? value) => value == null);
+  ref.read(creationShowProvider.notifier).merge(patch);
+  ref.read(creationProvider.notifier).updateItem(creation.csid, patch);
+  // 源项目：隐藏后该作品不再出现在探索列表里。
+  if (!hidden) ref.read(creationProvider.notifier).removeItem(creation.csid);
+  showPexToast(context, ref, hidden ? _kShowDone : _kHidden);
+}
+
+/// 彻底删除（源项目 `to_delete_creation_from_{hide,remove}`）。
+Future<void> deleteCreationAction(
+  BuildContext context,
+  WidgetRef ref,
+  Creation creation, {
+  required bool fromHide,
+}) async {
+  if (!await checkOnline(context, ref)) return;
+  if (!context.mounted) return;
+
+  final bool confirmed = await showPexModal(
+    context,
+    ref,
+    title: _kDeleteTitle,
+    content: _kDeleteContent,
+    confirmText: _kDeleteConfirm,
+    showCancel: true,
+  );
+  if (!confirmed || !context.mounted) return;
+
+  final CreationApi api = ref.read(creationApiProvider);
+  final Map<String, dynamic> data = fromHide
+      ? await api.deleteCreationFromHide(
+          csid: creation.csid,
+          hideTarget: creation.pexdataCidHashRoot,
+        )
+      : await api.deleteCreationFromRemove(creation.csid);
+  if (!context.mounted) return;
+
+  if (!bok(data['_state']?.toString())) {
+    showPexToast(context, ref, _kDeleteFailed);
+    return;
+  }
+  final Map<String, dynamic> userUpdated =
+      (data['userUpdated'] as Map?)?.cast<String, dynamic>() ??
+          <String, dynamic>{};
+  if (userUpdated.isNotEmpty) {
+    ref.read(appStartupProvider.notifier).mergeOnlineUser(userUpdated);
+  }
+  ref.read(creationProvider.notifier).removeItem(creation.csid);
+  showPexToast(context, ref, _kDeleted);
+
+  // 源项目删除后 `uni.navigateBack()`。
+  if (context.canPop()) {
+    context.pop();
+  } else {
+    context.go(AppRoutes.path(AppRoutes.menuCreation));
+  }
 }

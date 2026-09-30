@@ -152,9 +152,45 @@ Future<void> main(List<String> args) async {
       print('  $api _state=${data['_state']}  $key=${isList ? (data[key] as List).length : data[key]}');
     }
 
-    print(hasPexdata && unlocked && listsOk
-        ? 'PASS  解密支付 + 名单接口契约正确'
-        : 'FAIL  解密或名单接口有异常');
+    print('--- 6) 2E 接口契约（隐藏/显示可逆；上下架与删除对非本人应被拒绝）');
+    bool e2Ok = true;
+    final Map<String, dynamic> target2 = (single['creation'] as Map).cast<String, dynamic>();
+    final Map<String, dynamic> hidden = await post(
+        client,
+        baseUrl,
+        'Creation',
+        'hide_creation',
+        <String, dynamic>{'hideTarget': target2['pexdataCidHashRoot'], 'hideCsid': csid},
+        passtoken);
+    print('  hide_creation   _state=${hidden['_state']}');
+    e2Ok &= hidden['_state'] == 'SUCCESS';
+
+    final Map<String, dynamic> shown = await post(
+        client,
+        baseUrl,
+        'Creation',
+        'unhide_creation',
+        <String, dynamic>{'hideTarget': target2['pexdataCidHashRoot'], 'hideCsid': csid},
+        passtoken);
+    print('  unhide_creation _state=${shown['_state']}');
+    e2Ok &= shown['_state'] == 'SUCCESS';
+
+    final List<(String, String, String)> guarded = <(String, String, String)>[
+      ('unlist_creation', 'unlistCsid', 'ERROR_UNAUTHORIZED_USER'),
+      ('list_creation', 'listCsid', 'ERROR_UNAUTHORIZED_USER'),
+      ('delete_creation_from_remove', 'delCsid', 'ERROR_UNAUTHORIZED_USER'),
+    ];
+    for (final (String api, String param, String expect) in guarded) {
+      final Map<String, dynamic> data = await post(
+          client, baseUrl, 'Creation', api, <String, dynamic>{param: csid}, passtoken);
+      final bool ok = data['_state']?.toString() == expect;
+      e2Ok &= ok;
+      print('  $api _state=${data['_state']}（期望 $expect）${ok ? ' OK' : ' ✗'}');
+    }
+
+    print(hasPexdata && unlocked && listsOk && e2Ok
+        ? 'PASS  解密支付 + 名单接口 + 2E 接口契约均正确'
+        : 'FAIL  存在异常');
   } finally {
     client.close(force: true);
   }

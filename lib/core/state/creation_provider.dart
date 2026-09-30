@@ -59,6 +59,49 @@ class CreationNotifier extends Notifier<CreationState> {
     );
   }
 
+  /// 回写某个作品在各列表里的字段（源项目 `to_list_creation` 等处的列表同步）。
+  void updateItem(String csid, Map<String, dynamic> patch) {
+    if (csid.isEmpty) return;
+    state = state.copyWith(
+      listAll: <Map<String, dynamic>>[
+        for (final Map<String, dynamic> item in state.listAll)
+          if (item['csid']?.toString() == csid)
+            <String, dynamic>{...item, ...patch}
+          else
+            item,
+      ],
+      collections: <CreationRole, List<Map<String, dynamic>>>{
+        for (final MapEntry<CreationRole, List<Map<String, dynamic>>> entry
+            in state.collections.entries)
+          entry.key: <Map<String, dynamic>>[
+            for (final Map<String, dynamic> item in entry.value)
+              if (item['csid']?.toString() == csid)
+                <String, dynamic>{...item, ...patch}
+              else
+                item,
+          ],
+      },
+    );
+  }
+
+  /// 从所有列表里移除某个作品（源项目隐藏/删除后的列表同步）。
+  void removeItem(String csid) {
+    if (csid.isEmpty) return;
+    List<Map<String, dynamic>> filter(List<Map<String, dynamic>> list) =>
+        <Map<String, dynamic>>[
+          for (final Map<String, dynamic> item in list)
+            if (item['csid']?.toString() != csid) item,
+        ];
+    state = state.copyWith(
+      listAll: filter(state.listAll),
+      collections: <CreationRole, List<Map<String, dynamic>>>{
+        for (final MapEntry<CreationRole, List<Map<String, dynamic>>> entry
+            in state.collections.entries)
+          entry.key: filter(entry.value),
+      },
+    );
+  }
+
   void reset() => state = const CreationState();
 }
 

@@ -7,11 +7,13 @@
 ## 待办
 
 ### B1. AI 模型连接过时（老板已知，优先级最高）
+
 - **现象**：`Aimodel/reply_challenge` 返回 `_state: ERROR` / `_msg: Bad request for dependent service.`
 - **影响**：所有 AI 对话无法真正出结果（前端契约本身正确，已用 `tool/check_ai_flow.dart` 验证）
 - **结论**：老板 2026-09-29 明确 —— **先完成前端迁移，再统一更新后端**；当前很多模型连接是错的
 
 ### B2. `first_touch` 支持 304（性能优化，非阻塞）
+
 - **现状**：响应已带 `ETag: W/"6527-…"` 与 `Content-Encoding: gzip`；
   实测两次响应**逐字节相同**、ETag **稳定**。
 - **问题**：带 `If-None-Match` 重发仍返回 **200**（未产生 304）。
@@ -21,7 +23,8 @@
 - **建议**：把该接口的响应改为走 Express 的 `res.json()` / `res.send()`，或显式比对 `If-None-Match` 后返回 304。
 
 ### B3. 【⚠️ 仅 MacBook Air，不适用于 iMac】后端启动崩溃：缺少 `envar/versionCode-*`
-> **重要更正（老板指出）**：`/Users/Shared/product-产品/pex/...` 是 **MacBook Air** 的路径；
+
+> **重要更正（老板指出）**：`/Users/Shared/productX/pex/...` 是 **MacBook Air** 的路径；
 > 我们工作的 iMac 是 `/Volumes/repodisk/productX/pex/pex-server-torm`。
 > 仓库经 **Seafile 同步**，`_logstore/` 里的日志会被**跨机器同步** ——
 > 那条崩溃栈实际来自 **MacBook Air**，**不代表 iMac**。
@@ -31,14 +34,18 @@
 > 属同步产物，**不可用于诊断本机**。
 >
 > **教训**：`_logstore/` 的日志是同步文件，**跨机器不可信**；诊断本机问题必须看本机进程与终端输出。
+
 - **现象**：后端启动即崩，日志尾部：
   `Error: Cannot find module './versionCode-web-AKAGIDIN'`（require stack: `envar/envar-config.js:1052` → `wo-base-envar/envar-tool.js` → `server.js:74`）
   随后 `[nodemon] app crashed - waiting for file changes before starting...`
 - **根因**：`envar-config.js` 里的
   ```js
-  function requireVersion (versionFile) {
-    if (!inUniapp) { delete require.cache[require.resolve(versionFile)]; return require(versionFile) }
-    return undefined            // 客户端不 require，版本号由后端下发
+  function requireVersion(versionFile) {
+    if (!inUniapp) {
+      delete require.cache[require.resolve(versionFile)];
+      return require(versionFile);
+    }
+    return undefined; // 客户端不 require，版本号由后端下发
   }
   // 调用：requireVersion('./versionCode-web-AKAGIDIN')
   ```
@@ -50,7 +57,7 @@
 - **修复**：把这批文件拷进后端 `envar/`。`require('./x')` 会依次尝试 `.js`/`.json`，**直接拷 `.json` 即可**。
   最小修复只需 `versionCode-web-AKAGIDIN.json`（崩溃点）；建议四类一并拷。
 - **注意**：后端运行目录与我的工作目录是**两份拷贝**
-  （老板运行的 `/Users/Shared/product-产品/pex/pex-server-torm`，我这边是 `/Volumes/repodisk/productX/pex/pex-server-torm`），
+  （老板运行的 `/Users/Shared/productX/pex/pex-server-torm`，我这边是 `/Volumes/repodisk/productX/pex/pex-server-torm`），
   该路径我无法访问，需老板侧执行拷贝。
 - **同类历史**：2026-08-23 AKAIZOIC→AKAGIDIN 迁移后也发生过同类 MODULE_NOT_FOUND（见 uniapp worklog）。
 - **正常流程**：`deploy` 会把前端 `${brand}/cfstore/versionCode-*` 拷到后端 `envar/`；本次显然未跑。
@@ -58,6 +65,7 @@
 ## 已修
 
 ### B4. ✅ 事务内未 await 的并发写 → SAVEPOINT 计数错乱（2026-09-30 已修，commit `f51c129` @ pex-server-torm）
+
 - **现象**：`delete_comment` 间歇性返回 `ERROR_FAILED_DELETE_COMMENT`；
   加诊断后拿到真实异常：**`SQLITE_ERROR: no such savepoint: typeorm_5`**
   （另一形态：`Transaction is not started yet...`）。失败时**写操作其实已提交**，
@@ -76,6 +84,7 @@
 ## 已评估但决定不做
 
 ### B9. 让后端把「客户端专属配置块」一并下发给客户端（方案 A）—— **不采纳**
+
 - **背景**：源项目 `envar-config.js` 里有一批块受 `inUniapp` 控制，只在**客户端上下文**求值；
   服务端求值时 `inUniapp === false`，因此**永不下发**（如 `tucSymbol`、`pactDict`、`uiStatDict`、
   `Creation`/`Creator`/`Market` 词典、`banChina`、三个扩展名列表、`baseTypeSms`、`waitingSeconds`、
