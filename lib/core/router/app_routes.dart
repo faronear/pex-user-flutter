@@ -22,7 +22,14 @@ class AppRoutes {
   // 资金域（页面尚未迁移，仅用于跳转占位）
   static const String umyFund = 'umyFund';
 
-  // 标签栏页（部分尚未迁移，仅用于跳转占位）
+  // 账户 / 社交域（页面尚未迁移，仅用于跳转占位）
+  static const String umyAccount = 'umyAccount';
+  static const String umyKyc = 'umyKyc';
+  static const String umyMia = 'umyMia';
+  static const String umyConfig = 'umyConfig';
+  static const String umyInvite = 'umyInvite';
+
+  // 标签栏页
   static const String menuUzone = 'menuUzone';
 
   // 社交页（尚未迁移，仅用于跳转占位）

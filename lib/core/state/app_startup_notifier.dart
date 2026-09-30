@@ -176,6 +176,15 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
       autologging: AutologgingState.fail,
     );
   }
+
+  /// 重启应用（对应源项目 `wo.store.commit('reset_all')` + `uni.reLaunch({url:'homePortal'})`）。
+  ///
+  /// 与源项目一致：**保留登录态**（本地 `_passtoken` 不动），只清空会话内数据，
+  /// 并重新向后端拉取配置。各业务域的列表缓存由调用方一并重置（见 `menuUzone`）。
+  Future<void> restart() async {
+    state = const AppStartupState();
+    await runOnce();
+  }
 }
 
 final NotifierProvider<AppStartupNotifier, AppStartupState> appStartupProvider =

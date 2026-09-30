@@ -14,14 +14,21 @@ import '../../pages/ident_new_register_page.dart';
 import '../../pages/ident_old_login_page.dart';
 import '../../pages/ident_old_passcode_page.dart';
 import '../../pages/ident_old_reset_page.dart';
+import '../../pages/menu_uzone_page.dart';
 import 'app_routes.dart';
 
-/// 首页门户 + 账户/登录注册闭环。
+/// 首页门户 + 账户/登录注册闭环 + 我的空间。
 List<RouteBase> commonRoutes() => <RouteBase>[
       GoRoute(
         path: AppRoutes.path(AppRoutes.homePortal),
         name: AppRoutes.homePortal,
         builder: (_, _) => const HomePortalPage(),
+      ),
+      // 「我的空间」是三个品牌共有的 tabBar 页（源项目 `pages.json` 的注册方式）。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.menuUzone),
+        name: AppRoutes.menuUzone,
+        builder: (_, _) => const MenuUzonePage(),
       ),
       GoRoute(
         path: AppRoutes.path(AppRoutes.identBegin),

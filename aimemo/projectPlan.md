@@ -165,7 +165,15 @@
   - [ ] 批次5 NFT 铸造：合约交互（**需先评审 Flutter web3/加密方案**，风险最高）
   - [ ] 批次6 创作者与社交：`showCreator` / `menuCreator` / `menuMarket` / `partCreator*`
 - [ ] 3C 资金域：`umyFund` / `umyFundChannel` / `umyFundChannelCreate` / `umyFundChannelWithdraw` / `umyFundTranx`；组件 `partDeposit`(1066行) / `partFundChannelCard` / `partTxList` / `partPexdataSummary`
-- [ ] 3D 账户/社交域：`menuUzone` / `umyAccount*` / `umyKyc` / `umyInvite*` / `umyCircle` / `umyCollection` / `umyContact` / `umyConfig` / `umyMia*` / `umyAccountTerminate` / `midTryapp` / `midBabely`；组件 `partIdentCommid` / `partComplain`
+- [>] 3D 账户/社交域
+  - [x] **`menuUzone`（我的空间）**：顶栏（头像上传 / 昵称 / 自我介绍 / 分享 / 余额·消息·选集·圈子徽标 / 语言）
+    + 8 行清单（账号 / 实名 / 资金 / 消息 / 选集 / 圈子 / 设置 / 客服）+ 退出·资源·重启
+    + 未登录分支（注册引导，对应 `partWindowLayoutUser`）
+    - **老板决定（2026-09-30）**：清单里指向**尚未迁移页面**的行**全部渲染、跳现有占位页**
+      （复用 `app_router` 的兜底路由，占位页显示「XX 尚未迁移」），迁移后自动生效、零回改
+    - 待续：`umyAccount*` / `umyKyc` / `umyInvite*` / `umyCircle` / `umyContact` / `umyConfig` /
+      `umyMia*` / `umyAccountTerminate` / `midTryapp`；组件 `partIdentCommid`
+      （`umyCollection` / `partComplain` 已在批次 2 完成）
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

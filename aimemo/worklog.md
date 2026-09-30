@@ -470,3 +470,43 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **遗留**：`menuUzone`（我的空间，675 行，属账户/社交域）未迁移 → 「我的」标签暂落到占位页；
   这是下一步最该做的（标签栏可见性最高）。
+
+### 账户域 · menuUzone「我的空间」（675 行，手机端「我的」标签落地）
+
+- **老板决策（2026-09-30）**：清单里指向**尚未迁移页面**的行（账号/实名/资金/消息/圈子/设置/客服）
+  **全部渲染、跳现有占位页**——复用 `app_router.dart` 的兜底路由（占位页显示「XX 尚未迁移」），
+  对应页面迁移后**自动生效、零回改**；比「置灰不可点」更接近源项目观感，也不留死按钮。
+- **新增**：
+  - `pages/menu_uzone_page.dart`：未登录态（slogans + 注册奖励 + 注册登录 + 资源 + 重启 + 语言）
+    / 已登录态（顶栏头像上传·昵称弹窗·自我介绍弹窗·分享 + 余额/消息/选集/圈子徽标 + 语言表
+    + 8 行清单 + 退出·资源·重启）
+  - `core/api/user_api.dart`：`update_portrait` / `update_nickname` / `update_aboutme` / `logout_user`
+  - `core/state/app_startup_notifier.dart`：`restart()`（源项目 `reset_all` + `reLaunch(homePortal)`）
+  - `core/util/story_utils.dart`：`filterStory`（对应 `wo.tt.filter_story`，去掉 `{text:''}` 空段落）
+  - 路由：`menuUzone` 注册在 **`route_common.dart`**（源项目里它是三品牌共有的 tabBar 页）
+  - `AppRoutes` 补 `umyAccount` / `umyKyc` / `umyMia` / `umyConfig` / `umyInvite`（跳转占位用）
+- **拆解 `partWindowLayoutUser`**：它 = `partWindow` + header + (内容 | 未登录引导) + footer，
+  Flutter 侧「布局」由既有的 `part_window_layout.dart` 承担，**未登录引导落在本页**（故该组件目标文件为「—」）。
+- **顺手修的真 bug**：`part_window_header` 的 PC 头像用 `AssetImage(pexAssetPath(portrait))` 渲染
+  **服务端头像地址**（http/https）——`AssetImage` 只认打包资源、遇到网络地址会报错，
+  改为 `ServerImage`（与详情页头像一致）。
+- **自己写出来又抓到的一个 bug**：`urlMyself`（分享本人主页）原先从**用户对象**取 `webDomain`，
+  但该字段在**品牌配置**里 → 会拼出 `https://goto./creator/...`；已改为读 `brandProvider.webDomain`，
+  实测分享弹窗链接为 `https://goto.babelyx.com/creator/<haid>?inhaid=<haid>` ✅。
+- **有意简化（已在代码注明）**：设置行 footer 只显示「语言 | 品牌币种」；
+  源项目还有**法币 / 加密币**两段，那属于 `umyConfig`（设置）域且**尚未迁移**，迁移时补。
+- **实测**：
+  - `dart run tool/check_user_zone.dart` —— 注册 → 改昵称 / 自我介绍 / 头像 → `first_touch` 复查三者已落库
+    → 非数组入参返回 `FAIL_INVALID_ABOUTME` → `logout_user` SUCCESS → **PASS**
+  - 视觉（headless Chrome，手机 500 / PC 1200）：未登录引导、已登录顶栏与 8 行清单、
+    改昵称弹窗、自我介绍弹窗、分享弹窗（二维码 + 正确链接）、
+    点徽标 → 占位页「「umyCircle」尚未迁移」全部正确
+- **工具经验（重要，避免重复踩坑）**：
+  1. `--screenshot` + `--virtual-time-budget` **截不到刚弹出的弹窗**——虚拟时间会让定时器立刻触发，
+     但弹窗首帧还没绘制就截图了（我因此一度误判「弹窗没出来」）。→ 改用 CDP 真实等待，见下条。
+  2. 新增 `tool/cdpShot.js`（Node 18+，自带 fetch/WebSocket）：CDP 打开页面 → 真实等待 →
+     按坐标点击 → 截图，专用于验证**弹窗/交互态**。
+     **注意 CDP `Input.dispatchMouseEvent` 坐标是 CSS 像素，不要乘 dpr**（乘了会点偏到别的控件上，
+     我第一次就是这样误点到「My Circles」徽标、结果验证了徽标跳转是好的）。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **遗留**：清单里 7 个目标页仍未迁移（点了看占位页）；`umyConfig` 迁移时补设置行的法币/加密币段。

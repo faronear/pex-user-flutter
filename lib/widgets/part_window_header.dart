@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 
 import '../core/appmeta/page_meta.dart';
 import '../core/appmeta/tab_bar.dart';
-import '../core/assets/pex_assets.dart';
 import '../core/i18n/i18n.dart';
 import '../core/icons/icont_icons.dart';
 import '../core/icons/pex_icon.dart';
@@ -16,6 +15,7 @@ import '../core/router/app_router.dart';
 import '../core/state/app_providers.dart';
 import '../core/state/envar_provider.dart';
 import '../core/util/pex_toolkit.dart';
+import '../core/util/server_url.dart';
 import '../theme/app_theme.dart';
 
 class PartWindowHeader extends ConsumerWidget {
@@ -198,25 +198,25 @@ class PartWindowHeader extends ConsumerWidget {
   Widget _buildAvatar(BuildContext context, Map<String, dynamic> user) {
     final String portrait = user['portrait']?.toString() ?? '';
     final String nickname = user['nickname']?.toString() ?? '';
+    // 头像来自服务端（`/static` 或 http(s)），用 ServerImage 而不是 AssetImage：
+    // AssetImage 无法加载网络地址，会直接抛错。
     return GestureDetector(
       onTap: () => context.go('/menuUzone'),
       child: Container(
         width: 52,
         height: 52,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: PexColors.grey6,
           shape: BoxShape.circle,
-          image: portrait.isEmpty
-              ? null
-              : DecorationImage(image: AssetImage(pexAssetPath(portrait)), fit: BoxFit.cover),
         ),
+        clipBehavior: Clip.antiAlias,
         alignment: Alignment.center,
         child: portrait.isEmpty
             ? Text(
                 nickname.isEmpty ? '' : nickname.substring(0, nickname.length >= 2 ? 2 : 1),
                 style: const TextStyle(color: Colors.white, fontSize: 20),
               )
-            : null,
+            : ServerImage(portrait, fit: BoxFit.cover),
       ),
     );
   }

@@ -82,7 +82,7 @@
 ### 其它
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `menuUzone.vue` | 675 | `pages/menu_uzone_page.dart` | `[ ]` |
+| `menuUzone.vue` | 675 | `pages/menu_uzone_page.dart` | `[x]`（清单内未迁移页跳占位页） |
 | `showWebview.vue` | 24 | `pages/show_webview_page.dart` | `[ ]` |
 | `test/testIndex.vue` | 90 | — | `[-]` 开发测试页，迁移时评估 |
 
@@ -98,7 +98,7 @@
 | `partWindowFooter.vue` | 132 | `widgets/part_window_footer.dart` | `[x]` |
 | `partWindowLayout.vue` | 22 | `widgets/part_window_layout.dart` | `[x]` |
 | `partWindowLayoutIdent.vue` | 51 | `widgets/part_window_layout_ident.dart` | `[x]` |
-| `partWindowLayoutUser.vue` | 101 | `widgets/part_window_layout_user.dart` | `[ ]` |
+| `partWindowLayoutUser.vue` | 101 | — | `[x]` 拆解：布局用 `part_window_layout.dart`，未登录分支落在 `menu_uzone_page.dart` |
 | `partNavibarPc.vue` | 115 | `widgets/part_navibar_pc.dart` | `[x]` |
 | `partNavibarPcFixed.vue` | 77 | `widgets/part_navibar_pc_fixed.dart` | `[x]` |
 | `partNavilink.vue` | 55 | `widgets/part_navilink.dart` | `[ ]` |

@@ -19,6 +19,18 @@ bool isEmptyStory(List<dynamic>? story) {
   );
 }
 
+/// 去掉空段落（对应 `wo.tt.filter_story`）：例如 `{text: ''}` 会被删除。
+/// 上传/提交前调用，避免把空段落写进后端。
+List<dynamic> filterStory(List<dynamic>? story) {
+  if (story == null) return <dynamic>[];
+  return story
+      .where(
+        (dynamic section) =>
+            section is Map && isFilledSection(section.cast<String, dynamic>()),
+      )
+      .toList();
+}
+
 /// 取 story 中第一个图片地址（对应 `wo.tt.filter_story_image`）。
 String filterStoryImage(List<dynamic>? story) {
   if (story == null) return '';
