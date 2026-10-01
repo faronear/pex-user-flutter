@@ -20,7 +20,10 @@ import '../../pages/umy_account_commid_page.dart';
 import '../../pages/umy_account_page.dart';
 import '../../pages/umy_account_password_page.dart';
 import '../../pages/umy_account_terminate_page.dart';
+import '../../pages/umy_circle_page.dart';
 import '../../pages/umy_config_page.dart';
+import '../../pages/umy_invite_list_page.dart';
+import '../../pages/umy_invite_page.dart';
 import '../../pages/umy_contact_page.dart';
 import 'app_routes.dart';
 
@@ -62,6 +65,23 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         path: AppRoutes.path(AppRoutes.umyAccountTerminate),
         name: AppRoutes.umyAccountTerminate,
         builder: (_, _) => const UmyAccountTerminatePage(),
+      ),
+      // 「邀请朋友」及其名单页（三品牌共用的账户域页面）。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyInvite),
+        name: AppRoutes.umyInvite,
+        builder: (_, _) => const UmyInvitePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyInviteList),
+        name: AppRoutes.umyInviteList,
+        builder: (_, _) => const UmyInviteListPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyCircle),
+        name: AppRoutes.umyCircle,
+        builder: (_, GoRouterState state) =>
+            UmyCirclePage(tagNow: state.uri.queryParameters['tagnow'] ?? ''),
       ),
       // 「我的设置」「联系客服」也是三品牌共用的账户域页面。
       GoRoute(

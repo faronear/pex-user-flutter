@@ -576,3 +576,37 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **遗留**：`umyKyc`(435) / `umyInvite*` / `umyCircle` / `umyMia*` / `midTryapp` 未迁移；
   `umyAccount` 里「手机/邮箱」两行都指向 `umyAccountCommid`（与源项目一致）。
+
+### 账户域 · umyCircle（我的圈子）+ umyInvite（邀请朋友）+ umyInviteList
+
+- **合并复用**：源项目 `partCreatorMyFollowings` / `partCreatorMyFollowers` / `partCreatorMyInvitees`
+  三个组件 340 行里逻辑几乎一致（只有接口、时间字段、空态文案、「前往」按钮不同）→
+  合并为 `widgets/part_circle_list.dart`，由 `CircleTag` 枚举区分；
+  状态存 `creator_provider`（`myFollowingList` / `myFollowerList` / `myInviteeList` + 各自 `onceLoaded`）。
+- **修好的两处源项目行为**（代码有注释）：
+  1. 源项目「加载更多」是**整表替换**（`push(...)` 被注释掉），翻页会丢掉已加载的页
+     → 迁移版追加 + 按 usid 去重（`appendCircle`）
+  2. `get_invitee_list` 后端只认 `order/skip/take`，源项目传的 `beforeTime` **被忽略**
+     → 数量 ≥ 每页条数时会永远翻到同一页；迁移版改用 `skip` 翻页
+- **分类条**：源项目 `uni-segmented-control` 只在 `appkey === 'AKBABELY'` 渲染
+  （当年 `myCircleDict` 仅 Babelyx 有值的遗留判断），现在三品牌配置都有该字典 → 一律渲染；
+  按钮两行 = `onlineUser[counter]` + 分类名（对应源项目的 `'\n'` 拼接）。
+- **邀请页**：标题 `tInviteTitle`（三品牌均未配置 → 回退 `slogans`，与源项目 `||` 一致）+
+  优惠码（haid + 复制）/ 优惠链接（`webUrlRoot/#/?inhaid=<haid>` + 复制 + 分享弹窗）+
+  优惠二维码 + 「已奖励 0¢ / 已邀请 1」两个渐变入口（入口目标与源项目一致：
+  Agidin → `umyInviteList`，其余 → `umyCircle?tagnow=INVITEE`）。
+- **新增**：`part_load_more` 补 `loadFresh`（顶部「刷新」条）；`envar` 补
+  `webUrlRoot` / `tInviteTitle` / `linkCommunity` / `slogans` / `Creator.myCircleDict`；
+  路由补 `umyInviteList`（真页面）与 `umyFundTranx`（跳占位页）。
+- **实测**：
+  - `dart run tool/check_circle.dart` **PASS**：注册 A/B → B 关注 A → B 的关注名单含 A、
+    A 的粉丝名单含 B → 用 A 的优惠码注册 C → A 的邀请名单含 C 且 `count=1`、
+    `skip=0` 1 条 / `skip=1` 0 条（skip 翻页正确）
+  - 视觉（CDP 截图，手机 500）：邀请页（标语标题、200¢、优惠码 546bd4、
+    链接 `https://u.babelyx.com/#/?inhaid=546bd4`、二维码、「0¢ Rewarded / 1 Invited」渐变入口）、
+    圈子页三个分类（选中高亮 + 数量）、关注/粉丝的创作者卡片、
+    邀请名单「I have invited 1 users + Invite More + 注册日期行」；PC 1200 邀请页布局正常
+  - 造数脚本 `/tmp/seed_circle.js`（临时）：注册 A/B/C + 互关 + C 挂在 A 名下
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **遗留**：`menuUzone` 的圈子徽标/清单行、`umyAccount` 的「用户号」行现在都指向真页面；
+  剩 `umyKyc`(435) / `umyMia*` / `midTryapp`。

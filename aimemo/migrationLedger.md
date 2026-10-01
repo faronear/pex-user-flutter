@@ -50,9 +50,9 @@
 ### 社交
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `umyInvite.vue` | 114 | `pages/umy_invite_page.dart` | `[ ]` |
-| `umyInviteList.vue` | 43 | `pages/umy_invite_list_page.dart` | `[ ]` |
-| `umyCircle.vue` | 73 | `pages/umy_circle_page.dart` | `[ ]` |
+| `umyInvite.vue` | 114 | `pages/umy_invite_page.dart` | `[x]` |
+| `umyInviteList.vue` | 43 | `pages/umy_invite_list_page.dart` | `[x]` |
+| `umyCircle.vue` | 73 | `pages/umy_circle_page.dart` | `[x]` |
 | `umyCollection.vue` | 89 | `pages/umy_collection_page.dart` | `[x]` |
 | `umyMia.vue` | 130 | `pages/umy_mia_page.dart` | `[ ]` |
 | `umyMiaDetail.vue` | 185 | `pages/umy_mia_detail_page.dart` | `[ ]` |
@@ -179,9 +179,9 @@
 | `partCreationCardList.vue` | 363 | `widgets/part_creation_card_list.dart` | `[x]` |
 | `partCreatorAll.vue` | 72 | `widgets/part_creator_all.dart` | `[x]` |
 | `partCreatorCardList.vue` | 116 | `widgets/part_creator_card_list.dart` | `[x]` |
-| `partCreatorMyFollowers.vue` | 98 | `widgets/part_creator_my_followers.dart` | `[ ]` |
-| `partCreatorMyFollowings.vue` | 98 | `widgets/part_creator_my_followings.dart` | `[ ]` |
-| `partCreatorMyInvitees.vue` | 144 | `widgets/part_creator_my_invitees.dart` | `[ ]` |
+| `partCreatorMyFollowers.vue` | 98 | `widgets/part_circle_list.dart` | `[x]` 三合一，见下 |
+| `partCreatorMyFollowings.vue` | 98 | `widgets/part_circle_list.dart` | `[x]` 三合一：`CircleTag.following` |
+| `partCreatorMyInvitees.vue` | 144 | `widgets/part_circle_list.dart` | `[x]` 三合一：`CircleTag.invitee` |
 
 ---
 

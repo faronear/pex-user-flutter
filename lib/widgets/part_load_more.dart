@@ -6,9 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/i18n/i18n.dart';
 import '../core/i18n/lang_text.dart';
+import '../core/icons/pex_icon.dart';
+import '../theme/app_theme.dart';
 
 /// 列表加载状态（与源项目取值一致）。
-enum LoadState { loadUp, loading, noMore, frozen }
+enum LoadState { loadUp, loadFresh, loading, noMore, frozen }
 
 const LangText _kLoadMore = LangText(
   zhCN: '加载更多',
@@ -17,6 +19,14 @@ const LangText _kLoadMore = LangText(
 );
 
 const LangText _kNoMore = LangText(zhCN: '没有更多了', enUS: 'No more', jaJP: 'これ以上ありません');
+
+/// 顶部「刷新」条（源项目 `loadFresh` 状态）。
+const LangText _kReload = LangText(
+  zhCN: '刷新',
+  enUS: 'Reload',
+  deDE: 'Neu laden',
+  jaJP: '再読み込み',
+);
 
 class PartLoadMore extends ConsumerWidget {
   const PartLoadMore({
@@ -42,6 +52,20 @@ class PartLoadMore extends ConsumerWidget {
               width: 20,
               height: 20,
               child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          ),
+        );
+      case LoadState.loadFresh:
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: Center(
+            child: TextButton.icon(
+              onPressed: onLoad,
+              icon: PexIcon.uni('refreshempty', size: 16, color: PexColors.blueMy),
+              label: Text(
+                ll(lang, _kReload),
+                style: const TextStyle(color: PexColors.blueMy, fontSize: 13),
+              ),
             ),
           ),
         );

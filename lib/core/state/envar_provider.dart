@@ -48,6 +48,28 @@ class Envar {
   /// 应用称谓（如「爱奇点」/「Agidin」）。
   LangText get callnames => LangText.fromMap(raw['callnames']);
 
+  /// 邀请/分享链接所用的固定主域名（源项目 `webUrlRoot`）。
+  ///
+  /// 源项目注释：设为固定的主域名，是为了方便从后台控制。
+  String get webUrlRoot => str('webUrlRoot');
+
+  /// 邀请页大标题（源项目 `tInviteTitle`）；未配置时页面回退到 [slogans]。
+  LangText get tInviteTitle => LangText.fromMap(raw['tInviteTitle']);
+
+  /// 社区优惠计划链接（源项目 `linkCommunity`）；为空则不显示该入口。
+  String get linkCommunity => str('linkCommunity');
+
+  /// 品牌标语（源项目 `slogans`）。
+  LangText get slogans => LangText.fromMap(raw['slogans']);
+
+  /// 「我的圈子」三个分类（源项目 `Creator.myCircleDict`）：`FOLLOWING` / `FOLLOWER` / `INVITEE`。
+  Map<String, dynamic> get myCircleDict {
+    final Object? creator = raw['Creator'];
+    if (creator is! Map) return <String, dynamic>{};
+    final Object? dict = creator['myCircleDict'];
+    return dict is Map ? dict.cast<String, dynamic>() : <String, dynamic>{};
+  }
+
   String get linkAgreement => str('linkAgreement');
 
   String get linkNews => str('linkNews');

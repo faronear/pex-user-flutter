@@ -109,6 +109,50 @@ class UserApi {
         apiTodo: 'verify_passcode',
         apiWhat: <String, dynamic>{'passcode': passcode},
       );
+
+  /// 我关注的人（源项目 `get_my_followings`）。
+  /// [beforeTime] 为向下翻页游标，取上一页最后一条的 `followTimeUnix`。
+  Future<Map<String, dynamic>> getMyFollowings({
+    int takeLimit = 12,
+    int? beforeTime,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_my_followings',
+        apiWhat: <String, dynamic>{
+          'takeLimit': takeLimit,
+          'beforeTime': ?beforeTime,
+        },
+      );
+
+  /// 关注我的人（源项目 `get_my_followers`）。
+  /// 游标字段与「我关注的人」不同，是 `followme_followTimeUnix`。
+  Future<Map<String, dynamic>> getMyFollowers({
+    int takeLimit = 12,
+    int? beforeTime,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_my_followers',
+        apiWhat: <String, dynamic>{
+          'takeLimit': takeLimit,
+          'beforeTime': ?beforeTime,
+        },
+      );
+
+  /// 我邀请的人（源项目 `get_invitee_list`）。
+  ///
+  /// 注意：该接口**不支持 `beforeTime` 游标**（后端只认 `order`/`skip`/`take`），
+  /// 源项目传的 `beforeTime` 是被忽略的 → 这里改用 `skip` 翻页（这是修好的行为）。
+  Future<Map<String, dynamic>> getInviteeList({
+    int takeLimit = 10,
+    int skip = 0,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_invitee_list',
+        apiWhat: <String, dynamic>{'takeLimit': takeLimit, 'skip': skip},
+      );
 }
 
 final Provider<UserApi> userApiProvider =

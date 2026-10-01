@@ -190,7 +190,19 @@
     - **源项目缺口**：`wo.ss.tTerminate`（注销页说明文案）在 `envar-config.js` 里恒为 `undefined`，
       从未被定义 → 迁移版照此留空（后台一填就会显示）
     - 顺带：`showPexModal` 的弹窗底色由 M3 品牌染色改为**白色**（源项目为白）
-  - 待续：`umyKyc` / `umyInvite*` / `umyCircle` / `umyMia*` / `midTryapp`；组件 `partIdentCommid`
+  - [x] **`umyCircle`（我的圈子）+ `umyInvite`（邀请朋友）+ `umyInviteList`（邀请名单）**
+    - 三个源组件 `partCreatorMyFollowings/Followers/Invitees` 逻辑几乎一致 →
+      合并为一个 `part_circle_list.dart`（`CircleTag` 区分：接口 / 游标字段 / 空态文案 / 前往按钮）
+    - `part_load_more` 补 `loadFresh` 状态（源项目顶部的「刷新」条）
+    - **修好的行为**：源项目「加载更多」是**整表替换**（`push` 被注释掉），翻页会丢已加载页；
+      迁移版**追加 + 按 usid 去重**；邀请名单接口不支持 `beforeTime` 游标（后端只认
+      `order/skip/take`，源项目传的 `beforeTime` 被忽略）→ 改用 `skip` 翻页
+    - 圈子页分类条：源项目只在 AKBABELY 渲染（当年字典仅 Babelyx 有值），现在三品牌都有 →
+      **一律渲染**；分类按钮 = 数量 + 名称两行（对应源项目 `'\n'` 拼接）
+    - 邀请页：标题 `tInviteTitle`（未配置则回退 `slogans`）+ 优惠码/链接/二维码 +
+      「已奖励 → umyFundTranx」「已邀请 → umyCircle?tagnow=INVITEE」两个渐变入口
+    - `envar` 补 `webUrlRoot` / `tInviteTitle` / `linkCommunity` / `slogans` / `Creator.myCircleDict`
+  - 待续：`umyKyc` / `umyMia*` / `midTryapp`；组件 `partIdentCommid`
     （`umyCollection` / `partComplain` 已在批次 2 完成）
 - [ ] 其余：`showWebview`（webview 容器）
 
