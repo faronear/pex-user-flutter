@@ -33,9 +33,22 @@
 ## 待办（需老板在有凭据的机器上完成）
 - **iOS 签名**：Xcode 里选 Apple Developer Team（模板里 `DEVELOPMENT_TEAM = 37KQR6645B` 是占位，需改成你的 Team ID），并配 provisioning profile；`build:ios:prod` 走真机/Archive 才需要。
 - **Android 签名**：`build.gradle.kts` 的 release 现在用 debug key（TODO），上架前配 `signingConfigs` 与 keystore。
-- **图标**：三个品牌共用默认 Flutter 图标，按需替换 `ios/Runner/Assets.xcassets/AppIcon.appiconset` 与 `android/app/src/main/res/mipmap-*`。
+- **图标**：✅ 已替换为三品牌官方 logo（见下「应用图标」）。
 - **Android 本机未验证**：当前开发机没有 Android SDK，只做了配置正确性检查，未实际 `flutter build apk`。
 
+## 应用图标（已替换）
+
+源 logo 与产物（生成器：`tool/_gen_brand_icons.py`，产物已提交）：
+
+| 品牌 | 源图 | iOS 产物 | Android 产物 |
+|---|---|---|---|
+| agidin | `pex-app-doc/agidin-爱奇点/图标/logo-circle-closed-bgWhite-appicon-1024.png`（白底不透明） | `ios/Runner/Assets.xcassets/AppIcon-agidin.appiconset/` | `android/app/src/agidin/res/mipmap-*/ic_launcher.png` |
+| babelyx | `pex-app-doc/babelyx-巴贝历/logo_标志/logo-babely-bgWhite-fgRedWhite-appicon-1024.png`（RGBA） | `ios/Runner/Assets.xcassets/AppIcon-babelyx.appiconset/` | `android/app/src/babelyx/res/mipmap-*/ic_launcher.png` |
+| tryapp | `pex-user-uniapp/static/logoTryapp.png`（RGBA, 512） | `ios/Runner/Assets.xcassets/AppIcon-tryapp.appiconset/` | `android/app/src/tryapp/res/mipmap-*/ic_launcher.png` |
+
+- iOS：在 `project.pbxproj` 的六个 flavor 构建配置里设了 `ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon-<brand>`，flavor 各自用独立图标集。
+- **注意**：babelyx / tryapp 源图带透明（alpha），iOS 渲染图标会把 alpha 压平为黑色导致黑角；生成器已用 Pillow 先把源图**压平到白底**再 resize，三品牌图标均为不透明 RGB、四角白色。换 logo 重跑生成器即可。
+
 ## 验证状态
-- iOS：`agidin` / `babelyx` flavor 已在 Xcode 26 模拟器构建成功，`Agidin.app` / `Babelyx.app` 产出，bundle id 与应用名正确，权限描述已注入。
+- iOS：`agidin` / `babelyx` / `tryapp` 三个 flavor 均已构建成功（模拟器），`Agidin.app` / `Babelyx.app` / `TRYAPP.app` 产出，bundle id、应用名、权限描述、品牌图标均正确。
 - Android：配置就绪，待有 SDK 的机器验证。
