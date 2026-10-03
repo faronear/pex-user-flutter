@@ -19,6 +19,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const PROFILE_DIR = '/tmp/cdpShotProfile';
 const PORT = 9412;
 
 const argv = process.argv.slice(2);
@@ -47,6 +48,11 @@ if (!url) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function main() {
+  // 每次清掉 profile：否则 service worker 会命中旧缓存，
+  // 重建后的产物在截图里看不到变化（踩过一次）。
+  try {
+    fs.rmSync(PROFILE_DIR, { recursive: true, force: true });
+  } catch (e) {}
   const chrome = spawn(CHROME, [
     '--headless=new',
     '--disable-gpu',
@@ -54,7 +60,7 @@ async function main() {
     '--hide-scrollbars',
     `--remote-debugging-port=${PORT}`,
     `--window-size=${width},${height}`,
-    '--user-data-dir=/tmp/cdpShotProfile',
+    `--user-data-dir=${PROFILE_DIR}`,
     'about:blank',
   ], { stdio: 'ignore' });
 

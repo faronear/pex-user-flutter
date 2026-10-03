@@ -75,7 +75,7 @@
 | `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
 | `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[>]` 2A 只读骨架已迁（评论/互动/付费/名单/分享举报待 2B–2F） |
 | `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[x]` |
-| `showCreator.vue` | 712 | `pages/show_creator_page.dart` | `[ ]` |
+| `showCreator.vue` | 712 | `pages/show_creator_page.dart` | `[x]` |
 | `userResource.vue` | 133 | `pages/user_resource_page.dart` | `[x]` |
 | `userResourceDetail.vue` | 208 | `pages/user_resource_detail_page.dart` | `[x]` 含二维码（新增依赖 qr_flutter） |
 

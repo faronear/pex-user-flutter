@@ -99,6 +99,29 @@ class CreatorNotifier extends Notifier<CreatorState> {
     setCircle(tag, merged);
   }
 
+  /// 把某人的屏蔽状态同步到「关注 / 粉丝」两个名单（源项目 `to_block_user` 后的 forEach）。
+  void setBlockStateInLists(String usid, String blockState) {
+    List<Map<String, dynamic>> patch(List<Map<String, dynamic>> list) =>
+        <Map<String, dynamic>>[
+      for (final Map<String, dynamic> item in list)
+        item['usid']?.toString() == usid
+            ? <String, dynamic>{...item, 'blockState': blockState}
+            : item,
+    ];
+    state = state.copyWith(
+      myFollowingList: patch(state.myFollowingList),
+      myFollowerList: patch(state.myFollowerList),
+    );
+  }
+
+  /// 从探索页创作者名单里移除某人（源项目 `creatorListAll.splice`）。
+  void removeFromListAll(String usid) => state = state.copyWith(
+        listAll: <Map<String, dynamic>>[
+          for (final Map<String, dynamic> item in state.listAll)
+            if (item['usid']?.toString() != usid) item,
+        ],
+      );
+
   void reset() => state = const CreatorState();
 }
 

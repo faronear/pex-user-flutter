@@ -10,6 +10,7 @@ import '../../pages/menu_creator_page.dart';
 import '../../pages/mid_babely_page.dart';
 import '../../pages/show_creation_update_page.dart';
 import '../../pages/show_creation_page.dart';
+import '../../pages/show_creator_page.dart';
 import '../../pages/umy_collection_page.dart';
 import '../../pages/user_resource_detail_page.dart';
 import '../../pages/user_resource_page.dart';
@@ -33,6 +34,19 @@ List<RouteBase> creationRoutes() => <RouteBase>[
         name: AppRoutes.showCreation,
         builder: (_, GoRouterState state) =>
             ShowCreationPage(queryParameters: state.uri.queryParameters),
+      ),
+      // 源项目 `onLoad` 收 `hostUsid/hostusid/usid/haid/unid`，这里归一到四个参数。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.showCreator),
+        name: AppRoutes.showCreator,
+        builder: (_, GoRouterState state) => ShowCreatorPage(
+          hostUsid: state.uri.queryParameters['hostUsid'] ??
+              state.uri.queryParameters['hostusid'] ??
+              '',
+          usid: state.uri.queryParameters['usid'] ?? '',
+          haid: state.uri.queryParameters['haid'] ?? '',
+          unid: state.uri.queryParameters['unid'] ?? '',
+        ),
       ),
       GoRoute(
         path: AppRoutes.path(AppRoutes.menuCreator),

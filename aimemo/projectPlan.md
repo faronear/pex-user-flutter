@@ -224,8 +224,17 @@
   - [x] **`midTryapp`（TRYAPP 中页）**：按老板决定（2026-10-03）**只做空白框架页**——
     TRYAPP 是与品牌无关的中立基础框架占位，源页里的 AI 对话/创作双容器不做。
     只在 `main_tryapp.dart` 入口注册路由（不进其它品牌产物，保持入口级裁剪）。
-  - 待续：组件 `partIdentCommid`（`umyCollection` / `partComplain` 已在批次 2 完成）；
-    账户/社交/消息域页面至此**全部迁完**
+  - [x] **`showCreator`（个人展 / 创作者主页）**：未找到分支（提示 + Creator ID 搜索 + 去「遇见」）
+    + 已找到分支（头像·昵称·分享·统计·管理或私信·屏蔽/举报·关注 + 自我介绍展开收起 +
+    屏蔽空态 + 作品双列列表）
+    - 新增接口：`creator_api.getSingleCreator(usid/haid/unid/skip/takeLimit)`、
+      `creation_api.getUserCreations`、`user_api` 的 `followUser/unfollowUser/blockUser/unblockUser`
+    - 关注/屏蔽后同步 `hostUser` 与 `onlineUser` 计数，并把屏蔽状态写回圈子名单
+      （`creatorProvider.setBlockStateInLists` / `removeFromListAll`）
+    - **修好的行为**：源项目作品列表「加载更多」仍是整表替换 → 迁移版追加 + 按 csid 去重
+    - `envar` 补 `tBlockTitle/tBlock/tUnblockTitle/tUnblock`（源项目恒为 undefined → 走内置文案）
+  - 待续：创作域 `menuMarket`(77) / `showWebview`(24)；资金域 `umyFund*`；组件 `partIdentCommid`
+    （账户/社交/消息域页面已全部迁完）
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

@@ -687,3 +687,37 @@
   「My Collections ›」+ Load more + 双列作品卡片 + 底部标签栏（Creations 高亮）全部正确；
   游客点「My Collections」会进 `identBegin`（与源项目 `usid ? umyCollection : identBegin` 一致）。
 - **验证**：`flutter analyze` 0 问题。
+
+### 创作域 · showCreator（个人展 / 创作者主页，712 行）
+
+- **新增页面** `pages/show_creator_page.dart`，两大分支与源项目一致：
+  - **未找到**：提示 + 「Creator ID」搜索框（回车/按钮 → `?unid=`）+「或者到处看看」
+    渐变按钮（`--YellowMatt` #fcbd71 → `--RedMy`）→ `menuCreator`
+  - **已找到**：头像 + 昵称 + 分享（复用 `showPopLinkSheet`，链接
+    `https://goto.<域名>/creator/<haid|usid>?inhaid=<我的 haid>`）+ 统计（公开数 / 圈子数）+
+    「管理」（本人 → `menuUzone`）或「私信」（他页 → 私信弹窗）+ 屏蔽/解除屏蔽 + 举报 + 关注/已关注；
+    自我介绍一行摘要 + 展开（`PartStoryReader`）/收起；屏蔽空态；作品双列列表 + 刷新/加载更多
+- **新增接口**：`creator_api.getSingleCreator`（支持 `usid`/`haid`/`unid` + `skip`/`takeLimit`）、
+  `creation_api.getUserCreations`、`user_api.followUser/unfollowUser/blockUser/unblockUser`
+- **新增状态方法**：`creatorProvider.setBlockStateInLists` / `removeFromListAll`
+  （对应源项目屏蔽后遍历 `myFollowingList`/`myFollowerList`/`creatorListAll` 的同步）
+- **修好的行为**：源项目作品列表「加载更多」仍是**整表替换**（`push` 被注释）→ 迁移版追加 + 按 `csid` 去重
+- **如实简化（代码已注释）**：源项目 `onLoad` 有「已有 hostUser（从列表页带过来）」的快速分支，
+  它依赖上一个页面把整条用户数据塞进 `User.hostUser`；Flutter 侧列表点击只传 `unid`
+  （`part_user_list` / `part_creator_card_list` 都是 `?unid=`），因此统一走「按参数查人」分支，结果一致
+- **实测**：
+  - `dart run tool/check_creator.dart` **PASS**：按 `usid`/`haid`/`unid` 三种方式都能查到同一个人 →
+    无参数 `ERROR_USID_MISSING` / 坏 unid `ERROR_BAD_UNID` → `get_user_creations` SUCCESS →
+    关注后 `followState=FOLLOWED`、取关 `UNFOLLOWED` → 屏蔽 `BLOCKED`、解封 `UNBLOCKED`（均回查确认）
+  - 视觉 / 交互（CDP，手机 500；用库里真实创作者「年少不识花期」97 作品 / 3 关注 / 6 粉丝）：
+    访客视角（Share / Message / Block / Report / Follow 齐全）→ 点 Follow 变红色「Following」
+    且圈子数 9→10 → 点 Share 弹出分享弹窗（品牌 logo + 二维码 + 正确链接）→
+    点 Message 弹出「Message to 年少不识花期」私信编辑器 → 点 Block 弹白色确认框 →
+    自己的主页显示「Manage」且无关注/屏蔽 → 坏 unid 显示未找到分支 → 屏蔽后显示
+    「This user is blocked by you.」+ Unblock（验证后已解封复原）
+- **工具坑（重要，已修）**：`tool/cdpShot.js` 用的固定 `--user-data-dir` 会让 **service worker
+  命中旧缓存** —— 重建产物后截图仍显示旧界面（我一度以为渐变按钮没生效）。现在每次运行前
+  清空该 profile 目录，重建后立刻可见。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **连带生效**：`menuCreator`（遇见）列表卡片、`umyCircle` 名单、作品详情页里的作者头像点击，
+  现在都落到真页面。

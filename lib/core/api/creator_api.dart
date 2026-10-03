@@ -21,11 +21,27 @@ class CreatorApi {
         apiWhat: <String, dynamic>{'takeLimit': takeLimit},
       );
 
-  /// 单个创作者（源项目 `showCreator` 用）。
-  Future<Map<String, dynamic>> getSingleCreator(String usid) => _client.callBase(
+  /// 单个创作者 + 其创作品（源项目 `showCreator` 用）。
+  ///
+  /// 后端按 `usid` / `haid` / `unid` 三者之一查人；`unid` 既可以是 usid（uuid）
+  /// 也可以是 haid（短码，长度 > 5 且能反解），后端自己判断。
+  Future<Map<String, dynamic>> getSingleCreator({
+    String? usid,
+    String? haid,
+    String? unid,
+    int takeLimit = 12,
+    int skip = 0,
+  }) =>
+      _client.callBase(
         apiWho: who,
         apiTodo: 'get_single_creator',
-        apiWhat: <String, dynamic>{'usid': usid},
+        apiWhat: <String, dynamic>{
+          'usid': ?usid,
+          'haid': ?haid,
+          'unid': ?unid,
+          'takeLimit': takeLimit,
+          'skip': skip,
+        },
       );
 }
 

@@ -62,6 +62,15 @@ class Envar {
   /// 品牌标语（源项目 `slogans`）。
   LangText get slogans => LangText.fromMap(raw['slogans']);
 
+  /// 屏蔽确认弹窗的标题与正文（源项目 `tBlockTitle` / `tBlock`；未配置时页面用内置文案）。
+  LangText get tBlockTitle => LangText.fromMap(raw['tBlockTitle']);
+
+  LangText get tBlock => LangText.fromMap(raw['tBlock']);
+
+  LangText get tUnblockTitle => LangText.fromMap(raw['tUnblockTitle']);
+
+  LangText get tUnblock => LangText.fromMap(raw['tUnblock']);
+
   /// 「我的圈子」三个分类（源项目 `Creator.myCircleDict`）：`FOLLOWING` / `FOLLOWER` / `INVITEE`。
   Map<String, dynamic> get myCircleDict {
     final Object? creator = raw['Creator'];

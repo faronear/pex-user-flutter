@@ -110,6 +110,38 @@ class UserApi {
         apiWhat: <String, dynamic>{'passcode': passcode},
       );
 
+  /// 关注某人（源项目 `toggle_follow_state` 的关注分支）。
+  Future<Map<String, dynamic>> followUser(String followToUsid) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'follow_user',
+        apiWhat: <String, dynamic>{'followToUsid': followToUsid},
+      );
+
+  /// 取消关注（源项目 `toggle_follow_state` 的取消分支）。
+  Future<Map<String, dynamic>> unfollowUser(String followToUsid) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'unfollow_user',
+        apiWhat: <String, dynamic>{'followToUsid': followToUsid},
+      );
+
+  /// 屏蔽某人（源项目 `to_block_user`）。
+  Future<Map<String, dynamic>> blockUser(String blockToUsid) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'block_user',
+        apiWhat: <String, dynamic>{'blockToUsid': blockToUsid},
+      );
+
+  /// 解除屏蔽（源项目 `to_unblock_user`）。
+  Future<Map<String, dynamic>> unblockUser(String blockToUsid) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'unblock_user',
+        apiWhat: <String, dynamic>{'blockToUsid': blockToUsid},
+      );
+
   /// 提交实名认证资料（源项目 `update_kyc`）。
   ///
   /// 成功时后端返回 `_state: 'SUBMITTED'`（而不是通用的 `SUCCESS`），

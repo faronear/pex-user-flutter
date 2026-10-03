@@ -56,6 +56,24 @@ class CreationApi {
   /// 取单个作品详情。入口可以是 `csid`（从列表跳转）或链接参数
   /// （`pexdataCidHash` / `nftToid` / `pexBaseCid` / `mintTxHash` / `unid`），
   /// 对应源项目 `showCreation.vue` 的 `onLoad` 两种分支。
+  /// 某位创作者上架的创作品（源项目 `showCreator` 的 `to_get_*_user_creations`）。
+  ///
+  /// [beforeTime] 为向下翻页游标，取上一页最后一条的 `createTimeUnix`。
+  Future<Map<String, dynamic>> getUserCreations({
+    required String usid,
+    int takeLimit = 12,
+    int? beforeTime,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_user_creations',
+        apiWhat: <String, dynamic>{
+          'usid': usid,
+          'takeLimit': takeLimit,
+          'beforeTime': ?beforeTime,
+        },
+      );
+
   Future<Map<String, dynamic>> getSingleCreation({
     String? csid,
     String? pexdataCidHash,
