@@ -274,7 +274,16 @@
       - 新增 `core/i18n/payto_coins.dart`（对应 `paytoCoinSet`）、
         `user_api` 的 `addPaytoChannel` / `deletePaytoChannel` / `requestWithdrawal`、
         `envar.withdrawAmountMin`；`umyFund` 的「提现」按钮已接到真页
-  - **资金域至此全部迁完**；待续：组件 `partIdentCommid` 等零散组件
+  - **资金域至此全部迁完**
+  - [x] **零散组件结案**（2026-10-03）：12 个组件逐个查源项目实际引用后定论 ——
+    10 个是**死代码**（全库无引用 / 只被注释掉 / `partDev` 是 `v-if="false"` 占位 /
+    `partSoundRecorder` 的开关 `*Speak` 全为 false），标 `[-]` 不迁移；
+    唯一真缺口 **`partMenuRing`（AI 聊天消息操作菜单）已补齐**（径向环形菜单 → 底部操作表）
+  - [x] **`wo` 全局对象等价落地**：`ss`→各 Provider、`ll`→`LangText/ll()`、`tt`→`core/util/*`、
+    `bok`→`api_client.dart`、`unisocket`→`socket_provider.dart`、`pageSet`→`page_meta.dart`；
+    `App.data.js` 的 store 各域、主题 scss、`myp-one`/`uni_modules`/`uc*` 全部有等价物
+  - 待办只剩一项，且属于**原生构建阶段**：`buildPages/manifest/appPackConfig/androidPrivacy.js`
+    （iOS/Android 打包、隐私清单、flavors + CI）
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

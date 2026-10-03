@@ -872,3 +872,42 @@
   已让卡片自身承接 `onTap`（`onCashout` 只是显式入口）。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **里程碑**：**资金域（充值 / 余额 / 流水 / 提现渠道 / 提现）全部迁完**。
+
+### 零散组件结案 + AI 聊天消息操作菜单 + Web 全量冒烟
+
+- **先回答老板的问题**：是的，目前**全部是 Web 平台**——三个品牌都用 `flutter build web`
+  出产物、用 headless Chrome 在 `localhost:8090` 验证；原生端（iOS/Android/macOS/Windows）
+  还没做任何构建配置（ledger 里只剩那一项）。
+- **零散组件：逐个查源项目实际引用后定论**（不是「都做一遍」）：
+  - **死代码 10 个**（标 `[-]`）：`partNavilink` / `partTooltip` / `partBreathingDot` /
+    `partMenuCircle` / `partLangPicker` / `partLangSelect` / `partCoinPicker` / `partTexturlReader`
+    全库**无任何引用**；`partLinkview` 只被 `homePortal.vue` 里一处**已注释掉**的代码提到；
+    `partDev` 只渲染 `<view v-if="false">`
+  - **配置未启用 1 个**：`partSoundRecorder`（语音输入）——`creationSpeak`/`miaSpeak`/`commentSpeak`
+    全为 false，源项目本身也不显示
+  - **真缺口 1 个**：`partMenuRing`（AI 聊天里点消息气泡弹操作菜单）→ **本轮补齐**
+- **AI 聊天消息操作菜单**（`part_aichat.dart`，对应 `partMenuRing` + `act_on_message`）：
+  - 触发改为**点击气泡**（源项目是 click；长按也保留给触屏）
+  - 动作按内容/品牌过滤：`删除`/`拷贝` 恒有，`转存` 仅 Babelyx，`朗读` 需有文字，`预览` 需有图片
+  - 行为逐一对齐源项目：拷贝按 markdown 拼媒体、朗读只送文字段并扣 `tucCost`/`sumOutTTS`、
+    删除走确认框 + `delete_chat_item`、预览摊成图片画廊、转存并入创作草稿并问「去创造 / 留在AIGC」
+  - 形态差异（已在代码注明）：源项目是**径向环形菜单**，迁移版改为**底部操作表**（Web/桌面更好点）
+- **顺手修了两个 API 参数名 bug**（一直没人用到，这次接线才暴露）：
+  `text_to_speech` 后端要 `inputText`（原写 `text`）、`delete_chat_item` 后端要
+  `chatUuid`+`chatTimeUnix`（原传整条 `chatItem`）。
+- **新增依赖** `audioplayers`（朗读播放；Web/原生都支持）。
+- **新增工具 `tool/webSmoke.js`**：按一批路由逐个打开，收集 console error / 未捕获异常，
+  并用截图体积粗判白屏。**它立刻抓到一个真 bug**：
+  - `umyKyc` 抛 `LateInitializationError` —— 我早前把那页的 `_idType`/`_land` 写成 `late`，
+    却在「自动登录完成后」的异步回调里赋值，首次 build 早于回调就崩（上次截图侥幸没触发）。
+    已改为**同步默认值 + 可空字段兜底**。
+- **Web 全量冒烟结果**：
+  - Babelyx 产物 **29 个路由全部 OK**（含 `showCreator` / `showCreation` / `umyFundChannelWithdraw` /
+    `showWebview` / `umyKyc` 等带参路由）
+  - Agidin 产物 15 个路由（含 `midAgidin` / `menuAipp` / `menuAippAichat`）全部 OK
+- **AI 朗读（TTS）验证受限**：`tool/check_tts.dart` 自检显示后端返回 `_state=ERROR _msg="Connection error."`
+  —— 本地没有可用的 OpenAI 出口/密钥。**关键是它没有返回 `ERROR_MISSING_INPUT`**，
+  说明 `inputText` 参数名修复是生效的；音频播放与扣费这两步本地无法端到端验证（已如实记录）。
+  同理，AI 聊天的「发消息 → 回复」在本地也通不了（同一个 OpenAI 出口问题），
+  故操作菜单是用**直接写入 `ai_chat` 的历史消息**来验证的。
+- **验证**：`flutter analyze` 0 问题；Babelyx + Agidin 两个 Web 产物均构建成功。

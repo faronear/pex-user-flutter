@@ -101,8 +101,8 @@
 | `partWindowLayoutUser.vue` | 101 | — | `[x]` 拆解：布局用 `part_window_layout.dart`，未登录分支落在 `menu_uzone_page.dart` |
 | `partNavibarPc.vue` | 115 | `widgets/part_navibar_pc.dart` | `[x]` |
 | `partNavibarPcFixed.vue` | 77 | `widgets/part_navibar_pc_fixed.dart` | `[x]` |
-| `partNavilink.vue` | 55 | `widgets/part_navilink.dart` | `[ ]` |
-| `partLinkview.vue` | 41 | `widgets/part_linkview.dart` | `[ ]` |
+| `partNavilink.vue` | 55 | — | `[-]` 源项目**全库无引用**（死代码） |
+| `partLinkview.vue` | 41 | — | `[-]` 仅 `homePortal.vue` 里一处且**已被注释掉**；链接统一用 `launchUrl` |
 | `partLinkhelp.vue` | 47 | `widgets/part_linkhelp.dart` | `[x]` |
 
 ### 通用 / UI
@@ -115,27 +115,27 @@
 | `partLoadMore.vue` | 171 | `widgets/part_load_more.dart` | `[x]` |
 | `partEmptyList.vue` | 90 | `widgets/part_empty_list.dart` | `[x]` |
 | `partShowLoading.vue` | 20 | `widgets/part_show_loading.dart` | `[x]` |
-| `partTooltip.vue` | 34 | `widgets/part_tooltip.dart` | `[ ]` |
+| `partTooltip.vue` | 34 | — | `[-]` 源项目**全库无引用**（死代码） |
 | `partPopLink.vue` | 69 | `widgets/part_pop_link.dart` | `[x]`（系统分享待阶段四） |
 | `partShortcuts.vue` | 75 | `widgets/part_shortcuts.dart` | `[x]` |
-| `partBreathingDot.vue` | 59 | `widgets/part_breathing_dot.dart` | `[ ]` |
+| `partBreathingDot.vue` | 59 | — | `[-]` 源项目**全库无引用**；呼吸效果用 `part_breathing_opacity.dart` |
 | `partBreathingOpacity.vue` | 30 | `widgets/part_breathing_opacity.dart` | `[x]` |
-| `partDev.vue` | 17 | `widgets/part_dev.dart` | `[ ]` |
+| `partDev.vue` | 17 | — | `[-]` 只渲染 `<view v-if="false">`，是注释用的占位组件 |
 | `partIcontextCopy.vue` | 25 | `widgets/part_icontext_copy.dart` | `[x]`（含 `PartIcontextPop`） |
 | `partIcontextCopyshare.vue` | 57 | — | `[x]` 合并进 `part_icontext_copy.dart` + `part_pop_link.dart`（复制）；系统分享待阶段四 |
 | `partIcontextPop.vue` | 25 | `widgets/part_icontext_copy.dart` | `[x]`（`PartIcontextPop`） |
 | `partUserList.vue` | 96 | `widgets/part_user_list.dart` | `[x]`（另见 `part_user_list_sheet.dart`） |
-| `partMenuCircle.vue` | 178 | `widgets/part_menu_circle.dart` | `[ ]` |
-| `partMenuRing.vue` | 152 | `widgets/part_menu_ring.dart` | `[ ]` |
+| `partMenuCircle.vue` | 178 | — | `[-]` 源项目**全库无引用**（死代码） |
+| `partMenuRing.vue` | 152 | `widgets/part_aichat.dart`（消息操作菜单） | `[x]` 行为等价：径向环形菜单 → 底部操作表 |
 
 ### 语言 / 地区 / 币种
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `partLangPicker.vue` | 44 | `widgets/part_lang_picker.dart` | `[ ]` |
-| `partLangSelect.vue` | 39 | `widgets/part_lang_select.dart` | `[ ]` |
+| `partLangPicker.vue` | 44 | — | `[-]` 源项目**全库无引用**；语言选择用 `part_lang_table.dart` |
+| `partLangSelect.vue` | 39 | — | `[-]` 源项目**全库无引用**；同上 |
 | `partLangTable.vue` | 161 | `widgets/part_lang_table.dart` | `[x]` |
 | `partLandTable.vue` | 127 | `widgets/part_land_table.dart` | `[x]` |
-| `partCoinPicker.vue` | 55 | `widgets/part_coin_picker.dart` | `[ ]` |
+| `partCoinPicker.vue` | 55 | — | `[-]` 源项目**全库无引用**；选币用 `part_coin_table.dart` |
 | `partCoinTable.vue` | 99 | `widgets/part_coin_table.dart` | `[x]`（可排序表 + 选择弹窗） |
 
 ### 身份
@@ -163,8 +163,8 @@
 | `partStoryEditor.vue` | 763 | `widgets/part_story_editor.dart` | `[x]` |
 | `partStoryReader.vue` | 208 | `widgets/part_story_reader.dart` | `[x]` |
 | `partTextReader.vue` | 54 | `widgets/part_text_reader.dart` | `[x]` |
-| `partTexturlReader.vue` | 28 | `widgets/part_texturl_reader.dart` | `[ ]` |
-| `partSoundRecorder.vue` | 303 | `widgets/part_sound_recorder.dart` | `[ ]` 原生能力 |
+| `partTexturlReader.vue` | 28 | — | `[-]` 源项目**全库无引用**；文本段渲染用 `part_text_reader.dart` |
+| `partSoundRecorder.vue` | 303 | — | `[-]` 配置里 `creationSpeak`/`miaSpeak`/`commentSpeak` **全为 false**（源项目也不显示）；等真启用语音输入再做（Web 需 MediaRecorder） |
 
 ### 创作
 | 源 | 行数 | 目标 | 状态 |
@@ -190,9 +190,9 @@
 | 源 | 说明 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `components/dragFileUploader/` | 拖拽/文件上传 | `core/api/fileloader_api.dart` + `core/util/pex_file_picker.dart`（已实现 `Fileloader/receiveFile` 上传与 story 段写入） | `[x]` |
-| `components/myp-one/` | 第三方 mypUI 组件（输入框） | 用 Flutter 原生输入替代 | `[ ]` |
-| `uni_modules/` | uni-app 模块 | 视依赖逐个替代 | `[ ]` |
-| `wo-user-part-uniapp/uc*` | easycom 注册的外部 uc* 组件 | 需盘点后逐个迁移 | `[ ]` |
+| `components/myp-one/` | 第三方 mypUI 组件（输入框） | 用 Flutter 原生输入替代 | `[-]` 已由 Flutter 原生输入替代（各表单页） |
+| `uni_modules/` | uni-app 模块 | 视依赖逐个替代 | `[-]` 用到的（uni-popup/list/icons/forms/data-select/easyinput/number-box 等）已由 Flutter 原生或本仓库组件替代 |
+| `wo-user-part-uniapp/uc*` | easycom 注册的外部 uc* 组件 | 需盘点后逐个迁移 | `[-]` 实际只用到 `ucQrcode`（→ `qr_flutter`，见 `part_pop_link.dart` / `part_deposit.dart`） |
 | `static/` | 图片/图标/字体 | `assets/static/`（已整目录迁移，2.4M） | `[x]` |
 | `static/icont/` | icont + uniicons 图标字体（275 图标） | `assets/static/icont/` + `lib/core/icons/`（码点映射已生成） | `[x]` |
 
@@ -200,9 +200,9 @@
 
 | 源 | 说明 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `main.js` 的 `wo` | 全局对象（ss/ll/tt/bok/unisocket/pageSet） | `core/` 各 Provider + 工具类 | `[ ]` |
-| `App.data.js` | Vuex store（i18n/Ident/User/Mia/AI/Creation/Creator/Tx/envar） | Riverpod Provider 分层（Ident/region/envar/startup 已迁移） | `[>]` |
+| `main.js` 的 `wo` | 全局对象（ss/ll/tt/bok/unisocket/pageSet） | `core/` 各 Provider + 工具类 | `[x]` 已全部等价落地：`ss`→各 Provider、`ll`→`ll()/LangText`、`tt`→`core/util/*`、`bok`→`api_client.dart`、`unisocket`→`socket_provider.dart`、`pageSet`→`page_meta.dart` |
+| `App.data.js` | Vuex store（i18n/Ident/User/Mia/AI/Creation/Creator/Tx/envar） | Riverpod Provider 分层（Ident/region/envar/startup/creator/creation/mia/tx/coin 等均已落地） | `[x]` |
 | `envar-config.js` | 2417 行共享配置 | 后端 `first_touch` 下发 + `core/state/envar_provider.dart` 类型化访问 | `[x]` |
 | `App.vue onLaunch` | 启动流程 | `core/state/app_startup_notifier.dart` | `[x]` |
-| `App.theme.scss` / `App.style.scss` | 全局主题与样式 | `theme/`（Material3 ThemeData） | `[ ]` |
-| `buildPages/manifest/appPackConfig/androidPrivacy.js` | 生成式配置与打包 | flavors + CI | `[ ]` |
+| `App.theme.scss` / `App.style.scss` | 全局主题与样式 | `theme/`（Material3 ThemeData） | `[x]` 颜色/品牌变量已迁入 `theme/app_theme.dart` + `brands/`；scss 语义由 Flutter 样式承担 |
+| `buildPages/manifest/appPackConfig/androidPrivacy.js` | 生成式配置与打包 | flavors + CI | `[ ]` **留到原生构建阶段**（iOS/Android 打包、隐私清单、CI） |

@@ -149,8 +149,11 @@ class _UmyKycPageState extends ConsumerState<UmyKycPage> {
   late final TextEditingController _realname = TextEditingController();
   late final TextEditingController _idNumber = TextEditingController();
 
-  late String _idType;
-  late LandItem _land;
+  // 注意：这几个字段必须在**首次 build 之前**就有值。
+  // 早前写成 `late` 再在「自动登录完成后」的异步回调里赋值，
+  // 一旦首次 build 早于回调就会抛 `LateInitializationError`（冒烟测出来的）。
+  String _idType = 'IDCARD';
+  LandItem? _land;
   String _idCardCover = '';
   String _idCardBack = '';
 
@@ -181,14 +184,15 @@ class _UmyKycPageState extends ConsumerState<UmyKycPage> {
   /// 源项目：`landSet[onlineUser.citizen || userlandCode] || phonelandNow`。
   LandItem _landOf(String citizen) {
     final LandItem fallback = ref.read(phoneLandProvider);
-    final String code = citizen.isEmpty
-        ? ref.read(userlandCodeProvider)
-        : citizen;
+    final String code = citizen.isEmpty ? ref.read(userlandCodeProvider) : citizen;
     for (final LandItem land in kLands) {
       if (land.iso2 == code) return land;
     }
     return fallback;
   }
+
+  /// 当前国籍（首帧还没拿到用户资料时用「电话区号国家」兜底）。
+  LandItem get _landNow => _land ?? ref.read(phoneLandProvider);
 
   @override
   void dispose() {
@@ -220,7 +224,7 @@ class _UmyKycPageState extends ConsumerState<UmyKycPage> {
           minWidth: 320,
         ),
         child: PartLandTable(
-          landCodeNow: _land.iso2,
+          landCodeNow: _landNow.iso2,
           onPick: (LandItem land) => Navigator.of(context).pop(land),
         ),
       ),
@@ -280,7 +284,7 @@ class _UmyKycPageState extends ConsumerState<UmyKycPage> {
     final Map<String, dynamic> data = await ref.read(userApiProvider).updateKyc(
       <String, dynamic>{
         'realname': _realname.text.trim(),
-        'citizen': _land.iso2,
+        'citizen': _landNow.iso2,
         'idType': _idType,
         'idNumber': _idNumber.text.trim(),
         'idCardBack': _idCardBack,
@@ -296,7 +300,7 @@ class _UmyKycPageState extends ConsumerState<UmyKycPage> {
         <String, dynamic>{
           'kycStateL1': 'SUBMITTED',
           'realname': _realname.text.trim(),
-          'citizen': _land.iso2,
+          'citizen': _landNow.iso2,
           'idType': _idType,
           'idNumber': _idNumber.text.trim(),
           'idCardCover': _idCardCover,
@@ -363,7 +367,7 @@ class _UmyKycPageState extends ConsumerState<UmyKycPage> {
                           lang: lang,
                           label: _kCitizen,
                           frozen: fixed,
-                          frozenText: _land.nameZh,
+                          frozenText: _landNow.nameZh,
                           child: OutlinedButton(
                             onPressed: _pickLand,
                             style: OutlinedButton.styleFrom(
@@ -377,7 +381,9 @@ class _UmyKycPageState extends ConsumerState<UmyKycPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: Text(
-                                    lang == 'zhCN' ? _land.nameZh : _land.nameEn,
+                                    lang == 'zhCN'
+                                        ? _landNow.nameZh
+                                        : _landNow.nameEn,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),

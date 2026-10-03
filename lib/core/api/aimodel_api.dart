@@ -57,17 +57,30 @@ class AimodelApi {
         apiWhat: <String, dynamic>{'aicode': aicode},
       );
 
-  Future<Map<String, dynamic>> deleteChatItem(Map<String, dynamic> item) =>
+  /// 删除一条对话（源项目 `act_on_message('drop')`）。
+  ///
+  /// 注意：后端要的是 `chatUuid` + `chatTimeUnix` 两个字段（不是整条 item）。
+  Future<Map<String, dynamic>> deleteChatItem({
+    required String chatUuid,
+    required int chatTimeUnix,
+  }) =>
       _client.callBase(
         apiWho: who,
         apiTodo: 'delete_chat_item',
-        apiWhat: <String, dynamic>{'chatItem': item},
+        apiWhat: <String, dynamic>{
+          'chatUuid': chatUuid,
+          'chatTimeUnix': chatTimeUnix,
+        },
       );
 
-  Future<Map<String, dynamic>> textToSpeech(String text) => _client.callBase(
+  /// 文字转语音（源项目 `act_on_message('read')`）。
+  ///
+  /// 注意：参数名是 `inputText`（不是 `text`）；返回 `ttsAudio` 与 `tucCost`。
+  Future<Map<String, dynamic>> textToSpeech(String inputText) =>
+      _client.callBase(
         apiWho: who,
         apiTodo: 'text_to_speech',
-        apiWhat: <String, dynamic>{'text': text},
+        apiWhat: <String, dynamic>{'inputText': inputText},
         timeout: const Duration(seconds: 120),
       );
 
