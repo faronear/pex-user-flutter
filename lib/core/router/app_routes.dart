@@ -42,6 +42,9 @@ class AppRoutes {
   // 社交页（尚未迁移，仅用于跳转占位）
   static const String umyCircle = 'umyCircle';
 
+  // 工具页
+  static const String showWebview = 'showWebview';
+
   // 品牌中页
   static const String midTryapp = 'midTryapp';
 

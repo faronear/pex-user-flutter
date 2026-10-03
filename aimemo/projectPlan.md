@@ -233,8 +233,17 @@
       （`creatorProvider.setBlockStateInLists` / `removeFromListAll`）
     - **修好的行为**：源项目作品列表「加载更多」仍是整表替换 → 迁移版追加 + 按 csid 去重
     - `envar` 补 `tBlockTitle/tBlock/tUnblockTitle/tUnblock`（源项目恒为 undefined → 走内置文案）
-  - 待续：创作域 `menuMarket`(77) / `showWebview`(24)；资金域 `umyFund*`；组件 `partIdentCommid`
-    （账户/社交/消息域页面已全部迁完）
+  - [x] **`menuMarket`（交易市场）**：分类条（`Market.uiClassDict`）+ 右上「我的资金」+ 空态
+    - **如实说明**：源项目这一页**本身就是空壳**（只有 `MKALL` 分类，且只渲染「当前没有创作品在售」），
+      交易功能从未实装 → 迁移版保持一致的「暂未开放」占位
+  - [x] **`showWebview`（内嵌网页）**：url/title 走路由参数（envar 同名字段兜底），
+    空地址自动回首页；按**条件导入**分两端实现——原生用 `webview_flutter`，Web 用 `<iframe>`
+    - 新增依赖 `webview_flutter` + `web`（Web 端不打包 webview 实现；**原生端首次构建时
+      可能需要补 iOS/Android 配置**，届时再处理）
+    - 另提供 `openUrlInWebview()`（对应源项目 `wo.tt.open_url_in_webview`）：PC 走外部浏览器
+      （源项目是 `window.open`），其余平台进本页内嵌
+  - 待续：资金域 `umyFund*`；组件 `partIdentCommid`
+    （账户/社交/消息/创作域页面均已迁完）
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

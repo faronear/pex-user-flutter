@@ -53,6 +53,14 @@ class Envar {
   /// 源项目注释：设为固定的主域名，是为了方便从后台控制。
   String get webUrlRoot => str('webUrlRoot');
 
+  /// 内嵌网页的地址与标题（源项目 `wo.ss.webviewUrl` / `webviewTitle`）。
+  ///
+  /// 源项目由调用方在跳转前写进 `wo.ss`；Flutter 侧优先用路由参数传，
+  /// 这里保留配置作为兜底（后台也可以直接下发一个固定页面）。
+  String get webviewUrl => str('webviewUrl');
+
+  String get webviewTitle => str('webviewTitle');
+
   /// 邀请页大标题（源项目 `tInviteTitle`）；未配置时页面回退到 [slogans]。
   LangText get tInviteTitle => LangText.fromMap(raw['tInviteTitle']);
 
@@ -70,6 +78,9 @@ class Envar {
   LangText get tUnblockTitle => LangText.fromMap(raw['tUnblockTitle']);
 
   LangText get tUnblock => LangText.fromMap(raw['tUnblock']);
+
+  /// 交易市场空态文案（源项目 `tMarketEmpty`）。
+  LangText get tMarketEmpty => LangText.fromMap(raw['tMarketEmpty']);
 
   /// 「我的圈子」三个分类（源项目 `Creator.myCircleDict`）：`FOLLOWING` / `FOLLOWER` / `INVITEE`。
   Map<String, dynamic> get myCircleDict {

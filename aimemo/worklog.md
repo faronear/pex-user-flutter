@@ -721,3 +721,35 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **连带生效**：`menuCreator`（遇见）列表卡片、`umyCircle` 名单、作品详情页里的作者头像点击，
   现在都落到真页面。
+
+### 创作域收尾 · menuMarket（交易市场）+ showWebview（内嵌网页）
+
+- **menuMarket**：分类条（`Market.uiClassDict`，三品牌都只有 `MKALL`）+ 右上「我的资金」
+  （未登录 → `identBegin`）+ 空态。
+  **如实说明**：源项目这一页**本身就是个空壳**——`MKALL` 分支只渲染
+  `partEmptyList(「当前没有创作品在售」)`，交易功能从未实装。迁移版保持一致，不做多余发挥。
+- **showWebview**：源项目里它**只在非 PC 端使用**（`open_url({inWebview:true})` 才会写
+  `wo.ss.webviewUrl` 并跳本页；PC 一律 `window.open`）。老板 2026-10-03 决定**引入
+  `webview_flutter` 做全平台内嵌**，于是：
+  - 新增 `widgets/part_webview.dart`（**条件导入**）+ `part_webview_native.dart`（`webview_flutter`）
+    + `part_webview_web.dart`（`<iframe>`，`dart:ui_web` + `package:web`）；
+    业务侧只 `import 'part_webview.dart'`
+  - 新增依赖 `webview_flutter`（连带 android/wkwebview 实现）与 `web`（由传递依赖提为直接依赖）
+  - 页面 url/title 走**路由参数**（源项目写 `wo.ss`）；`envar.webviewUrl/webviewTitle` 作兜底；
+    空地址自动回 `homePortal`（对应源项目 `onShow` 里的 reLaunch）
+  - 另提供 `openUrlInWebview()`：PC → 外部浏览器（等价源项目 `window.open`），其余平台 → 本页内嵌
+- **实测**：
+  - `flutter analyze` 0 问题；Babelyx Web 构建成功（**Web 端确认没把 webview 实现打进产物**，
+    条件导入生效）
+  - CDP 截图：`/#/showWebview?url=https%3A%2F%2Fexample.com&title=Demo%20Page`
+    → 顶部显示「Demo Page」+ **iframe 真把 example.com 渲染进来了**；
+    `/#/showWebview`（空 url）→ 自动回首页门户；
+    `/#/menuMarket` → 「Exchange Market」分类条 + 「My Coins ›」+ 空态；
+    游客点「My Coins」→ 进登录页（与源项目 `usid ? umyFund : identBegin` 一致）
+  - **坑（记下）**：在 hash 路由里直接写 `#/showWebview%3Furl=...` 会被当成**路径**而走兜底占位页
+    （之前用 seed 页时 `%3F` 会被 URLSearchParams 解码成真正的 `?` 才对）。
+    直链要用字面 `?` / `&`，只对**内层 URL** 做百分号编码。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **备注（原生端待办）**：`webview_flutter` 在 iOS/Android 首次构建时通常要补原生配置
+  （Android `minSdkVersion`、iOS `Podfile` 平台版本等）；等真正开始出移动端产物时一并处理。
+- **里程碑**：账户 / 社交 / 消息 / 创作四域页面**全部迁完**；只剩**资金域**（`umyFund*`、`partDeposit` 等）。

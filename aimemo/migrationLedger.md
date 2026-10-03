@@ -72,7 +72,7 @@
 | -- | ---- | ---- | ---- |
 | `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[x]`（2026-10-03 复核：补 `?tagnow=`、前往文案对齐「我的选集」、登录判断改 usid 非空） |
 | `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[x]` |
-| `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
+| `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[x]`（源项目本就是空壳，只有空态） |
 | `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[>]` 2A 只读骨架已迁（评论/互动/付费/名单/分享举报待 2B–2F） |
 | `showCreationUpdate.vue` | 76 | `pages/show_creation_update_page.dart` | `[x]` |
 | `showCreator.vue` | 712 | `pages/show_creator_page.dart` | `[x]` |
@@ -83,7 +83,7 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `menuUzone.vue` | 675 | `pages/menu_uzone_page.dart` | `[x]`（清单内未迁移页跳占位页） |
-| `showWebview.vue` | 24 | `pages/show_webview_page.dart` | `[ ]` |
+| `showWebview.vue` | 24 | `pages/show_webview_page.dart` | `[x]` 条件导入：原生 `webview_flutter` / Web `<iframe>` |
 | `test/testIndex.vue` | 90 | — | `[-]` 开发测试页，迁移时评估 |
 
 ---

@@ -15,6 +15,7 @@ import '../../pages/ident_old_login_page.dart';
 import '../../pages/ident_old_passcode_page.dart';
 import '../../pages/ident_old_reset_page.dart';
 import '../../pages/menu_uzone_page.dart';
+import '../../pages/show_webview_page.dart';
 import '../../pages/umy_kyc_page.dart';
 import '../../pages/umy_account_commid_new_page.dart';
 import '../../pages/umy_account_commid_page.dart';
@@ -85,6 +86,15 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         name: AppRoutes.umyCircle,
         builder: (_, GoRouterState state) =>
             UmyCirclePage(tagNow: state.uri.queryParameters['tagnow'] ?? ''),
+      ),
+      // 内嵌网页（三品牌共用；源项目里由 `open_url({inWebview:true})` 进入）。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.showWebview),
+        name: AppRoutes.showWebview,
+        builder: (_, GoRouterState state) => ShowWebviewPage(
+          url: state.uri.queryParameters['url'] ?? '',
+          title: state.uri.queryParameters['title'] ?? '',
+        ),
       ),
       // 实名认证（三品牌共用）。
       GoRoute(
