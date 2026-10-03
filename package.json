@@ -17,7 +17,16 @@
     "run:tryapp": "flutter run -d chrome -t lib/main_tryapp.dart --dart-define=API_BASE=http://localhost:7739",
     "build:web:agidin": "flutter build web --release -t lib/main_agidin.dart --dart-define=API_BASE=http://localhost:7739",
     "build:web:babelyx": "flutter build web --release -t lib/main_babelyx.dart --dart-define=API_BASE=http://localhost:7739",
-    "build:web:tryapp": "flutter build web --release -t lib/main_tryapp.dart --dart-define=API_BASE=http://localhost:7739"
+    "build:web:tryapp": "flutter build web --release -t lib/main_tryapp.dart --dart-define=API_BASE=http://localhost:7739",
+    "build:web:prod:agidin": "flutter build web --release -t lib/main_agidin.dart --dart-define=API_BASE=https://pexserver.tic.cc",
+    "build:web:prod:babelyx": "flutter build web --release -t lib/main_babelyx.dart --dart-define=API_BASE=https://pexserver.tic.cc",
+    "build:web:prod:tryapp": "flutter build web --release -t lib/main_tryapp.dart --dart-define=API_BASE=https://pexserver.tic.cc",
+    "deploy:web:agidin": "wrangler pages deploy build/web --project-name=user-agidin-com",
+    "deploy:web:babelyx": "wrangler pages deploy build/web --project-name=user-babelyx-com",
+    "deploy:web:tryapp": "wrangler pages deploy build/web --project-name=tryapp-user",
+    "release:web:agidin": "npm run build:web:prod:agidin && npm run deploy:web:agidin",
+    "release:web:babelyx": "npm run build:web:prod:babelyx && npm run deploy:web:babelyx",
+    "release:web:tryapp": "npm run build:web:prod:tryapp && npm run deploy:web:tryapp"
   },
   "keywords": [],
   "author": "",

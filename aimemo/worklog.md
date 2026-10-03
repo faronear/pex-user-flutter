@@ -911,3 +911,14 @@
   同理，AI 聊天的「发消息 → 回复」在本地也通不了（同一个 OpenAI 出口问题），
   故操作菜单是用**直接写入 `ai_chat` 的历史消息**来验证的。
 - **验证**：`flutter analyze` 0 问题；Babelyx + Agidin 两个 Web 产物均构建成功。
+
+### 添加 Web 生产部署脚本 + 找齐 Cloudflare 项目名（2026-10-04）
+
+- 在 `package.json` 新增 9 个脚本，避免生产构建误用 localhost 后端：
+  - `build:web:prod:<agidin|babelyx|tryapp>`：`API_BASE=https://pexserver.tic.cc` 的生产构建
+  - `deploy:web:<brand>`：`wrangler pages deploy build/web --project-name=<名>`
+  - `release:web:<brand>`：先 prod 构建再部署（一步到位）
+- 从 uniapp 源 `AK*/framework/appenv.json` 找齐三个品牌的 Cloudflare Pages 项目名：
+  agidin=`user-agidin-com`(agidin.com)、babelyx=`user-babelyx-com`(babelyx.com)、tryapp=`tryapp-user`(tryapp-user.pages.dev)
+- 部署记录整理进 `aimemo/deployWeb.md`（含后端地址、构建/部署命令、覆盖旧网页的提醒）。
+- 未提交（待老板确认后一起 commit，或本次直接提交）。
