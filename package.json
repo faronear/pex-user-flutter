@@ -38,7 +38,10 @@
     "build:ios:tryapp": "flutter build ios --flavor tryapp -t lib/main_tryapp.dart --dart-define=API_BASE=http://localhost:7739 --simulator",
     "build:ios:prod:agidin": "flutter build ios --flavor agidin -t lib/main_agidin.dart --dart-define=API_BASE=https://pexserver.tic.cc",
     "build:ios:prod:babelyx": "flutter build ios --flavor babelyx -t lib/main_babelyx.dart --dart-define=API_BASE=https://pexserver.tic.cc",
-    "build:ios:prod:tryapp": "flutter build ios --flavor tryapp -t lib/main_tryapp.dart --dart-define=API_BASE=https://pexserver.tic.cc"
+    "build:ios:prod:tryapp": "flutter build ios --flavor tryapp -t lib/main_tryapp.dart --dart-define=API_BASE=https://pexserver.tic.cc",
+    "build:ios:ipa:agidin": "flutter build ipa --flavor agidin -t lib/main_agidin.dart --dart-define=API_BASE=https://pexserver.tic.cc --export-options-plist=ios/ExportOptions-appstore.plist",
+    "build:ios:ipa:babelyx": "flutter build ipa --flavor babelyx -t lib/main_babelyx.dart --dart-define=API_BASE=https://pexserver.tic.cc --export-options-plist=ios/ExportOptions-appstore.plist",
+    "build:ios:ipa:tryapp": "flutter build ipa --flavor tryapp -t lib/main_tryapp.dart --dart-define=API_BASE=https://pexserver.tic.cc --export-options-plist=ios/ExportOptions-appstore.plist"
   },
   "keywords": [],
   "author": "",

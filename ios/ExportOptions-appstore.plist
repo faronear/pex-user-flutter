@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dict>
+    <key>method</key>
+    <string>app-store</string>
+    <key>signingStyle</key>
+    <string>manual</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>cc.aizoi.app.dist.ios</key>
+        <string>Agidin Dist Appstore</string>
+        <key>faronear.babely.app.ios.dist</key>
+        <string>Babelyx Dist Appstore</string>
+    </dict>
+</dict>

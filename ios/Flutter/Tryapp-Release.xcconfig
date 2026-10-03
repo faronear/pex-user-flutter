@@ -2,3 +2,4 @@
 #include "Generated.xcconfig"
 PRODUCT_BUNDLE_IDENTIFIER = cc.tic.tryapp
 PRODUCT_NAME = TRYAPP
+DEVELOPMENT_TEAM = CQ6733CTMV

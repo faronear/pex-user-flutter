@@ -44,5 +44,12 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# 发布签名凭据（绝不可提交）：key.properties 含 keystore 密码/别名，本地填写。
+/android/key.properties
+/android/**/key.properties
+# 不要提交本项目的 keystore 副本（共用 keystore 见独立路径，已在 build.gradle.kts 引用）
+*.jks
+*.keystore
+
 # Widget Preview related
 .widget_preview/

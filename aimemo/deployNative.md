@@ -31,10 +31,28 @@
 - `npm run build:ios:prod:agidin|babelyx|tryapp` → `flutter build ios --flavor <brand> -t lib/main_<brand>.dart --dart-define=API_BASE=https://pexserver.tic.cc`
 
 ## 待办（需老板在有凭据的机器上完成）
-- **iOS 签名**：Xcode 里选 Apple Developer Team（模板里 `DEVELOPMENT_TEAM = 37KQR6645B` 是占位，需改成你的 Team ID），并配 provisioning profile；`build:ios:prod` 走真机/Archive 才需要。
-- **Android 签名**：`build.gradle.kts` 的 release 现在用 debug key（TODO），上架前配 `signingConfigs` 与 keystore。
+- **iOS 签名**：✅ 已完成并验证（见下「iOS 签名」）。Team `CQ6733CTMV` (Faronear Co. Ltd.)，agidin/babelyx 用 App Store 分发 profile 手动签名。tryapp 暂无 profile。
+- **Android 签名**：已接好 plumbing（见下「Android 签名」），但 `android/key.properties` 的 storePassword/keyAlias/keyPassword 待老板填（keystore 与 einz/app 共用：`/Volumes/repodisk/productX/einz/app/android/android.keystore.jks`）。填好前 release 回退 debug key。
 - **图标**：✅ 已替换为三品牌官方 logo（见下「应用图标」）。
-- **Android 本机未验证**：当前开发机没有 Android SDK，只做了配置正确性检查，未实际 `flutter build apk`。
+- **Android 本机已验证配置**：iMac 有 Android SDK (`/Users/luk/Library/Android/sdk`)，但真实 keystore 签名待填凭据后验证。
+
+## iOS 签名（已配置并验证）
+- Team：`CQ6733CTMV`（Faronear Co. Ltd.）。Apple Distribution 证书已在本机钥匙串（`Apple Distribution: Faronear Co. Ltd. (CQ6733CTMV)`）。
+- 两个 App Store 分发 profile 已安装到 `~/Library/MobileDevice/Provisioning Profiles/`（按 UUID 命名）：
+  - `Agidin_Dist_Appstore.mobileprovision` → UUID `25d732be-...`（profile 名 `Agidin Dist Appstore`）
+  - `Babelyx_Dist_Appstore.mobileprovision` → UUID `3acc0719-...`（profile 名 `Babelyx Dist Appstore`）
+- bundle id（按你决定改用 profile 里的 id，与 Android 的 `cc.tic.*` 不同，互不影响）：
+  - agidin → `cc.aizoi.app.dist.ios`（⚠️ 来自 profile 旧命名 aizoi，非 cc.tic.agidin）
+  - babelyx → `faronear.babely.app.ios.dist`
+  - tryapp → `cc.tic.tryapp`（暂未申请 profile）
+- 配置落点：`ios/Flutter/<Brand>-*.xcconfig` 设 `DEVELOPMENT_TEAM`；`project.pbxproj` 的 Runner target 六个 flavor 配置里 agidin/babelyx 设 `CODE_SIGN_STYLE=Manual` + `CODE_SIGN_IDENTITY=Apple Distribution` + `PROVISIONING_PROFILE_SPECIFIER`。tryapp 仍 Automatic。
+- **Ad Hoc 分发**：老板准备 Ad Hoc profile 后，把 `PROVISIONING_PROFILE_SPECIFIER` 与 `ios/ExportOptions-appstore.plist` 里的 profile 名换成 Ad Hoc 的即可（身份仍 `Apple Distribution`）。
+- 真机/上架产出 IPA：`npm run build:ios:ipa:agidin|babelyx`（用 `ios/ExportOptions-appstore.plist`，`flutter build ipa`）。`build:ios:prod:*` 只出 .app 不导 IPA。
+
+## Android 签名（plumbing 已接，待填凭据）
+- `android/app/build.gradle.kts` 加了 `signingConfigs.release`，从 gitignore 的 `android/key.properties` 读 storePassword/keyPassword/keyAlias/storeFile。
+- `android/key.properties`（已 gitignore，不提交）默认指向共用 keystore `/Volumes/repodisk/productX/einz/app/android/android.keystore.jks`；`keyAlias` 行默认注释掉，填好并取消注释后 release 才用真签名，否则回退 debug key。
+- 验证：`ANDROID_HOME=/Users/luk/Library/Android/sdk npm run build:android:prod:agidin` 应输出带签名的 aab。
 
 ## 应用图标（已替换）
 
@@ -50,5 +68,5 @@
 - **注意**：babelyx / tryapp 源图带透明（alpha），iOS 渲染图标会把 alpha 压平为黑色导致黑角；生成器已用 Pillow 先把源图**压平到白底**再 resize，三品牌图标均为不透明 RGB、四角白色。换 logo 重跑生成器即可。
 
 ## 验证状态
-- iOS：`agidin` / `babelyx` / `tryapp` 三个 flavor 均已构建成功（模拟器），`Agidin.app` / `Babelyx.app` / `TRYAPP.app` 产出，bundle id、应用名、权限描述、品牌图标均正确。
-- Android：配置就绪，待有 SDK 的机器验证。
+- iOS：`agidin` / `babelyx` flavor 已用各自 App Store profile **真机构建并成功签名**（`flutter build ios --flavor ...` 出 `Agidin.app`/`Babelyx.app`，embedded profile 校验为 `Agidin Dist Appstore`/`Babelyx Dist Appstore`，bundle id 分别为 `cc.aizoi.app.dist.ios`/`faronear.babely.app.ios.dist`）。tryapp 仅模拟器验证（无 profile）。
+- Android：plumbing 就绪，待填 keystore 凭据后验证真实签名。

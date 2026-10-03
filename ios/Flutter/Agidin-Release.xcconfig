@@ -1,4 +1,5 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
-PRODUCT_BUNDLE_IDENTIFIER = cc.tic.agidin
+PRODUCT_BUNDLE_IDENTIFIER = cc.aizoi.app.dist.ios
 PRODUCT_NAME = Agidin
+DEVELOPMENT_TEAM = CQ6733CTMV

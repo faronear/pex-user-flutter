@@ -4,6 +4,13 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// 发布签名从 gitignore 的 key.properties 读取（与 einz/app 共用同一 keystore，不在仓库内）。
+// 用法：在 android/key.properties 填入 storePassword / keyPassword / keyAlias / storeFile。
+val keystorePropertiesFile = rootProject.file("key.properties")
+val keystoreProperties = if (keystorePropertiesFile.exists()) {
+    java.util.Properties().apply { load(keystorePropertiesFile.inputStream()) }
+} else java.util.Properties()
+
 android {
     namespace = "cc.tic.pex_user_flutter"
     compileSdk = flutter.compileSdkVersion
@@ -55,11 +62,23 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String?
+            keyPassword = keystoreProperties["keyPassword"] as String?
+            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+            storePassword = keystoreProperties["storePassword"] as String?
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // 有 key.properties 时用真实 keystore 签名，否则退回 debug key（与 einz/app 现状一致）。
+            signingConfig = if (keystoreProperties.containsKey("keyAlias")) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 }
