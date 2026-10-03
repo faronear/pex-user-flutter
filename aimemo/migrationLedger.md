@@ -42,9 +42,9 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `umyFund.vue` | 271 | `pages/umy_fund_page.dart` | `[x]`（充值按钮暂跳占位页，待 `partDeposit`） |
-| `umyFundChannel.vue` | 58 | `pages/umy_fund_channel_page.dart` | `[ ]` |
-| `umyFundChannelCreate.vue` | 592 | `pages/umy_fund_channel_create_page.dart` | `[ ]` |
-| `umyFundChannelWithdraw.vue` | 236 | `pages/umy_fund_channel_withdraw_page.dart` | `[ ]` |
+| `umyFundChannel.vue` | 58 | `pages/umy_fund_channel_page.dart` | `[x]` |
+| `umyFundChannelCreate.vue` | 592 | `pages/umy_fund_channel_create_page.dart` | `[x]` 配置驱动（现仅 TUC） |
+| `umyFundChannelWithdraw.vue` | 236 | `pages/umy_fund_channel_withdraw_page.dart` | `[x]` 实名闸门字段名笔误已修（源项目同步修） |
 | `umyFundTranx.vue` | 70 | `pages/umy_fund_tranx_page.dart` | `[x]` |
 
 ### 社交
@@ -148,7 +148,7 @@
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
 | `partDeposit.vue` | 1066 | `widgets/part_deposit.dart` | `[x]`（不做 iOS IAP / uniCloud unipay2 / 连接钱包） |
-| `partFundChannelCard.vue` | 153 | `widgets/part_fund_channel_card.dart` | `[ ]` |
+| `partFundChannelCard.vue` | 153 | `widgets/part_fund_channel_card.dart` | `[x]` |
 | `partTxList.vue` | 195 | `widgets/part_tx_list.dart` | `[x]` |
 | `partPexdataSummary.vue` | 44 | `widgets/part_pexdata_summary.dart` | `[x]` |
 

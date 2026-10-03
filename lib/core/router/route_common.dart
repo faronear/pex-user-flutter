@@ -16,6 +16,9 @@ import '../../pages/ident_old_passcode_page.dart';
 import '../../pages/ident_old_reset_page.dart';
 import '../../pages/menu_uzone_page.dart';
 import '../../pages/show_webview_page.dart';
+import '../../pages/umy_fund_channel_create_page.dart';
+import '../../pages/umy_fund_channel_page.dart';
+import '../../pages/umy_fund_channel_withdraw_page.dart';
 import '../../pages/umy_fund_page.dart';
 import '../../pages/umy_fund_tranx_page.dart';
 import '../../pages/umy_kyc_page.dart';
@@ -100,6 +103,26 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         name: AppRoutes.umyFundTranx,
         builder: (_, GoRouterState state) =>
             UmyFundTranxPage(tagNow: state.uri.queryParameters['tagnow'] ?? ''),
+      ),
+      // 提现渠道（三品牌共用）：渠道列表 / 新建渠道 / 申请提现。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyFundChannel),
+        name: AppRoutes.umyFundChannel,
+        builder: (_, _) => const UmyFundChannelPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyFundChannelCreate),
+        name: AppRoutes.umyFundChannelCreate,
+        builder: (_, _) => const UmyFundChannelCreatePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyFundChannelWithdraw),
+        name: AppRoutes.umyFundChannelWithdraw,
+        builder: (_, GoRouterState state) => UmyFundChannelWithdrawPage(
+          channelUuid: state.uri.queryParameters['channelUuid'] ??
+              state.uri.queryParameters['channeluuid'] ??
+              '',
+        ),
       ),
       // 内嵌网页（三品牌共用；源项目里由 `open_url({inWebview:true})` 进入）。
       GoRoute(

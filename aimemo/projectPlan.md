@@ -264,7 +264,17 @@
         uniCloud `unipay-co` 云函数（改用源项目自带的支付门户链接）、
         「连接钱包」按钮（需 MetaMask 探测）
       - 支付门户按 `kReleaseMode` 切 dev/prod（对应源项目 `NODE_ENV`）
-  - 待续：`partFundChannelCard` / `umyFundChannel*`（提现渠道）；组件 `partIdentCommid`
+    - [x] **提现页面组**：`umyFundChannel`（渠道列表 + 新建入口）·
+      `umyFundChannelCreate`（**配置驱动**的建渠道表单：按 `paytoCoinSet` 的字段渲染 + 格式校验）·
+      `umyFundChannelWithdraw`（渠道卡片 + 金额/下限/余额 + 换算预览 + 实名闸门 + 提交）·
+      `partFundChannelCard`（渠道卡片 + 删除确认）
+      - **修源项目 bug（老板指示两边一起修）**：提现页实名闸门写的是 `kycStatusL1`，
+        而用户对象上是 **`kycStateL1`** —— 字段不存在导致恒为 `undefined !== 'PASSED'`，
+        **任何人都被挡住、提现永远提交不出去**；源项目 commit `bbbfed64`，迁移版直接用正确字段
+      - 新增 `core/i18n/payto_coins.dart`（对应 `paytoCoinSet`）、
+        `user_api` 的 `addPaytoChannel` / `deletePaytoChannel` / `requestWithdrawal`、
+        `envar.withdrawAmountMin`；`umyFund` 的「提现」按钮已接到真页
+  - **资金域至此全部迁完**；待续：组件 `partIdentCommid` 等零散组件
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

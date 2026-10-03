@@ -829,3 +829,46 @@
      滚入视野，导致弹层内容整体上移约 90px —— 所以按静态截图上的坐标去点「币种」会点到「链」。
      排查后按 `-90px` 点击即命中（币种表正常弹出）。以后验这类面板，先点一次再按新截图定位。
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功（含实时通道与充气面板）。
+
+### 资金域（第三批/收官）· 提现页面组 + 修源项目实名闸门笔误
+
+- **先修源项目（老板指示「两边一起修」）**：`pex-user-uniapp/pages/umyFundChannelWithdraw.vue`
+  的实名闸门写的是 `wo.ss.User.onlineUser.kycStatusL1`，但用户对象上的字段其实是 **`kycStateL1`**；
+  不存在的字段恒为 `undefined !== 'PASSED'` → **任何用户点提现都会被「请先完成实名认证」挡住、
+  永远提交不出去**。已改为 `kycStateL1`（源项目 commit `bbbfed64`，只提交这一个文件，
+  老板正在编辑的 `aimemo/productLens.md` 未动）。
+- **Flutter 侧四件套**：
+  - `widgets/part_fund_channel_card.dart`：渠道卡片 = 货币 + 各字段明细（`inCard` 的才显示，
+    链字段显示链名）+ 底部「删除 / 提现」操作行（`toWithdraw` 时隐藏）；
+    删除走确认弹窗 → `delete_payto_channel` → 从 `onlineUser.paytoChannels` 移除
+  - `pages/umy_fund_channel_page.dart`：渠道列表 + 「新建渠道」入口；点卡片进提现页
+  - `pages/umy_fund_channel_create_page.dart`：**配置驱动的表单**——源项目模板里写死了
+    TUC/USDT/CNY/USD/EWALLET 五个分支，但 `paytoCoinSet` 里只有 TUC（其余是死分支），
+    故迁移版按配置渲染（链 → 下拉、服务商 → 下拉、其余 → 输入框），并保留各币种的格式校验
+    （链地址 `0x`+40 位十六进制、EWALLET 邮箱、法币数字）；建成功后按源项目逻辑
+    「首个渠道 → 去列表页，否则返回上一页」
+  - `pages/umy_fund_channel_withdraw_page.dart`：渠道卡片 + 金额（下限/余额提示）+ 换算预览 +
+    实名闸门 + 提交；成功后本地扣余额 → 成功弹窗 → 返回
+- **新增**：`core/i18n/payto_coins.dart`（`paytoCoinSet` + `defaultPaytoChannel`）、
+  `user_api.addPaytoChannel/deletePaytoChannel/requestWithdrawal`、`envar.withdrawAmountMin`（预置层 1000）；
+  路由三个都注册在 `route_common.dart`；`umyFund` 的「提现」按钮**从占位页改成了真页**
+  （有渠道 → 渠道列表，无渠道 → 新建渠道，与源项目 `request_withdraw` 一致）
+- **实测**：
+  - `dart run tool/check_withdraw.dart` **PASS**：建渠道（读回确认 coinType/链/地址/appkey）→
+    三个拒绝分支（渠道不存在 / 低于下限 / 超出余额，都 FAILED 且**不发信**）→ 临时加余额后
+    正常提交 SUCCESS 且**余额正好少 1000** → 删渠道复查 `lifeState=DELETED` → 清理测试数据。
+    **注意：成功提现那一步后端会真发一封邮件给值班邮箱**（源项目行为），本工具只跑一次。
+  - 视觉 / 交互（CDP，手机 500，用未实名的临时用户）：
+    资金页点「Cashout」→（无渠道）新建渠道页（货币 TUC / 区块链警告 + Polygon / 钱包地址）→
+    填地址提交 → 渠道列表（卡片 + Delete/Cashout + 「+ New」）→ 点卡片 → 提现页
+    （渠道卡片无操作行、Minimum 1000 / Balance、换算预览）→ 输入 1000 提交 →
+    **实名闸门弹窗**（Cancel / Verify Identity）→ 回列表点「Delete」→ 删除确认弹窗
+- **两处如实说明**：
+  1. **换算预览对 TUC 显示 0**：源项目的 `coinToTUC` 里**没有 TUC**（只有 USDT/USD/EUR/IAP/CNY/JPY/HKD），
+     所以唯一的 TUC 渠道算出来恒为 0 —— 源项目行为一致（同样显示 0），不是迁移引入的问题。
+  2. **提现金额必须严格小于余额**（源项目 `Number(withdrawAmount) < balanceTUC`），
+     即**无法把余额一次性全部提走**。迁移版保持一致（已在代码注明）。
+- **踩坑**：卡片最初忘了整卡点击（源项目是在列表页外包一层），导致点卡片没反应；
+  已让卡片自身承接 `onTap`（`onCashout` 只是显式入口）。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **里程碑**：**资金域（充值 / 余额 / 流水 / 提现渠道 / 提现）全部迁完**。

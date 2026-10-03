@@ -85,6 +85,12 @@ class Envar {
     return value is Map ? value.cast<String, dynamic>() : <String, dynamic>{};
   }
 
+  /// 提现金额下限（源项目 `withdrawAmountMin`）。
+  num get withdrawAmountMin {
+    final Object? value = raw['withdrawAmountMin'];
+    return value is num ? value : num.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
   /// 充值金额下限 / 默认值（客户端配置）。
   num get depositAmountMin {
     final Object? value = raw['depositAmountMin'];

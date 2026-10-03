@@ -110,6 +110,41 @@ class UserApi {
         apiWhat: <String, dynamic>{'passcode': passcode},
       );
 
+  /// 新建提现渠道（源项目 `umyFundChannelCreate` 的 `add_payto_channel`）。
+  ///
+  /// 成功后返回 `channelUuid`（其余字段是后端补的 createdAt / appkey）。
+  Future<Map<String, dynamic>> addPaytoChannel(
+          Map<String, dynamic> channel) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'add_payto_channel',
+        apiWhat: <String, dynamic>{'channel': channel},
+      );
+
+  /// 删除提现渠道（源项目 `partFundChannelCard` 的 `delete_payto_channel`）。
+  ///
+  /// 后端是把 `lifeState` 置为 `DELETED`，并把整份 `paytoChannels` 回传。
+  Future<Map<String, dynamic>> deletePaytoChannel(String channelUuid) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'delete_payto_channel',
+        apiWhat: <String, dynamic>{'channelUuid': channelUuid},
+      );
+
+  /// 申请提现（源项目 `umyFundChannelWithdraw` 的 `request_withdrawal`）。
+  Future<Map<String, dynamic>> requestWithdrawal({
+    required num withdrawAmount,
+    required String channelUuid,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'request_withdrawal',
+        apiWhat: <String, dynamic>{
+          'withdrawAmount': withdrawAmount,
+          'channelUuid': channelUuid,
+        },
+      );
+
   /// 查询当前余额（源项目 `partDeposit.vue` 的 `to_refresh_balance`）。
   Future<Map<String, dynamic>> getCurrentBalance({String coin = ''}) =>
       _client.callBase(
