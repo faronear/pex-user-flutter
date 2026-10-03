@@ -79,7 +79,39 @@ class Envar {
 
   LangText get tUnblock => LangText.fromMap(raw['tUnblock']);
 
-  /// 交易市场空态文案（源项目 `tMarketEmpty`）。
+  /// 区块链浏览器前缀（源项目 `tucLens`）：钱包地址链接 = `${tucLens}/address/<caddTUC>#nfttransfers`。
+  String get tucLens => str('tucLens');
+
+  /// 资金页开关（源项目同名 `wo.ss.*`，均为客户端配置，默认全开/不隐藏）。
+  bool get hideWalletAddress => boolOf('hideWalletAddress');
+
+  bool get hideDepositButton => boolOf('hideDepositButton');
+
+  bool get hideCashoutButton => boolOf('hideCashoutButton');
+
+  /// 提现按钮「独立成行」的形态（源项目 `cashoutAlone`）。
+  bool get cashoutAlone => boolOf('cashoutAlone');
+
+  /// 收支明细是否展开二级分类（源项目 `showTxGroup`，默认关）。
+  bool get showTxGroup => boolOf('showTxGroup');
+
+  /// 收支分类字典（源项目 `wo.ss.Tx.myTxDict`）：标签 → 文案 + `paydir`。
+  Map<String, dynamic> get myTxDict {
+    final Object? tx = raw['Tx'];
+    if (tx is! Map) return <String, dynamic>{};
+    final Object? dict = tx['myTxDict'];
+    return dict is Map ? dict.cast<String, dynamic>() : <String, dynamic>{};
+  }
+
+  /// 收支类型文案字典（源项目 `wo.ss.Tx.txTypeDict`）。
+  Map<String, dynamic> get txTypeDict {
+    final Object? tx = raw['Tx'];
+    if (tx is! Map) return <String, dynamic>{};
+    final Object? dict = tx['txTypeDict'];
+    return dict is Map ? dict.cast<String, dynamic>() : <String, dynamic>{};
+  }
+
+  /// 「我的圈子」三个分类（源项目 `tMarketEmpty`）。
   LangText get tMarketEmpty => LangText.fromMap(raw['tMarketEmpty']);
 
   /// 「我的圈子」三个分类（源项目 `Creator.myCircleDict`）：`FOLLOWING` / `FOLLOWER` / `INVITEE`。

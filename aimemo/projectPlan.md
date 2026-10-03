@@ -242,8 +242,20 @@
       可能需要补 iOS/Android 配置**，届时再处理）
     - 另提供 `openUrlInWebview()`（对应源项目 `wo.tt.open_url_in_webview`）：PC 走外部浏览器
       （源项目是 `window.open`），其余平台进本页内嵌
-  - 待续：资金域 `umyFund*`；组件 `partIdentCommid`
-    （账户/社交/消息/创作域页面均已迁完）
+  - [>] **资金域（本批：资金主页 + 收支明细）**
+    - [x] `umyFund`（我的资金）：钱包地址行（链接 / 复制 / 分享）+「当前余额」+
+      收支分类行（充值 / 奖励恒有；创作品收入·支出仅 Babelyx；AI 收支仅 Agidin，
+      由 `BrandConfig.showCreationIncome` / `showAiCosts` 两个品牌开关决定）+
+      充值 / 提现按钮（含 `cashoutAlone` 独立成行分支）
+    - [x] `umyFundTranx`（收支明细）+ `widgets/part_tx_list.dart`：类型下拉 + 明细行
+      （类型名 + 作品链接/金额 + 日期 + 对方昵称头像或支付渠道 + 带符号金额）
+    - 新增 `core/state/tx_provider.dart`（对应 `wo.ss.Tx`）、`user_api.getTxList`、
+      `envar` 的 `tucLens`/`hide*`/`cashoutAlone`/`showTxGroup`/`myTxDict`/`txTypeDict`
+    - **修好的行为**：源项目 `partTxList` 的「加载更多」仍是整表替换 → 迁移版追加 + 按 `txUuid` 去重
+    - **如实说明**：充值按钮指向 `partDeposit`（1066 行，尚未迁移）→ 现跳占位页
+      「`umyFundDeposit` 尚未迁移」；提现 → `umyFundChannel(Create)` 同理
+  - 待续：`partDeposit`（充值）/ `partFundChannelCard` / `umyFundChannel*`（提现渠道）；
+    组件 `partIdentCommid`
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

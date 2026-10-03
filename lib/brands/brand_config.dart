@@ -89,6 +89,14 @@ abstract class BrandConfig {
   /// （源项目按 `appkey !== 'AKAGIDIN'` 判断；此处改为品牌开关）。
   bool get showCreatorShortcuts => features.enableCreator || features.enableCreation;
 
+  /// 资金页是否显示「创作品收入 / 创作品支出」两组
+  /// （源项目按 `appkey === 'AKBABELY'` 判断）。
+  bool get showCreationIncome => features.enableCreation;
+
+  /// 资金页是否显示 Agidin 的「AI 收入 / AI 支出」两行
+  /// （源项目按 `appkey === 'AKAGIDIN'` 判断）。
+  bool get showAiCosts => appkey == 'AKAGIDIN';
+
   /// 应用内币种代码（源项目 `cryptocoinSet.TUC.coinCode`）。
   String get coinCode;
 

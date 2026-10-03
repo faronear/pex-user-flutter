@@ -41,11 +41,11 @@
 ### 资金
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `umyFund.vue` | 271 | `pages/umy_fund_page.dart` | `[ ]` |
+| `umyFund.vue` | 271 | `pages/umy_fund_page.dart` | `[x]`（充值按钮暂跳占位页，待 `partDeposit`） |
 | `umyFundChannel.vue` | 58 | `pages/umy_fund_channel_page.dart` | `[ ]` |
 | `umyFundChannelCreate.vue` | 592 | `pages/umy_fund_channel_create_page.dart` | `[ ]` |
 | `umyFundChannelWithdraw.vue` | 236 | `pages/umy_fund_channel_withdraw_page.dart` | `[ ]` |
-| `umyFundTranx.vue` | 70 | `pages/umy_fund_tranx_page.dart` | `[ ]` |
+| `umyFundTranx.vue` | 70 | `pages/umy_fund_tranx_page.dart` | `[x]` |
 
 ### 社交
 | 源 | 行数 | 目标 | 状态 |
@@ -149,7 +149,7 @@
 | -- | ---- | ---- | ---- |
 | `partDeposit.vue` | 1066 | `widgets/part_deposit.dart` | `[ ]` |
 | `partFundChannelCard.vue` | 153 | `widgets/part_fund_channel_card.dart` | `[ ]` |
-| `partTxList.vue` | 195 | `widgets/part_tx_list.dart` | `[ ]` |
+| `partTxList.vue` | 195 | `widgets/part_tx_list.dart` | `[x]` |
 | `partPexdataSummary.vue` | 44 | `widgets/part_pexdata_summary.dart` | `[x]` |
 
 ### AI / 媒体

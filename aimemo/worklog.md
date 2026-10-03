@@ -753,3 +753,36 @@
 - **备注（原生端待办）**：`webview_flutter` 在 iOS/Android 首次构建时通常要补原生配置
   （Android `minSdkVersion`、iOS `Podfile` 平台版本等）；等真正开始出移动端产物时一并处理。
 - **里程碑**：账户 / 社交 / 消息 / 创作四域页面**全部迁完**；只剩**资金域**（`umyFund*`、`partDeposit` 等）。
+
+### 资金域（第一批）· umyFund（我的资金）+ umyFundTranx + partTxList
+
+- **页面**：
+  - `pages/umy_fund_page.dart`：钱包地址行（外部浏览器打开 + 复制 + 分享弹窗）+「当前余额」+
+    收支分类行 + 充值/提现按钮；含 `cashoutAlone`（提现单独成行）分支与
+    `hideWalletAddress` / `hideDepositButton` / `hideCashoutButton` 三个开关
+  - `pages/umy_fund_tranx_page.dart`：收支类型下拉（`paydir + 名称`）+ 明细列表；
+    切类型 = `context.go('/umyFundTranx?tagnow=…')`（对应源项目 `redirectTo`）
+  - `widgets/part_tx_list.dart`：明细行 = 类型名 + 作品链接（`openTitle` 或「无题#尾6」）/
+    金额、日期、对方昵称头像（点进创作者主页）或支付渠道名、右侧带符号金额（我支出红 -、收入绿 +）
+- **新增**：`core/state/tx_provider.dart`（对应 `wo.ss.Tx`：`tagNow` + 各标签列表 + `onceLoaded`）、
+  `user_api.getTxList`、`envar` 的 `tucLens`/`hide*`/`cashoutAlone`/`showTxGroup`/`myTxDict`/`txTypeDict`
+- **品牌分支按既有约定处理**：源项目用 `appkey === 'AKBABELY'` / `'AKAGIDIN'` 判断，
+  迁移版在 `BrandConfig` 上加 `showCreationIncome`（= `features.enableCreation`）与
+  `showAiCosts`（`appkey === 'AKAGIDIN'`），**业务代码不判 appkey**。
+- **修好的行为**：`partTxList`「加载更多」仍是整表替换 → 迁移版追加 + 按 `txUuid` 去重。
+- **如实说明（两处留白）**：充值按钮指向 `partDeposit`（1066 行，**尚未迁移**）→
+  现跳占位页「`umyFundDeposit` 尚未迁移」；提现 → `umyFundChannel` / `umyFundChannelCreate`（同样未迁移）。
+  这不是遗漏，是刻意让按钮「有去处、可见进度」，与之前 menuUzone 清单行的做法一致。
+- **实测**：
+  - `dart run tool/check_fund.dart` **PASS**：注册临时用户 → 用 sqlite 直接写入
+    充值 x2 / 奖励 x1 / 我支出 x1 / 我收入 x1（**写入路径属于尚未迁移的 partDeposit 等，工具只验读取**）→
+    `TXG_ALL` 6 条、`TXG_RECHARGE` 2 条、`TXG_IN_REWARD` ≥1、`TXG_OUT_PEX` 1、`TXG_IN_PEX_CREATOR` 1 →
+    倒序正确、`beforeTime` 翻页正确 → `first_touch` 里资金页要用的 9 个字段齐全 →
+    跑完自动清理测试流水
+  - **工具踩坑（记下）**：`stamp.substring(0,8)` 当手机号后 8 位**几乎不变**（毫秒时间戳前 8 位要 ~2.8 小时才进一位），
+    连跑两次会撞号；`txUuid` 用固定串也一样，`dpOrderCode` 空串还会撞唯一约束 → 全部改成「时间戳后 8 位 + 后缀」。
+  - 视觉 / 交互（CDP，手机 500；用测好的临时用户种了余额与流水）：
+    资金页（钱包地址 + Copy/Share、Balance 286.5¢、+200 / +100 / +15 / -28 四行、Deposit/Cashout 渐变按钮）→
+    明细页「+ Recharges」两条（日期 + Wechat/AliPay + 绿色 +100¢）→ 下拉切到「- Creation Costs」
+    后 URL 与列表同步刷新（-8¢ 红字）→ 点 Deposit 落到「`umyFundDeposit` 尚未迁移」占位页
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。

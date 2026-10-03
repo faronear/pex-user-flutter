@@ -110,6 +110,25 @@ class UserApi {
         apiWhat: <String, dynamic>{'passcode': passcode},
       );
 
+  /// 我的收支明细（源项目 `partTxList.vue` 的 `get_tx_list`）。
+  ///
+  /// [txTag] 如 `TXG_ALL` / `TXG_RECHARGE` / `TXG_IN_REWARD` / `TXG_IN_PEX` / `TXG_OUT_PEX`；
+  /// [beforeTime] 为向下翻页游标，取上一页最后一条的 `txTimeUnix`。
+  Future<Map<String, dynamic>> getTxList({
+    String txTag = 'TXG_ALL',
+    int takeLimit = 10,
+    int? beforeTime,
+  }) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_tx_list',
+        apiWhat: <String, dynamic>{
+          'txTag': txTag,
+          'takeLimit': takeLimit,
+          'beforeTime': ?beforeTime,
+        },
+      );
+
   /// 关注某人（源项目 `toggle_follow_state` 的关注分支）。
   Future<Map<String, dynamic>> followUser(String followToUsid) =>
       _client.callBase(
