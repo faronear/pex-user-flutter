@@ -7,6 +7,29 @@
 > `project.pbxproj`（构建配置）、`xcshareddata/xcschemes/<brand>.xcscheme`、
 > `AppIcon-<brand>.appiconset`、`package.json`（构建脚本）、`brands/` 配置层与 `main_<brand>.dart`。
 
+## 本地调试：iOS 模拟器（按品牌启动）
+
+参考 einz 的 `emuResolveIos.js` + `emuBootIos.sh` + `emuUdidIos.sh` 三件套移植而来，
+把「选哪台模拟器」的复杂度集中到一处，跑 App 永远打**当前已启动的那台**。
+
+```bash
+npm run emu:ios:boot                 # 启动默认模拟器（config.emuDefault = ip16@26.3）
+npm run emu:ios:boot -- ip16@18.1    # 指定机型@系统版本（短名 / 全名 / UDID 都行）
+npm run run:ios:sim:babelyx          # 在模拟器里跑 Babelyx（热重载，Ctrl+C 停）
+npm run run:ios:sim:agidin           # 同上，Agidin
+```
+
+- 换模拟器：`EMU=ip16pro@26.3 npm run run:ios:sim:babelyx`（`flutter run` 会自己把它 boot 起来）。
+- 后端地址默认 `http://localhost:7739`，可用环境变量覆盖：
+  `API_BASE=https://pexserver.tic.cc npm run run:ios:sim:babelyx`。
+- 短名表见 `tool/emuResolveIos.js` 的 `builtinAlias`（ip16 / ip16plus / ip16pro /
+  ip16pm / ip17 / ip17pro / ip17pm / ipse3），也可在 `package.json` 的 `config` 里加
+  （`"ipad": "iPad Pro 13-inch (M4)"`），config 优先。
+- **为什么用「机型@系统版本」而不是 UDID**：UDID 每台 Mac 各生成，换机器就失效；
+  机型名+系统版本是 Xcode 自带的，跨机器可移植。
+- 已验证：`run:ios:sim:babelyx` 在 iPhone 16 / iOS 26.3 上跑通，App 装成
+  `faronear.babely.app.ios.dist`，首屏渲染正常（品牌 logo/配色/应用名均正确）。
+
 ## 包名 / 应用名
 
 | 品牌 | Android applicationId | iOS bundle id | iOS 应用名 |

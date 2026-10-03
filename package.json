@@ -31,9 +31,15 @@
     "build:ios:prod:agidin": "flutter build ios --flavor agidin -t lib/main_agidin.dart --dart-define=API_BASE=https://pexserver.tic.cc",
     "build:ios:prod:babelyx": "flutter build ios --flavor babelyx -t lib/main_babelyx.dart --dart-define=API_BASE=https://pexserver.tic.cc",
     "build:ios:ipa:agidin": "flutter build ipa --flavor agidin -t lib/main_agidin.dart --dart-define=API_BASE=https://pexserver.tic.cc --export-options-plist=ios/ExportOptions-appstore.plist",
-    "build:ios:ipa:babelyx": "flutter build ipa --flavor babelyx -t lib/main_babelyx.dart --dart-define=API_BASE=https://pexserver.tic.cc --export-options-plist=ios/ExportOptions-appstore.plist"
+    "build:ios:ipa:babelyx": "flutter build ipa --flavor babelyx -t lib/main_babelyx.dart --dart-define=API_BASE=https://pexserver.tic.cc --export-options-plist=ios/ExportOptions-appstore.plist",
+    "emu:ios:boot": "bash tool/emuBootIos.sh",
+    "run:ios:sim:agidin": "UDID=\"$(bash tool/emuUdidIos.sh \"${EMU:-}\")\"; flutter run -d \"${UDID}\" --flavor agidin -t lib/main_agidin.dart --dart-define=API_BASE=\"${API_BASE:-http://localhost:7739}\" --pid-file /tmp/pex_flutter_ios_agidin.pid",
+    "run:ios:sim:babelyx": "UDID=\"$(bash tool/emuUdidIos.sh \"${EMU:-}\")\"; flutter run -d \"${UDID}\" --flavor babelyx -t lib/main_babelyx.dart --dart-define=API_BASE=\"${API_BASE:-http://localhost:7739}\" --pid-file /tmp/pex_flutter_ios_babelyx.pid"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "config": {
+    "emuDefault": "ip16@26.3"
+  }
 }
