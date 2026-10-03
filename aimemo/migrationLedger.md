@@ -70,7 +70,7 @@
 ### 创作 / NFT
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[x]` |
+| `menuCreation.vue` | 79 | `pages/menu_creation_page.dart` | `[x]`（2026-10-03 复核：补 `?tagnow=`、前往文案对齐「我的选集」、登录判断改 usid 非空） |
 | `menuCreator.vue` | 79 | `pages/menu_creator_page.dart` | `[x]` |
 | `menuMarket.vue` | 77 | `pages/menu_market_page.dart` | `[ ]` |
 | `showCreation.vue` | 2227 | `pages/show_creation_page.dart` | `[>]` 2A 只读骨架已迁（评论/互动/付费/名单/分享举报待 2B–2F） |

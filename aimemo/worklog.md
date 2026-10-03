@@ -671,3 +671,19 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx + Tryapp 双产物构建成功。
 - **里程碑**：账户 / 社交 / 消息域页面全部迁完；`menuUzone` 八行清单中仅剩的目标页缺口 = 无
   （全部为真页面或按需占位）。剩余大项在创作/NFT 域与资金域。
+
+### 复核 · menuCreation（老板要求迁移，发现早已迁移，改为补齐 3 处缺口）
+
+- 老板点名「迁移 menuCreation」——对照后发现它在更早批次已完成（`pages/menu_creation_page.dart`，
+  注册在 `route_creation.dart`）。逐行对照源项目（79 行）发现 3 处小缺口，按老板选择补齐：
+  1. **`?tagnow=` 路由参数**：源项目 `onLoad({tagnow})` 只认 `uiClassDict` 里存在的键，
+     点分类是 `uni.reLaunch` 换参重开 → 迁移版改为 `context.go('/menuCreation?tagnow=<key>')`
+     （当前三品牌 `uiClassDict` 都只有 `POALL` 一项，故视觉上无差别，但后台加分类即自动生效）
+  2. **右上「前往」文案**：源项目用 `pageSet['umyCollection'].i18nGotoTitle` =
+     「我的选集 / My Collections」，迁移版此前写成了「我的收藏 / My Collection」→ 对齐；
+     顺带把 `umy_collection_page` 的页标题也对齐源项目 `i18nPageTitle`（我的选集 / My Collections）
+  3. **登录判断**：`['usid'] != null` → `isOnlineProvider`（usid 非空才算登录，空串不误判）
+- **实测**：Babelyx 构建成功；CDP 截图（手机 500，DB 有 301 条 creation）：分类条 +
+  「My Collections ›」+ Load more + 双列作品卡片 + 底部标签栏（Creations 高亮）全部正确；
+  游客点「My Collections」会进 `identBegin`（与源项目 `usid ? umyCollection : identBegin` 一致）。
+- **验证**：`flutter analyze` 0 问题。

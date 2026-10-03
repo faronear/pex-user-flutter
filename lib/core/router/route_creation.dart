@@ -20,7 +20,8 @@ List<RouteBase> creationRoutes() => <RouteBase>[
       GoRoute(
         path: AppRoutes.path(AppRoutes.menuCreation),
         name: AppRoutes.menuCreation,
-        builder: (_, _) => const MenuCreationPage(),
+        builder: (_, GoRouterState state) =>
+            MenuCreationPage(tagNow: state.uri.queryParameters['tagnow'] ?? ''),
       ),
       GoRoute(
         path: AppRoutes.path(AppRoutes.umyCollection),

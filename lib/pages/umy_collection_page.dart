@@ -17,10 +17,11 @@ import '../widgets/part_show_loading.dart';
 import '../widgets/part_window_layout.dart';
 
 /// 导航栏标题。
+/// 源项目 `pageSet['umyCollection'].i18nPageTitle`。
 const LangText _kNavTitle = LangText(
-  zhCN: '我的收藏',
-  enUS: 'My Collection',
-  deDE: 'Meine Sammlung',
+  zhCN: '我的选集',
+  enUS: 'My Collections',
+  deDE: 'Meine Sammlungen',
   jaJP: 'マイコレクション',
 );
 
