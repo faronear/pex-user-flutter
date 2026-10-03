@@ -21,6 +21,7 @@ import '../core/state/app_providers.dart';
 import '../core/state/envar_provider.dart';
 import '../core/util/pex_toolkit.dart';
 import '../theme/app_theme.dart';
+import '../widgets/part_deposit.dart';
 import '../widgets/part_icontext_copy.dart';
 import '../widgets/part_navibar_pc_fixed.dart';
 import '../widgets/part_pop_link.dart';
@@ -494,10 +495,7 @@ class UmyFundPage extends ConsumerWidget {
         if (!envar.hideDepositButton)
           Expanded(
             child: InkWell(
-              onTap: () {
-                // partDeposit（充值弹层，源项目 1066 行）尚未迁移 → 跳占位页。
-                context.push(AppRoutes.path(AppRoutes.umyFundDeposit));
-              },
+              onTap: () => _openDeposit(context, ref, envar),
               child: Container(
                 height: 50,
                 alignment: Alignment.center,
@@ -546,6 +544,36 @@ class UmyFundPage extends ConsumerWidget {
       ],
     );
   }
+
+  /// 打开充值面板（源项目 `openDeposit`）：`uni-popup` + `partDeposit(depositOnly)`。
+  ///
+  /// 源项目 `:is-mask-click="false"`（点遮罩不关闭）→ 这里 `isDismissible: false`。
+  Future<void> _openDeposit(
+    BuildContext context,
+    WidgetRef ref,
+    Envar envar,
+  ) =>
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        isDismissible: false,
+        enableDrag: false,
+        backgroundColor: PexColors.greyE,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+        ),
+        builder: (BuildContext sheetContext) => ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 600,
+            minWidth: 320,
+            maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.9,
+          ),
+          child: PartDeposit(
+            depositOnly: true,
+            onClose: () => Navigator.of(sheetContext).pop(),
+          ),
+        ),
+      );
 
   /// 提现入口（源项目 `request_withdraw`）：已有收款渠道进渠道页，否则先进「新建渠道」。
   void _requestWithdraw(

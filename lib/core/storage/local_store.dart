@@ -14,6 +14,8 @@ class LocalStore {
   static const String keyPasstoken = '_passtoken';
   static const String keyMylang = 'mylang';
   static const String keyUserlandCode = 'userlandCode';
+  /// 客户端标识：首次由后端下发（`callBase` 响应里的 `clid`），后续请求带回去。
+  static const String keyClid = 'clid';
 
   /// 用户在「我的设置」里选定的法币 / 加密币代码。
   ///

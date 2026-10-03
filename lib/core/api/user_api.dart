@@ -110,6 +110,14 @@ class UserApi {
         apiWhat: <String, dynamic>{'passcode': passcode},
       );
 
+  /// 查询当前余额（源项目 `partDeposit.vue` 的 `to_refresh_balance`）。
+  Future<Map<String, dynamic>> getCurrentBalance({String coin = ''}) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'get_current_balance',
+        apiWhat: <String, dynamic>{'coin': ?coin.isEmpty ? null : coin},
+      );
+
   /// 我的收支明细（源项目 `partTxList.vue` 的 `get_tx_list`）。
   ///
   /// [txTag] 如 `TXG_ALL` / `TXG_RECHARGE` / `TXG_IN_REWARD` / `TXG_IN_PEX` / `TXG_OUT_PEX`；

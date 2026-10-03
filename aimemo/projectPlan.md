@@ -254,8 +254,17 @@
     - **修好的行为**：源项目 `partTxList` 的「加载更多」仍是整表替换 → 迁移版追加 + 按 `txUuid` 去重
     - **如实说明**：充值按钮指向 `partDeposit`（1066 行，尚未迁移）→ 现跳占位页
       「`umyFundDeposit` 尚未迁移」；提现 → `umyFundChannel(Create)` 同理
-  - 待续：`partDeposit`（充值）/ `partFundChannelCard` / `umyFundChannel*`（提现渠道）；
-    组件 `partIdentCommid`
+    - [x] `partDeposit`（充值 / 支付面板，1066 行）：PAY 模式（余额支付，余额不足自动切充值）
+      + DEPOSIT 模式（金额步进 / 币种选择 / CNY 渠道+二维码+链接 / USDT 链+地址+二维码 /
+      刷新余额 / 客服入口）；充值按钮已从占位页改为直接打开该面板
+      - **新增实时通道**：`core/state/socket_provider.dart`（连 servUrl、断线重连、心跳、
+        按 skevent 派发；PC 页脚呼吸灯改用真正的 `socketAlive`），
+        充值面板监听 `RECHARGE_SUCCESS` 自动弹「已入账」并刷新余额
+      - **有意不做（平台差异，已注释）**：iOS 内购 IAP（uni-app 原生插件）、
+        uniCloud `unipay-co` 云函数（改用源项目自带的支付门户链接）、
+        「连接钱包」按钮（需 MetaMask 探测）
+      - 支付门户按 `kReleaseMode` 切 dev/prod（对应源项目 `NODE_ENV`）
+  - 待续：`partFundChannelCard` / `umyFundChannel*`（提现渠道）；组件 `partIdentCommid`
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

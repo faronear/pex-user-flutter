@@ -147,7 +147,7 @@
 ### 资金
 | 源 | 行数 | 目标 | 状态 |
 | -- | ---- | ---- | ---- |
-| `partDeposit.vue` | 1066 | `widgets/part_deposit.dart` | `[ ]` |
+| `partDeposit.vue` | 1066 | `widgets/part_deposit.dart` | `[x]`（不做 iOS IAP / uniCloud unipay2 / 连接钱包） |
 | `partFundChannelCard.vue` | 153 | `widgets/part_fund_channel_card.dart` | `[ ]` |
 | `partTxList.vue` | 195 | `widgets/part_tx_list.dart` | `[x]` |
 | `partPexdataSummary.vue` | 44 | `widgets/part_pexdata_summary.dart` | `[x]` |

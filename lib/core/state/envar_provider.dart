@@ -79,6 +79,32 @@ class Envar {
 
   LangText get tUnblock => LangText.fromMap(raw['tUnblock']);
 
+  /// 币种 → 可兑换的应用内币数（源项目 `coinToTUC`）。
+  Map<String, dynamic> get coinToTUC {
+    final Object? value = raw['coinToTUC'];
+    return value is Map ? value.cast<String, dynamic>() : <String, dynamic>{};
+  }
+
+  /// 充值金额下限 / 默认值（客户端配置）。
+  num get depositAmountMin {
+    final Object? value = raw['depositAmountMin'];
+    return value is num ? value : num.tryParse(value?.toString() ?? '') ?? 0.01;
+  }
+
+  num get depositAmountDefault {
+    final Object? value = raw['depositAmountDefault'];
+    return value is num ? value : num.tryParse(value?.toString() ?? '') ?? 10;
+  }
+
+  /// 充值赠送比例（源项目 `depositBonusRate`，后端下发）。
+  num get depositBonusRate {
+    final Object? value = raw['depositBonusRate'];
+    return value is num ? value : num.tryParse(value?.toString() ?? '') ?? 0;
+  }
+
+  /// 是否隐藏「连接钱包」入口（源项目 `hideChainWallet`）。
+  bool get hideChainWallet => boolOf('hideChainWallet');
+
   /// 区块链浏览器前缀（源项目 `tucLens`）：钱包地址链接 = `${tucLens}/address/<caddTUC>#nfttransfers`。
   String get tucLens => str('tucLens');
 

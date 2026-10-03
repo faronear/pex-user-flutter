@@ -52,5 +52,7 @@ final Provider<ApiClient> apiClientProvider = Provider<ApiClient>((ref) {
     passtokenGetter: () => store.passtoken,
     // 对应源项目 callBase 内部自动持久化后端下发的凭据。
     onPasstoken: (String value) => store.setPasstoken(value),
+    // 后端下发的客户端标识，存下来给支付门户用（源项目 `uni.getStorageSync('clid')`）。
+    onClid: (String value) => store.setString(LocalStore.keyClid, value),
   );
 });

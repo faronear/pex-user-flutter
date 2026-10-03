@@ -2,6 +2,8 @@
 /// 连接后端（first_touch）→ 取回 envar 配置 → 判定自动登录状态。
 library;
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_client.dart';
@@ -11,6 +13,7 @@ import '../i18n/lang_text.dart';
 import '../storage/local_store.dart';
 import 'app_providers.dart';
 import 'region_provider.dart';
+import 'socket_provider.dart';
 
 /// 自动登录状态（对应源项目 `wo.ss.Ident.autologgingState`）。
 enum AutologgingState { waiting, success, fail }
@@ -144,6 +147,16 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
       uipl: uipl,
       autologging: loginOk ? AutologgingState.success : AutologgingState.fail,
     );
+
+    // 连接实时通道（源项目 `App.vue` 的 `wo.unisocket.initSocket({url: wo.ss.servUrl})`）。
+    unawaited(ref.read(socketProvider.notifier).connect(
+          envar['servUrl']?.toString() ?? '',
+        ));
+    if (loginOk) {
+      ref.read(socketProvider.notifier).sendObject(<String, String>{
+        'skevent': 'SOCKET_OWNER',
+      });
+    }
     return true;
   }
 
@@ -153,6 +166,10 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
       onlineUser: user,
       autologging: AutologgingState.success,
     );
+    // 登录成功 → 向实时通道认领本连接（源项目 `App.vue` 登录后的 `SOCKET_OWNER`）。
+    ref.read(socketProvider.notifier).sendObject(<String, String>{
+      'skevent': 'SOCKET_OWNER',
+    });
   }
 
   /// 等待自动登录结束（对应源项目 `wo.tt.wait_autologin`）。

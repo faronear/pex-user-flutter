@@ -786,3 +786,46 @@
     明细页「+ Recharges」两条（日期 + Wechat/AliPay + 绿色 +100¢）→ 下拉切到「- Creation Costs」
     后 URL 与列表同步刷新（-8¢ 红字）→ 点 Deposit 落到「`umyFundDeposit` 尚未迁移」占位页
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+
+### 资金域（第二批）· partDeposit 充值面板 + WebSocket 实时通道
+
+- **实时通道（新）**：`core/state/socket_provider.dart`，照搬源项目 `wo.unisocket` 协议：
+  连 `envar.servUrl`（http→ws）→ 有 passtoken 就发 `SOCKET_OWNER_RECONNECT` 认领 →
+  20s 心跳 PING → 断开每 5s 重连 → 按 `skevent` 广播给订阅方。
+  接入点：`app_startup_notifier.runOnce`（first_touch 后连接）、`setOnlineUser`（登录后发 `SOCKET_OWNER`）；
+  **`part_window_footer` 的呼吸灯从 HTTP `connected` 改为真正的 `socketAlive`**（源项目语义）。
+- **`widgets/part_deposit.dart`**（源 1066 行）：
+  - **PAY**：标题 + 金额（有 `payAmountPrompt` 时可输入）+ 备注 + 帮助链接 + 提交按钮
+    （`submitAction(payAmount)` 由调用方提供；**余额不足自动切到 DEPOSIT**，与源项目一致）
+  - **DEPOSIT**：标题 + 呼吸灯余额 + 金额步进（管理员 0.01 / 普通 1）+ 币种选择（复用 `PartCoinTable`）
+    + 换算与赠送（`coinToTUC` / `depositBonusRate`）+ CNY 渠道(微信/支付宝)+二维码+链接+复制/分享
+    + USDT 链选择+转账说明（链名可点进合约页）+地址二维码+地址复制/分享 + 刷新余额 + 客服入口
+  - 到账确认：`RECHARGE_SUCCESS` 推送（按 usid 过滤）或「刷新余额」发现余额变大 → 弹「您的充值已入账！」
+    → `depositOnly` 时关闭面板，否则切回 PAY（源项目 `confirm_deposit_done` 的行为）
+  - 支付门户按 `kReleaseMode` 切 dev/prod（源项目用 `NODE_ENV`）；`clid` 现在会从后端响应持久化下来
+    （补上了 `apiClientProvider.onClid` → `LocalStore.keyClid`）
+- **有意不做（平台差异，代码里已注明）**：
+  1. **iOS 内购 IAP**：源项目走 `uni.requestPayment(appleiap)` + `uni-pay` 原生插件；
+     `inAppIos` 未配置时源项目本就不显示该分支，故迁移版同样不显示。待真正出 iOS 产物时再补。
+  2. **uniCloud `unipay-co` 云函数**：uni-app 云空间专有；源项目本身有 payPortal 链接的 fallback，只用它。
+  3. **「连接钱包」按钮**：源项目仅在「PC 且检测到 `window.ethereum`」时显示，需要 MetaMask 探测（条件导入 js_interop）。
+- **实测**：
+  - `dart run tool/check_socket.dart` **PASS**：连 ws → 认领连接 → B 给 A 发消息 → A 收到
+    `skevent=MIA_SENT` 推送（用 `send_mia` 当推送源，**不产生邮件副作用**；
+    `RECHARGE_SUCCESS` 只能由支付门户的 `System/deposit_callback`（sysapi）触发且会真发邮件，故不自检）
+  - `dart run tool/check_deposit.dart` **PASS**：`get_current_balance` 字段齐 → `coinToTUC`(USDT/CNY) /
+    `depositBonusRate` 齐 → 按源项目公式算出「10 CNY = 136.9863¢ + 6.8493¢；10 USDT = 1000¢ + 50¢」
+  - 视觉 / 交互（CDP，手机 500，用带余额的临时用户）：
+    资金页点「Deposit」→ 面板（USDT 默认：金额步进 10、换算 =1000¢、赠送 50、Polygon / Ethereum 链、
+    地址二维码、Copy/Share、Check Balance、客服）→ 点币种 → 币种表（₮ USDT / ¥ Chinese Yuan）
+    → 选 CNY → CNY 分支（WxPay 渠道、**二维码已渲染**、生产门户链接 `pay.yuanjinx.com/?coin=cny&provider=wxpay&appkey=…`）
+    → 点「Check Balance」→ 红字「充值尚未到账…请联系客服」
+- **踩坑（两个，都值得记）**：
+  1. **`Random().nextInt(999999999999)` 抛 `RangeError`**（Dart 的 `nextInt` 上限是 2^32）——
+     我照抄了源项目 `String(Math.random()).substring(2,14)` 的「12 位随机数」意图，却用错了 API。
+     后果很隐蔽：CNY 分支在 build 时抛异常 → 面板渲染成灰屏/空二维码，我一度误判成「CDP 点击坐标不准」。
+     现在改为逐位生成 12 个数字。
+  2. **弹层会自动滚动**：`showModalBottomSheet` 打开后，Flutter 会把第一个可聚焦控件（链下拉）
+     滚入视野，导致弹层内容整体上移约 90px —— 所以按静态截图上的坐标去点「币种」会点到「链」。
+     排查后按 `-90px` 点击即命中（币种表正常弹出）。以后验这类面板，先点一次再按新截图定位。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功（含实时通道与充气面板）。

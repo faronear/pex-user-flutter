@@ -11,8 +11,8 @@ import '../core/i18n/lang_text.dart';
 import '../core/icons/icont_icons.dart';
 import '../core/icons/pex_icon.dart';
 import '../core/responsive/device_info.dart';
-import '../core/state/app_startup_notifier.dart';
 import '../core/state/envar_provider.dart';
+import '../core/state/socket_provider.dart';
 import '../theme/app_theme.dart';
 import 'part_breathing_opacity.dart';
 import 'part_lang_table.dart';
@@ -27,7 +27,8 @@ class PartWindowFooter extends ConsumerWidget {
 
     final String lang = ref.watch(languageProvider);
     final Envar envar = ref.watch(envarProvider);
-    final bool socketAlive = ref.watch(appStartupProvider).connected;
+    // 源项目用的是 `wo.ss.socketAlive`（实时通道），不是 HTTP 连通性。
+    final bool socketAlive = ref.watch(socketProvider).alive;
 
     return Container(
       color: PexColors.grey3,
