@@ -17,7 +17,9 @@ Flutter 产物是纯静态文件（`build/web/`），用 hash 路由无需 404 �
 | agidin | `user-agidin-com` | https://agidin.com |
 | babelyx | `user-babelyx-com` | https://babelyx.com |
 
-> 已下线品牌：tryapp 的 Cloudflare 项目 `tryapp-user`（`tryapp-user.pages.dev`）仍存在但本项目已不再构建/部署它，是否下线站点待定。
+> 已下线品牌：tryapp 的 Cloudflare Pages 项目 `tryapp-user` / `tryapp-store`
+> （实际域名是 `aimint-user.pages.dev` / `aimint-store.pages.dev`，无自定义域名）
+> **已于 2026-10-03 从 Cloudflare 账号彻底删除**。
 
 需要本机已装 `wrangler` 并登录（当前开发机未装，部署得在老板有凭据的机器上跑）：
 - `npm run deploy:web:<brand>` → `wrangler pages deploy build/web --project-name=<上表>`

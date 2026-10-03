@@ -14,7 +14,8 @@
   - iOS：删 `Tryapp-{Debug,Release}.xcconfig`、`tryapp.xcscheme`、`AppIcon-tryapp.appiconset`；`project.pbxproj` 移除 6 个 tryapp 构建配置（Project/Runner/RunnerTests × Debug/Release）与 6 个文件引用；重跑 `pod install` 并清掉 Pods 里的 tryapp 残留。`xcodebuild -list` 确认只剩 agidin/babelyx，工程结构完好。
   - 脚本/生成器：`package.json` 去 10 个 tryapp 脚本；`_gen_ios_flavors.py` / `_gen_brand_icons.py` 的品牌表去 tryapp。
 - **文档口径**：面向未来的文档（`architecture.md` / `projectPlan.md` / `deployNative.md` / `deployWeb.md` / `userProfile.md`）把「三品牌」改为「多品牌」，并**不写死品牌数量**——新增品牌只需按下表格式补一行。历史文档（`worklog.md` / `migrationLedger.md`）只追记录，不改写历史。
-- **遗留**：Cloudflare 上的 `tryapp-user`（`tryapp-user.pages.dev`）站点仍在，本项目已不再构建/部署它，是否下线待老板决定；后端 `pex-server-torm` 里的 AKTRYAPP 配置未动（无害冗余）；iOS 侧从未申请过 tryapp 的 profile，开发者账户无遗留。
+- **Cloudflare 清理**：用仓库里 wrangler OAuth 凭据（`~/Library/Preferences/.wrangler/config/default.toml`，含 `pages: write`）确认账号后，删除 Pages 项目 `tryapp-user` / `tryapp-store`（实际域名 `aimint-user.pages.dev` / `aimint-store.pages.dev`，两者均**无自定义域名**，删除不影响任何 DNS；项目已闲置约 2 年）。复核账号内 `user-agidin-com` / `user-babelyx-com` 两个在用项目及其自定义域名完好无损。
+- **遗留**：后端 `pex-server-torm` 里的 AKTRYAPP 配置未动（无害冗余，删它需改后端 envar）；iOS 侧从未申请过 tryapp 的 profile，开发者账户无遗留。
 
 ## 2026-09-29
 
