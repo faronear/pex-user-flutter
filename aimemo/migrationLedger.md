@@ -54,8 +54,8 @@
 | `umyInviteList.vue` | 43 | `pages/umy_invite_list_page.dart` | `[x]` |
 | `umyCircle.vue` | 73 | `pages/umy_circle_page.dart` | `[x]` |
 | `umyCollection.vue` | 89 | `pages/umy_collection_page.dart` | `[x]` |
-| `umyMia.vue` | 130 | `pages/umy_mia_page.dart` | `[ ]` |
-| `umyMiaDetail.vue` | 185 | `pages/umy_mia_detail_page.dart` | `[ ]` |
+| `umyMia.vue` | 130 | `pages/umy_mia_page.dart` | `[x]` |
+| `umyMiaDetail.vue` | 185 | `pages/umy_mia_detail_page.dart` | `[x]` |
 
 ### AI
 | 源 | 行数 | 目标 | 状态 |

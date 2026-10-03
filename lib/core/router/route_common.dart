@@ -24,6 +24,8 @@ import '../../pages/umy_circle_page.dart';
 import '../../pages/umy_config_page.dart';
 import '../../pages/umy_invite_list_page.dart';
 import '../../pages/umy_invite_page.dart';
+import '../../pages/umy_mia_detail_page.dart';
+import '../../pages/umy_mia_page.dart';
 import '../../pages/umy_contact_page.dart';
 import 'app_routes.dart';
 
@@ -82,6 +84,19 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         name: AppRoutes.umyCircle,
         builder: (_, GoRouterState state) =>
             UmyCirclePage(tagNow: state.uri.queryParameters['tagnow'] ?? ''),
+      ),
+      // 消息域（三品牌共用）：消息列表 + 消息详情（含回复）。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyMia),
+        name: AppRoutes.umyMia,
+        builder: (_, _) => const UmyMiaPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyMiaDetail),
+        name: AppRoutes.umyMiaDetail,
+        builder: (_, GoRouterState state) => UmyMiaDetailPage(
+          miaUuid: state.uri.queryParameters['miaUuid'] ?? '',
+        ),
       ),
       // 「我的设置」「联系客服」也是三品牌共用的账户域页面。
       GoRoute(

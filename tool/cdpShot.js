@@ -8,6 +8,7 @@
 // 用法：
 //   node tool/cdpShot.js <url> <outPrefix> [step ...] [--w=500] [--h=800] [--wait=11000]
 //   步骤：`x,y` = 点击该坐标；`type:文本` = 往当前焦点输入文本（通常接在点击输入框之后）
+//   注意：坐标是 **CSS 像素**，不是截图上的设备像素（截图通常 dpr=2，要除以 2）！
 // 例：
 //   node tool/cdpShot.js "http://localhost:8090/#/menuUzone" /tmp/shot "142,31" "200,101"
 //   node tool/cdpShot.js "http://localhost:8090/#/umyContact" /tmp/c "200,300" "type:你好"

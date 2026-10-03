@@ -31,6 +31,7 @@ class AppRoutes {
   static const String umyAccountTerminate = 'umyAccountTerminate';
   static const String umyKyc = 'umyKyc';
   static const String umyMia = 'umyMia';
+  static const String umyMiaDetail = 'umyMiaDetail';
   static const String umyConfig = 'umyConfig';
   static const String umyInvite = 'umyInvite';
   static const String umyInviteList = 'umyInviteList';

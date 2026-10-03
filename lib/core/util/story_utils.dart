@@ -88,6 +88,28 @@ Object? readVarchain(String path, Object? root, [Object? emptyValue]) {
   return parent ?? emptyValue;
 }
 
+/// 取 story 的文字摘要作为标题（对应 `wo.tt.extract_story_title`）：
+/// 各段文字去换行后以空格拼接，最多 140 字。
+///
+/// 段落的 `text` 既可能是字符串，也可能是语言字典（`{zhCN: ..., enUS: ...}`）。
+String extractStoryTitle(List<dynamic>? story, {String lang = 'enUS'}) {
+  if (story == null || story.isEmpty) return '';
+  final List<String> parts = <String>[];
+  for (final dynamic raw in story) {
+    if (raw is! Map) continue;
+    final Object? text = raw['text'];
+    final String value = switch (text) {
+      final String it => it,
+      final Map it => (it[lang] ?? it['enUS'])?.toString() ?? '',
+      _ => '',
+    };
+    final String trimmed = value.trim().replaceAll(RegExp(r'\n+'), ' ');
+    if (trimmed.isNotEmpty) parts.add(trimmed);
+  }
+  final String joined = parts.join(' ').trim();
+  return joined.length <= 140 ? joined : joined.substring(0, 140);
+}
+
 /// 取文件扩展名（不含点，小写）。
 String fileExtOf(String filename) {
   final int index = filename.lastIndexOf('.');

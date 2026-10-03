@@ -202,7 +202,17 @@
     - 邀请页：标题 `tInviteTitle`（未配置则回退 `slogans`）+ 优惠码/链接/二维码 +
       「已奖励 → umyFundTranx」「已邀请 → umyCircle?tagnow=INVITEE」两个渐变入口
     - `envar` 补 `webUrlRoot` / `tInviteTitle` / `linkCommunity` / `slogans` / `Creator.myCircleDict`
-  - 待续：`umyKyc` / `umyMia*` / `midTryapp`；组件 `partIdentCommid`
+  - [x] **`umyMia`（我的消息）+ `umyMiaDetail`（消息详情 / 回复）**
+    - 新增 `core/api/mia_api.dart`（`list_my_mia` / `get_mia_detail` / `send_mia`，
+      账户域之外第二个独立 apiWho）+ `core/state/mia_provider.dart`（对应 `wo.ss.Mia`）
+    - 列表行 = 头像 + 发件人 + 标题（`miaTitle` 或 `extractStoryTitle` 摘要）+ 日期 + 未读红点；
+      详情页 = 头像/昵称/时间 + `PartStoryReader` + 「我的回复」`PartStoryEditor`
+      （按 `mia*` 开关限制段落类型）+ 成功弹窗
+    - **修好的行为**：源项目「加载更多」同样是整表替换 → 迁移版追加 + 按 `miaUuid` 去重；
+      已读后用 `mergeInList` 就地合并，让列表红点即时消失
+    - `story_utils` 补 `extractStoryTitle`（对应 `wo.tt.extract_story_title`，text 兼容语言字典）
+    - `menuUzone` 的消息徽标行现在指向真页面
+  - 待续：`umyKyc` / `midTryapp`；组件 `partIdentCommid`
     （`umyCollection` / `partComplain` 已在批次 2 完成）
 - [ ] 其余：`showWebview`（webview 容器）
 

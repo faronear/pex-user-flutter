@@ -610,3 +610,32 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **遗留**：`menuUzone` 的圈子徽标/清单行、`umyAccount` 的「用户号」行现在都指向真页面；
   剩 `umyKyc`(435) / `umyMia*` / `midTryapp`。
+
+### 消息域 · umyMia（我的消息）+ umyMiaDetail（详情 / 回复）
+
+- **新增**：
+  - `core/api/mia_api.dart`：`list_my_mia` / `get_mia_detail` / `send_mia`（账户域之外第二个独立 apiWho）
+  - `core/state/mia_provider.dart`：对应 `wo.ss.Mia`（`myMiaList` + `onceLoaded` + `miaNow`）
+  - `pages/umy_mia_page.dart`：消息列表（头像 + 发件人 + 标题/摘要 + 日期 + UNREAD 红点）
+  - `pages/umy_mia_detail_page.dart`：详情（头像/昵称/时间 + `PartStoryReader`）
+    + 「我的回复」`PartStoryEditor`（按 `miaText/miaImage/...` 开关限制段落类型，
+      Babelyx 预置 = 文本+图片、最多 2 段）+ 空回复提示（5 秒自动消失）+ 成功弹窗
+  - `story_utils.extractStoryTitle`（对应 `wo.tt.extract_story_title`；段落 text 兼容语言字典）
+  - 路由注册在 `route_common.dart`（三品牌共用）；`AppRoutes` 补 `umyMiaDetail`
+- **复用**：详情页完全搭在既有的 `PartStoryReader` / `PartStoryEditor` 上（零改动）；
+  已读后用 `mergeInList` 就地合并列表项，红点即时消失（源项目靠 `$forceUpdate`）。
+- **修好的行为**：源项目「加载更多」同样是整表替换 → 迁移版追加 + 按 `miaUuid` 去重。
+- **实测**：
+  - `dart run tool/check_mia.dart` **PASS**：B 给 A 发消息 → A 列表出现且 UNREAD、
+    `miaTitle` 由后端 normalize 兜底 → 打开详情返回 `miaUnread=UNREAD` 且状态变 READ →
+    再拉详情不再返回 miaUnread → A 回复 B → B 列表出现回复 → 空 story 被拒 `INPUT_MALFORMED`
+  - 视觉 / 交互（CDP，造数：B 给 A 发 2 条消息）：
+    列表两条消息带红点 → 点行进详情（顶部 Back）→ 深链 `?miaUuid=` 直接进详情
+    （uuid-only 分支）→ **详情打开后服务端已标记 READ**（API + sqlite 双确认）→
+    输入回复 → Publish → 白色成功弹窗 → **回复落库**（sqlite 确认 `{"text":"好的，我们微信详聊！"}`）
+  - **工具坑（记下）**：CDP 点击坐标是 **CSS 像素**，而截图是 dpr=2 的设备像素——
+    我把截图上的 y=530 直接当坐标用，点了个空处；除以 2（y=265）才对。
+    `tool/cdpShot.js` 的用法注释里补一句提醒。
+- **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
+- **环境**：本机起了一个 dev 后端（7739）和一个静态服务（8090，serve `build/web`）供验证用，
+  老板确认沿用（「我用你的，你不要停」）。
