@@ -4,12 +4,16 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+import java.util.Properties
+
 // 发布签名从 gitignore 的 key.properties 读取（与 einz/app 共用同一 keystore，不在仓库内）。
 // 用法：在 android/key.properties 填入 storePassword / keyPassword / keyAlias / storeFile。
 val keystorePropertiesFile = rootProject.file("key.properties")
-val keystoreProperties = if (keystorePropertiesFile.exists()) {
-    java.util.Properties().apply { load(keystorePropertiesFile.inputStream()) }
-} else java.util.Properties()
+val keystoreProperties: Properties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(keystorePropertiesFile.inputStream())
+}
+val hasReleaseKey = keystoreProperties.getProperty("keyAlias") != null
 
 android {
     namespace = "cc.tic.pex_user_flutter"
@@ -64,17 +68,17 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String?
-            keyPassword = keystoreProperties["keyPassword"] as String?
-            storeFile = keystoreProperties["storeFile"]?.let { file(it) }
-            storePassword = keystoreProperties["storePassword"] as String?
+            keyAlias = keystoreProperties.getProperty("keyAlias")
+            keyPassword = keystoreProperties.getProperty("keyPassword")
+            storeFile = keystoreProperties.getProperty("storeFile")?.let { file(it) }
+            storePassword = keystoreProperties.getProperty("storePassword")
         }
     }
 
     buildTypes {
         release {
             // 有 key.properties 时用真实 keystore 签名，否则退回 debug key（与 einz/app 现状一致）。
-            signingConfig = if (keystoreProperties.containsKey("keyAlias")) {
+            signingConfig = if (hasReleaseKey) {
                 signingConfigs.getByName("release")
             } else {
                 signingConfigs.getByName("debug")

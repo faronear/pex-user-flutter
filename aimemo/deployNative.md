@@ -32,9 +32,9 @@
 
 ## 待办（需老板在有凭据的机器上完成）
 - **iOS 签名**：✅ 已完成并验证（见下「iOS 签名」）。Team `CQ6733CTMV` (Faronear Co. Ltd.)，agidin/babelyx 用 App Store 分发 profile 手动签名。tryapp 暂无 profile。
-- **Android 签名**：已接好 plumbing（见下「Android 签名」），但 `android/key.properties` 的 storePassword/keyAlias/keyPassword 待老板填（keystore 与 einz/app 共用：`/Volumes/repodisk/productX/einz/app/android/android.keystore.jks`）。填好前 release 回退 debug key。
+- **Android 签名**：✅ 已复用 einz 的 `key.properties`（同一 keystore）完成真实签名验证（见下「Android 签名」）。
 - **图标**：✅ 已替换为三品牌官方 logo（见下「应用图标」）。
-- **Android 本机已验证配置**：iMac 有 Android SDK (`/Users/luk/Library/Android/sdk`)，但真实 keystore 签名待填凭据后验证。
+- **Android 本机已验证配置**：iMac 有 Android SDK (`/Users/luk/Library/Android/sdk`)，真实 keystore 签名已验证（agidin aab 构建成功）。
 
 ## iOS 签名（已配置并验证）
 - Team：`CQ6733CTMV`（Faronear Co. Ltd.）。Apple Distribution 证书已在本机钥匙串（`Apple Distribution: Faronear Co. Ltd. (CQ6733CTMV)`）。
@@ -49,10 +49,10 @@
 - **Ad Hoc 分发**：老板准备 Ad Hoc profile 后，把 `PROVISIONING_PROFILE_SPECIFIER` 与 `ios/ExportOptions-appstore.plist` 里的 profile 名换成 Ad Hoc 的即可（身份仍 `Apple Distribution`）。
 - 真机/上架产出 IPA：`npm run build:ios:ipa:agidin|babelyx`（用 `ios/ExportOptions-appstore.plist`，`flutter build ipa`）。`build:ios:prod:*` 只出 .app 不导 IPA。
 
-## Android 签名（plumbing 已接，待填凭据）
-- `android/app/build.gradle.kts` 加了 `signingConfigs.release`，从 gitignore 的 `android/key.properties` 读 storePassword/keyPassword/keyAlias/storeFile。
-- `android/key.properties`（已 gitignore，不提交）默认指向共用 keystore `/Volumes/repodisk/productX/einz/app/android/android.keystore.jks`；`keyAlias` 行默认注释掉，填好并取消注释后 release 才用真签名，否则回退 debug key。
-- 验证：`ANDROID_HOME=/Users/luk/Library/Android/sdk npm run build:android:prod:agidin` 应输出带签名的 aab。
+## Android 签名（已配置并验证）
+- `android/app/build.gradle.kts` 加了 `signingConfigs.release`，从 gitignore 的 `android/key.properties` 读 storePassword/keyPassword/keyAlias/storeFile（Kotlin DSL 用 `getProperty`，且 `import java.util.Properties` 须放在 `plugins {}` 之后）。
+- `android/key.properties`（已 gitignore，不提交）**直接复用 einz 的同一 keystore**：`storeFile=/Volumes/repodisk/productX/einz/app/android/android.keystore.jks`，`keyAlias=android.keystore`，store/key 口令同 einz。`key.properties` 不存在时 release 回退 debug key。
+- 验证：`ANDROID_HOME=/Users/luk/Library/Android/sdk npm run build:android:prod:agidin` → 产出 `app-agidin-release.aab`（已签名，cert subject CN=yuanjin）。babelyx/tryapp 同 keystore 同理。
 
 ## 应用图标（已替换）
 
@@ -69,4 +69,4 @@
 
 ## 验证状态
 - iOS：`agidin` / `babelyx` flavor 已用各自 App Store profile **真机构建并成功签名**（`flutter build ios --flavor ...` 出 `Agidin.app`/`Babelyx.app`，embedded profile 校验为 `Agidin Dist Appstore`/`Babelyx Dist Appstore`，bundle id 分别为 `cc.aizoi.app.dist.ios`/`faronear.babely.app.ios.dist`）。tryapp 仅模拟器验证（无 profile）。
-- Android：plumbing 就绪，待填 keystore 凭据后验证真实签名。
+- Android：`agidin` aab 已用共用 keystore 真实签名构建成功（`app-agidin-release.aab`，58.3MB），babelyx/tryapp 同 keystore 同理可用。
