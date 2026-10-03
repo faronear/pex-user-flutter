@@ -1,4 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 网络（API / webview / 资源） -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 相机 / 相册（image_picker 选图、头像、创作素材） -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <!-- Android 12 及以下回退 -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"

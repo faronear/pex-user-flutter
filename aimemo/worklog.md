@@ -922,3 +922,19 @@
   agidin=`user-agidin-com`(agidin.com)、babelyx=`user-babelyx-com`(babelyx.com)、tryapp=`tryapp-user`(tryapp-user.pages.dev)
 - 部署记录整理进 `aimemo/deployWeb.md`（含后端地址、构建/部署命令、覆盖旧网页的提醒）。
 - 未提交（待老板确认后一起 commit，或本次直接提交）。
+
+### 配置 iOS / Android 原生构建（flavors）（2026-10-04）
+
+- 老板确认 iOS 做成三品牌独立包名，与 Android flavors 对齐。
+- **Android**：`android/app/build.gradle.kts` 早就有三品牌 `productFlavors`（applicationId + app_name）。
+  - `AndroidManifest.xml` 补了权限：INTERNET / CAMERA / READ_MEDIA_IMAGES·VIDEO·AUDIO / READ_EXTERNAL_STORAGE(≤32)。
+  - 本机无 Android SDK，未实编译，仅做了配置正确性核对。
+- **iOS**：从零配齐 flavors（用 `tool/_gen_ios_flavors.py` 生成，已在文档注明勿重复跑）：
+  - `ios/Flutter/<Brand>-Debug/Release.xcconfig`：include Pods 配置 + Generated.xcconfig，覆盖 bundle id / PRODUCT_NAME。
+  - `project.pbxproj`：Project / Runner / RunnerTests 三套列表各加 `Debug-<brand>`/`Release-<brand>` 构建配置（踩坑：生成时 `name =` 字段漏改，导致 `xcodebuild -list` 不枚举，已修）。
+  - `xcshareddata/xcschemes/<brand>.xcscheme`：共享 scheme。
+  - `Info.plist`：`CFBundleDisplayName`/`CFBundleName` 改 `$(PRODUCT_NAME)` 随 flavor 变；加相机/相册权限描述。
+- **package.json** 新增 12 个原生脚本：`build:android:*`/`build:android:prod:*`(appbundle) + `build:ios:*`(模拟器)/`build:ios:prod:*`(真机)。
+- **验证（本机 Xcode 26 可编译）**：`flutter build ios --flavor agidin -t lib/main_agidin.dart --simulator` 与 `babelyx` 均成功，产出 `Agidin.app`/`Babelyx.app`，bundle id=`cc.tic.agidin/babelyx`、应用名=Agidin/Babelyx、权限描述已注入。
+- **待老板在凭据机器上做**：iOS 签名（Team ID + provisioning，模板 `DEVELOPMENT_TEAM=37KQR6645B` 是占位）；Android 签名（release 现用 debug key）；三品牌图标替换。
+- 文档：`aimemo/deployNative.md`。

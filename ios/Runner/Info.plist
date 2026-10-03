@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Pex User Flutter</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>pex_user_flutter</string>
+	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -66,5 +66,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- 原生能力权限说明（image_picker 选图/拍照、相册保存） -->
+	<key>NSCameraUsageDescription</key>
+	<string>需要相机权限以拍摄照片或视频作为头像与创作素材</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>需要相册权限以选择照片或视频</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>需要相册权限以保存图片</string>
 </dict>
 </plist>
