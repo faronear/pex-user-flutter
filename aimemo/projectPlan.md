@@ -212,8 +212,20 @@
       已读后用 `mergeInList` 就地合并，让列表红点即时消失
     - `story_utils` 补 `extractStoryTitle`（对应 `wo.tt.extract_story_title`，text 兼容语言字典）
     - `menuUzone` 的消息徽标行现在指向真页面
-  - 待续：`umyKyc` / `midTryapp`；组件 `partIdentCommid`
-    （`umyCollection` / `partComplain` 已在批次 2 完成）
+  - [x] **`umyKyc`（实名认证）**
+    - 表单：姓名 / 国籍（`PartLandTable` 弹层）/ 证件类型（4 种）/ 证件号码 + 证件正反面照片
+      （点击上传 → `Fileloader/receiveFile` → `chooseUrl`）；提交 gated：
+      姓名+号码+正面照必填，IDCARD 还需背面照
+    - `kycStateL1` ∈ SUBMITTED/PASSED 时整表只读（源项目 `isFixed`），
+      状态文案取 `kycDict[].long` 并按状态着色（黄/红/绿）
+    - `user_api.updateKyc`：成功返回 `_state: 'SUBMITTED'`（非 SUCCESS），
+      且**后端会真发一封邮件**给值班邮箱；重复提交返回 `BER_UNEXPECTED`
+    - 修自己引入的时序 bug：表单初值必须在 `waitAutologin()` 之后再读用户资料
+  - [x] **`midTryapp`（TRYAPP 中页）**：按老板决定（2026-10-03）**只做空白框架页**——
+    TRYAPP 是与品牌无关的中立基础框架占位，源页里的 AI 对话/创作双容器不做。
+    只在 `main_tryapp.dart` 入口注册路由（不进其它品牌产物，保持入口级裁剪）。
+  - 待续：组件 `partIdentCommid`（`umyCollection` / `partComplain` 已在批次 2 完成）；
+    账户/社交/消息域页面至此**全部迁完**
 - [ ] 其余：`showWebview`（webview 容器）
 
 ---

@@ -15,6 +15,7 @@ import '../../pages/ident_old_login_page.dart';
 import '../../pages/ident_old_passcode_page.dart';
 import '../../pages/ident_old_reset_page.dart';
 import '../../pages/menu_uzone_page.dart';
+import '../../pages/umy_kyc_page.dart';
 import '../../pages/umy_account_commid_new_page.dart';
 import '../../pages/umy_account_commid_page.dart';
 import '../../pages/umy_account_page.dart';
@@ -84,6 +85,12 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         name: AppRoutes.umyCircle,
         builder: (_, GoRouterState state) =>
             UmyCirclePage(tagNow: state.uri.queryParameters['tagnow'] ?? ''),
+      ),
+      // 实名认证（三品牌共用）。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.umyKyc),
+        name: AppRoutes.umyKyc,
+        builder: (_, _) => const UmyKycPage(),
       ),
       // 消息域（三品牌共用）：消息列表 + 消息详情（含回复）。
       GoRoute(

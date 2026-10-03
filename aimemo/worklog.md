@@ -639,3 +639,35 @@
 - **验证**：`flutter analyze` 0 问题；Babelyx Web 构建成功。
 - **环境**：本机起了一个 dev 后端（7739）和一个静态服务（8090，serve `build/web`）供验证用，
   老板确认沿用（「我用你的，你不要停」）。
+
+### 账户域收官 · umyKyc（实名认证）+ midTryapp（TRYAPP 空白中页）
+
+- **umyKyc**（435 行）：
+  - 表单：姓名 / 国籍（`PartLandTable` 弹层，默认 = `onlineUser.citizen || userlandCode || phoneLand`）
+    / 证件类型（IDCARD/PASSPORT/DRIVERID/OTHER）/ 证件号码（18 位、letterSpacing）+ 证件正反面（1:1 上传框）
+  - 上传走既有 `pickMedia → FileloaderApi.validate/uploadFile → chooseUrl`（与头像同一条链路）
+  - 提交 gated 与源项目一致：姓名+号码+正面照必填，**IDCARD 还需背面照**（护照/驾照/其他不需要）
+  - `kycStateL1 ∈ {SUBMITTED, PASSED}` → 整表只读（源项目 `isFixed`），
+    状态行取 `kycDict[state].long` 并着色（SUBMITTED 黄 / REJECTED 红 / PASSED 绿，取自源项目 scss 变量值）
+  - `user_api.updateKyc`：注意成功码是 **`SUBMITTED`** 而非 `SUCCESS`；成功后把全部字段 merge 回 onlineUser
+  - **邮件提醒**：`update_kyc` 的成功分支和 `contact_csr` 一样会**真发一封邮件**到
+    `oncallMessage.to`（= 老板邮箱）。`tool/check_kyc.dart` 只会因此发 **1 封**（完整提交那一步），
+    缺字段与重复提交两个分支都不发信。
+  - **修自己引入的 bug**：表单初值原本在 `initState` 里同步读 `onlineUserProvider`，
+    但那时 `first_touch` 还没回来 → 姓名/国籍/证件号全空（截图抓到了）。改为等 `waitAutologin()` 后再填。
+- **midTryapp**：按老板决定只做**空白框架页**（`PartWindowLayout` + PC 导航占位，无业务），
+  只在 `main_tryapp.dart` 注册路由（入口级裁剪）。TRYAPP = 与品牌无关的中立基础框架占位。
+- **实测**：
+  - `dart run tool/check_kyc.dart` **PASS**：缺字段 → `INPUT_MALFORMED`（不发信）→ 完整提交 →
+    `SUBMITTED`（发了 1 封邮件）→ `first_touch` 复查 `kycStateL1/realname/citizen/idType` 已落库 →
+    重复提交 → `BER_UNEXPECTED`（不发信）
+  - 视觉（CDP，手机 500）：空表单（Submit 置灰）→ 填姓名+号码后仍置灰（**IDCARD 缺背面照**，gating 正确）→
+    DB 直设 PASSED 后整表只读 + 绿色「You have passed verification!」→
+    把 idCardCover/Back 指到本地 `_filestore` 的测试图后**照片正常渲染**
+  - tryapp 产物单独构建（`build/web_tryapp`）成功，`/#/midTryapp` 直达显示空白框架页（无报错；
+    若路由未注册会显示「尚未迁移」占位文字，据此确认命中了新页面）
+- **环境补充说明**：本机目前访问不到 `ipfs.tic.cc` / `ipfs.test.tic.cc:8080`（ping 100% loss），
+  IPFS CID 形式的证件照/头像在截图里显示空白是**网络原因**，代码路径已用 `_filestore` 相对路径验证无误。
+- **验证**：`flutter analyze` 0 问题；Babelyx + Tryapp 双产物构建成功。
+- **里程碑**：账户 / 社交 / 消息域页面全部迁完；`menuUzone` 八行清单中仅剩的目标页缺口 = 无
+  （全部为真页面或按需占位）。剩余大项在创作/NFT 域与资金域。

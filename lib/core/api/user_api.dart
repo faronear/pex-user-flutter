@@ -110,6 +110,17 @@ class UserApi {
         apiWhat: <String, dynamic>{'passcode': passcode},
       );
 
+  /// 提交实名认证资料（源项目 `update_kyc`）。
+  ///
+  /// 成功时后端返回 `_state: 'SUBMITTED'`（而不是通用的 `SUCCESS`），
+  /// 并会**发一封邮件**给值班邮箱；已提交/已通过时返回 `BER_UNEXPECTED`。
+  Future<Map<String, dynamic>> updateKyc(Map<String, dynamic> user) =>
+      _client.callBase(
+        apiWho: who,
+        apiTodo: 'update_kyc',
+        apiWhat: <String, dynamic>{'User': user},
+      );
+
   /// 我关注的人（源项目 `get_my_followings`）。
   /// [beforeTime] 为向下翻页游标，取上一页最后一条的 `followTimeUnix`。
   Future<Map<String, dynamic>> getMyFollowings({

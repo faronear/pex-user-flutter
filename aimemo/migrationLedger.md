@@ -13,7 +13,7 @@
 | `midAgidin.vue` | 82 | `pages/mid_agidin_page.dart` | `[x] 已迁移` |
 | `midAizoic.vue` | 12 | — | `[-]` Agidin 旧名遗留（评估后决定） |
 | `midBabely.vue` | 63 | `pages/mid_babely_page.dart` | `[x]` |
-| `midTryapp.vue` | 187 | `pages/mid_tryapp_page.dart` | `[ ]` |
+| `midTryapp.vue` | 187 | `pages/mid_tryapp_page.dart` | `[x]` 空白框架页（老板决定不做业务） |
 
 ### 身份认证（ident）
 | 源 | 行数 | 目标 | 状态 |
@@ -34,7 +34,7 @@
 | `umyAccountCommidNew.vue` | 334 | `pages/umy_account_commid_new_page.dart` | `[x]` 复用 `part_passcode_verify` + `part_land_table` |
 | `umyAccountPassword.vue` | 158 | `pages/umy_account_password_page.dart` | `[x]` |
 | `umyAccountTerminate.vue` | 124 | `pages/umy_account_terminate_page.dart` | `[x]`（`tTerminate` 源项目从未定义，故不显示） |
-| `umyKyc.vue` | 435 | `pages/umy_kyc_page.dart` | `[ ]` |
+| `umyKyc.vue` | 435 | `pages/umy_kyc_page.dart` | `[x]` |
 | `umyConfig.vue` | 83 | `pages/umy_config_page.dart` | `[x]` 换币**存本地**（源项目是内存态 todo） |
 | `umyContact.vue` | 158 | `pages/umy_contact_page.dart` | `[x]` |
 
