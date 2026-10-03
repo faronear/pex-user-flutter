@@ -13,7 +13,7 @@
 | `midAgidin.vue` | 82 | `pages/mid_agidin_page.dart` | `[x] 已迁移` |
 | `midAizoic.vue` | 12 | — | `[-]` Agidin 旧名遗留（评估后决定） |
 | `midBabely.vue` | 63 | `pages/mid_babely_page.dart` | `[x]` |
-| `midTryapp.vue` | 187 | `pages/mid_tryapp_page.dart` | `[x]` 空白框架页（老板决定不做业务） |
+| `midTryapp.vue` | 187 | — | `[-]` **已作废**（2026-10-03 老板决定下线 TRYAPP 品牌；曾做过空白框架页 `mid_tryapp_page.dart`，随品牌下线一并删除） |
 
 ### 身份认证（ident）
 | 源 | 行数 | 目标 | 状态 |

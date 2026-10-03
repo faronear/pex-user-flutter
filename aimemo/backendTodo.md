@@ -53,7 +53,7 @@
 - **素材**：前端 `pex-user-uniapp/<brand>/cfstore/` 下已有：
   - `AKAGIDIN`：`versionCode-{aab-GPLAY,apk,ipa,web}-AKAGIDIN.json`（值为 `26082304` 等）
   - `AKBABELY`：对应 4 个（`versionCode-web-AKBABELY.json` = `26082311`）
-  - `AKTRYAPP`：**无**（若要跑 TRYAPP 需先生成）
+  - `AKTRYAPP`：源项目本就**无**，且该品牌已于 2026-10-03 下线，不再需要生成。
 - **修复**：把这批文件拷进后端 `envar/`。`require('./x')` 会依次尝试 `.js`/`.json`，**直接拷 `.json` 即可**。
   最小修复只需 `versionCode-web-AKAGIDIN.json`（崩溃点）；建议四类一并拷。
 - **注意**：后端运行目录与我的工作目录是**两份拷贝**

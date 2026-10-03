@@ -9,7 +9,7 @@
 //       与后端 first_touch 实际下发的 envarBase 做**差集**，得到「客户端专属」键；
 //       再按品牌合并 AK* 块并删除品牌键（与源项目 App.data.js 一致）。
 //
-// 输出：assets/clientEnvar.json = { "AKAGIDIN": {...}, "AKBABELY": {...}, "AKTRYAPP": {...} }
+// 输出：assets/clientEnvar.json = { "AKAGIDIN": {...}, "AKBABELY": {...} }
 //
 // 运行：node tool/genClientEnvar.js [baseUrl]
 
@@ -20,7 +20,7 @@ const http = require('http');
 const UNIAPP_DIR = '/Volumes/repodisk/productX/pex/pex-user-uniapp';
 const OUT_FILE = path.join(__dirname, '..', 'assets', 'clientEnvar.json');
 const BASE_URL = (process.argv[2] || 'http://127.0.0.1:7739').replace('localhost', '127.0.0.1');
-const APPKEYS = ['AKAGIDIN', 'AKBABELY', 'AKTRYAPP'];
+const APPKEYS = ['AKAGIDIN', 'AKBABELY'];
 
 function requestFirstTouch(baseUrl, appkey) {
   return new Promise((resolve, reject) => {

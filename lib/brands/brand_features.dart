@@ -52,10 +52,4 @@ class BrandFeatures {
     enableNft: true,
     enableResource: true,
   );
-
-  /// TRYAPP：基础品牌 / 框架验证。
-  static const BrandFeatures tryapp = BrandFeatures(
-    enableAiChat: true,
-    enableResource: true,
-  );
 }

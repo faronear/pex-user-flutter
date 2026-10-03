@@ -1,6 +1,6 @@
 /// 品牌配置抽象。
 ///
-/// 承载三品牌（Agidin / Babelyx / TRYAPP）的差异：[appkey]、域名、包名、
+/// 承载各品牌（Agidin / Babelyx 等）的差异：[appkey]、域名、包名、
 /// 应用名、主色、logo、落地页等。业务代码只读本配置，**不判 appkey**。
 ///
 /// 对应源项目 `appenv.json` + `AK*/framework/App.theme.scss` + `envar-config.js`

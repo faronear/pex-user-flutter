@@ -8,7 +8,7 @@ Flutter 产物是纯静态文件（`build/web/`），用 hash 路由无需 404 �
 - `https://pexserver.tic.cc` 生产（`ApiEndpoint.production` 默认值）
 
 ## 构建
-- 本地：`npm run build:web:<agidin|babelyx|tryapp>`（API_BASE 写死 localhost）
+- 本地：`npm run build:web:<agidin|babelyx>`（API_BASE 写死 localhost）
 - 生产：`npm run build:web:prod:<brand>`（API_BASE=https://pexserver.tic.cc）
 
 ## 部署（Cloudflare Pages，沿用 uniapp 旧 web 的项目名）
@@ -16,7 +16,8 @@ Flutter 产物是纯静态文件（`build/web/`），用 hash 路由无需 404 �
 |---|---|---|
 | agidin | `user-agidin-com` | https://agidin.com |
 | babelyx | `user-babelyx-com` | https://babelyx.com |
-| tryapp | `tryapp-user` | https://tryapp-user.pages.dev |
+
+> 已下线品牌：tryapp 的 Cloudflare 项目 `tryapp-user`（`tryapp-user.pages.dev`）仍存在但本项目已不再构建/部署它，是否下线站点待定。
 
 需要本机已装 `wrangler` 并登录（当前开发机未装，部署得在老板有凭据的机器上跑）：
 - `npm run deploy:web:<brand>` → `wrangler pages deploy build/web --project-name=<上表>`

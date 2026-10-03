@@ -11,7 +11,7 @@
 | ---- | ------ | ---- | ---- |
 | D1 | 推进策略 | **垂直切片先行** | 先端到端打通一条最小闭环验证架构，再批量迁移 |
 | D2 | 状态管理 | **Riverpod** | 把 `wo.ss` 拆成显式 Provider，编译期安全、易测试 |
-| D3 | 品牌方案 | **单仓库 + Flutter flavors** | 差异收敛到 `brands/` 配置层 + 三品牌入口；理由见 `architecture.md` |
+| D3 | 品牌方案 | **单仓库 + Flutter flavors** | 差异收敛到 `brands/` 配置层 + 多品牌入口；理由见 `architecture.md` |
 | D4 | 首个功能域 | **账户/登录注册** | 所有功能的前置，逻辑独立，最适合验证架构 |
 | D5 | 配置来源 | 后端 `first_touch` 下发为主，本地最小兜底 | `envar-config.js` 是 Node 文件，Flutter 无法直接消费 |
 | D6 | Dart 文件命名 | **snake_case**（`home_portal_page.dart`） | Dart 官方惯例 + `flutter_lints` 强制；AGENTS.md 允许「强冲突时遵循流行惯例」 |
@@ -29,7 +29,7 @@
 - [x] 编写 `architecture.md`：技术选型 + uniapp→Flutter 映射表
 - [x] 建立 `migrationLedger.md`：48 页面 + 65 组件 + 通用件的迁移台账（源↔目标↔状态）
 - [x] 初始化 Flutter 工程（`flutter create`，android/ios/web/macos/windows）+ lib 分层（brands/core/pages/widgets/theme/assets）
-- [x] 品牌机制落地：`brands/` 配置层 + 三品牌入口（`main_agidin/babelyx/tryapp.dart`）+ Android flavors（已验证 `installAgidin/Babelyx/Tryapp*`）
+- [x] 品牌机制落地：`brands/` 配置层 + 多品牌入口（`main_agidin/babelyx.dart`）+ Android flavors（已验证 `installAgidin/Babelyx*`）
 - [x] 网络层：`core/api/api_client.dart` 封装 `callBase`（Dio）+ `first_touch` 联调（实测 200 / SUCCESS / 30 键 envarBase）
 - [x] i18n 层：`LangText` + `ll()` + `Phrases` + `PartLangTable`，四语种
 - [x] 路由层：`go_router`（`app_router.dart`），对齐 `pages.json` 命名
@@ -197,7 +197,7 @@
     - **修好的行为**：源项目「加载更多」是**整表替换**（`push` 被注释掉），翻页会丢已加载页；
       迁移版**追加 + 按 usid 去重**；邀请名单接口不支持 `beforeTime` 游标（后端只认
       `order/skip/take`，源项目传的 `beforeTime` 被忽略）→ 改用 `skip` 翻页
-    - 圈子页分类条：源项目只在 AKBABELY 渲染（当年字典仅 Babelyx 有值），现在三品牌都有 →
+    - 圈子页分类条：源项目只在 AKBABELY 渲染（当年字典仅 Babelyx 有值），现有多品牌都有 →
       **一律渲染**；分类按钮 = 数量 + 名称两行（对应源项目 `'\n'` 拼接）
     - 邀请页：标题 `tInviteTitle`（未配置则回退 `slogans`）+ 优惠码/链接/二维码 +
       「已奖励 → umyFundTranx」「已邀请 → umyCircle?tagnow=INVITEE」两个渐变入口
@@ -221,9 +221,8 @@
     - `user_api.updateKyc`：成功返回 `_state: 'SUBMITTED'`（非 SUCCESS），
       且**后端会真发一封邮件**给值班邮箱；重复提交返回 `BER_UNEXPECTED`
     - 修自己引入的时序 bug：表单初值必须在 `waitAutologin()` 之后再读用户资料
-  - [x] **`midTryapp`（TRYAPP 中页）**：按老板决定（2026-10-03）**只做空白框架页**——
-    TRYAPP 是与品牌无关的中立基础框架占位，源页里的 AI 对话/创作双容器不做。
-    只在 `main_tryapp.dart` 入口注册路由（不进其它品牌产物，保持入口级裁剪）。
+  - [x] ~~**`midTryapp`（TRYAPP 中页）**~~：**已作废**（2026-10-03 老板决定下线 TRYAPP 品牌，
+    代码与页面均已删除）。此前按老板决定只做空白框架页，现随品牌一并移除。
   - [x] **`showCreator`（个人展 / 创作者主页）**：未找到分支（提示 + Creator ID 搜索 + 去「遇见」）
     + 已找到分支（头像·昵称·分享·统计·管理或私信·屏蔽/举报·关注 + 自我介绍展开收起 +
     屏蔽空态 + 作品双列列表）
@@ -304,12 +303,12 @@
 
 ## 阶段五 · 构建发布与回归
 
-**阶段目标**：三品牌 × 五平台的构建发布流水线；与 uniapp 全量回归对比；上线。
+**阶段目标**：多品牌 × 五平台的构建发布流水线；与 uniapp 全量回归对比；上线。
 
 **验收标准**：一键构建各端产物；发布流程可重复。
 
 - [ ] GitHub Actions（参考 `einz/.github`）：Web / iOS / Android / macOS / Windows
-- [ ] 三品牌 flavors 产物：包名 / 图标 / 启动图 / 版本号（对齐 `YYMMDDHH` 版本码约定）
+- [ ] 多品牌 flavors 产物：包名 / 图标 / 启动图 / 版本号（对齐 `YYMMDDHH` 版本码约定）
 - [ ] Web 部署（Cloudflare Pages）与 APK/IPA 分发等价流程
 - [ ] 全量页面视觉与功能回归；未迁移项清单确认
 

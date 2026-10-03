@@ -4,12 +4,10 @@ library;
 import 'agidin_brand.dart';
 import 'babelyx_brand.dart';
 import 'brand_config.dart';
-import 'tryapp_brand.dart';
 
 const List<BrandConfig> kBrands = <BrandConfig>[
   AgidinBrand(),
   BabelyxBrand(),
-  TryappBrand(),
 ];
 
 /// 编译期品牌标识（`flutter run --dart-define=BRAND=AKBABELY`），默认 AKAGIDIN。

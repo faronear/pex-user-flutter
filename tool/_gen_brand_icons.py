@@ -4,7 +4,6 @@
 源图（一次性生成，产物已提交；如需换新 logo 改这里重跑）：
 - agidin : pex-app-doc/agidin-爱奇点/图标/logo-circle-closed-bgWhite-appicon-1024.png
 - babelyx: pex-app-doc/babelyx-巴贝历/logo_标志/logo-babely-bgWhite-fgRedWhite-appicon-1024.png
-- tryapp : pex-user-uniapp/static/logoTryapp.png
 
 产物：
 - ios/Runner/Assets.xcassets/AppIcon-<brand>.appiconset/（配合 flavor 配置的
@@ -24,7 +23,6 @@ PIL_PYTHON = "/tmp/pexicons/bin/python"  # 已安装的 Pillow venv
 BRANDS = [
     ("agidin", "Agidin", os.path.join(PEX, "pex-app-doc", "agidin-爱奇点", "图标", "logo-circle-closed-bgWhite-appicon-1024.png")),
     ("babelyx", "Babelyx", os.path.join(PEX, "pex-app-doc", "babelyx-巴贝历", "logo_标志", "logo-babely-bgWhite-fgRedWhite-appicon-1024.png")),
-    ("tryapp", "Tryapp", os.path.join(PEX, "pex-user-uniapp", "static", "logoTryapp.png")),
 ]
 
 # (size 标识, scale, 实际像素)
@@ -50,7 +48,7 @@ def normalize_src(src):
     """把源图（可能是 RGBA/带透明）压平成不透明的白底 RGB 图。
 
     iOS 在渲染 App 图标时会把 alpha 压平为黑色，导致透明区域发黑。
-    agidin 源图本就是白底不透明；babelyx / tryapp 源图带透明，
+    agidin 源图本就是白底不透明；babelyx 源图带透明，
     这里统一先铺白底再去掉 alpha，保证三品牌图标在 iOS 上都干净。
     """
     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:

@@ -10,7 +10,7 @@
 
 ## 项目角色
 
-- 独立（在 agents 协助下）运营三个品牌 App：Agidin（爱奇点）/ Babelyx（巴贝历）/ TRYAPP（远近星空）。
+- 独立（在 agents 协助下）运营多个品牌 App：Agidin（爱奇点）/ Babelyx（巴贝历）等（TRYAPP/远近星空已于 2026-10-03 下线）。
 - 主力设备 iMac（VSCode + flutter + Xcode 26.3 + Android Studio）；另有 macbook air（无 Xcode/Android Studio）。
 - 与多个配套仓库协作：`pex-server-torm`（后端）、`pex-contract-hardhat`（合约）、`pex-web-md`（文档）、`base/opx/*`（自研库）、`einz`（Flutter 经验参考）。
 

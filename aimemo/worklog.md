@@ -2,6 +2,20 @@
 
 > 只追加，每次有变化就记录。
 
+## 2026-10-03
+
+**下线 TRYAPP（远近星空）品牌**
+
+- 老板决定：TRYAPP 在源项目 `pex-user-uniapp` 里只是历史遗留，无实际意义，从本项目彻底删除。删除前做过依赖扫描，结论是 tryapp 在代码里是**纯叶子节点**（`tryapp_brand.dart` / `main_tryapp.dart` / `mid_tryapp_page.dart` / `midTryapp` 路由 / `BrandFeatures.tryapp` / `logoTryapp.png` / `bgStars.jpg` 均无人反向依赖），删除不影响 agidin/babelyx。
+- **删除范围**（单独一个 commit，便于回退）：
+  - 代码：`main_tryapp.dart`、`brands/tryapp_brand.dart`、`pages/mid_tryapp_page.dart`、`assets/static/logoTryapp.png`、`assets/static/bgStars.jpg`；`brand_registry.dart` 去 import+列表项；`app_routes.dart` 去 `midTryapp`；`brand_features.dart` 去 `BrandFeatures.tryapp`。
+  - 配置：`assets/clientEnvar.json` 去 `AKTRYAPP` 整块（JSON 校验 + 确认 agidin/babelyx 块逐字节不变）、`tool/genClientEnvar.js` 的 `APPKEYS` 去 `AKTRYAPP`。
+  - Android：删 `android/app/src/tryapp/`，`build.gradle.kts` 去 tryapp flavor。
+  - iOS：删 `Tryapp-{Debug,Release}.xcconfig`、`tryapp.xcscheme`、`AppIcon-tryapp.appiconset`；`project.pbxproj` 移除 6 个 tryapp 构建配置（Project/Runner/RunnerTests × Debug/Release）与 6 个文件引用；重跑 `pod install` 并清掉 Pods 里的 tryapp 残留。`xcodebuild -list` 确认只剩 agidin/babelyx，工程结构完好。
+  - 脚本/生成器：`package.json` 去 10 个 tryapp 脚本；`_gen_ios_flavors.py` / `_gen_brand_icons.py` 的品牌表去 tryapp。
+- **文档口径**：面向未来的文档（`architecture.md` / `projectPlan.md` / `deployNative.md` / `deployWeb.md` / `userProfile.md`）把「三品牌」改为「多品牌」，并**不写死品牌数量**——新增品牌只需按下表格式补一行。历史文档（`worklog.md` / `migrationLedger.md`）只追记录，不改写历史。
+- **遗留**：Cloudflare 上的 `tryapp-user`（`tryapp-user.pages.dev`）站点仍在，本项目已不再构建/部署它，是否下线待老板决定；后端 `pex-server-torm` 里的 AKTRYAPP 配置未动（无害冗余）；iOS 侧从未申请过 tryapp 的 profile，开发者账户无遗留。
+
 ## 2026-09-29
 
 **项目立项：pex-user-uniapp（uni-app）→ pex-user-flutter（Flutter 真原生）迁移**

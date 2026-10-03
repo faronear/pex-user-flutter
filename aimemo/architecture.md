@@ -46,13 +46,11 @@ lib/
 ├── main.dart              # 默认入口（--dart-define=BRAND=AKAGIDIN 决定品牌）
 ├── main_agidin.dart       # 品牌入口
 ├── main_babelyx.dart
-├── main_tryapp.dart
 ├── app.dart               # runPexApp() + PexApp（ProviderScope / MaterialApp.router）
 ├── brands/                # 品牌差异层
 │   ├── brand_config.dart  # 抽象 BrandConfig
 │   ├── agidin_brand.dart
 │   ├── babelyx_brand.dart
-│   ├── tryapp_brand.dart
 │   └── brand_registry.dart
 ├── core/
 │   ├── api/               # api_client.dart（callBase）、client_info.dart
@@ -67,7 +65,7 @@ lib/
 └── assets/brands/<brand>/ # logo.png / portal.jpg
 ```
 
-**为何不拆成三个独立仓库**：约 95% 代码三品牌共用，拆分会复制三份并导致长期漂移；flavors 已能产出独立包名/图标/上架的独立 App，同时保留单一代码源。若某品牌未来业务严重分叉，再抽库拆分。
+**为何不拆成三个独立仓库**：约 95% 代码多品牌共用，拆分会复制三份并导致长期漂移；flavors 已能产出独立包名/图标/上架的独立 App，同时保留单一代码源。若某品牌未来业务严重分叉，再抽库拆分。
 
 ### 切换机制：入口级裁剪（核心）
 
@@ -78,7 +76,6 @@ lib/
 | ---- | ---- | ---- |
 | `lib/main_agidin.dart` | 公共域 + AI 域 | `flutter build web -t lib/main_agidin.dart` |
 | `lib/main_babelyx.dart` | 公共域 + 创作/NFT 域 | `flutter build web -t lib/main_babelyx.dart` |
-| `lib/main_tryapp.dart` | 公共域 + 最小 AI 域 | `flutter build web -t lib/main_tryapp.dart` |
 | `lib/main.dart` | 默认 = Agidin（便于直接 `flutter build web`） | — |
 
 关键点：**Dart 按 import 图做 tree-shaking**。Agidin 的入口不 import 创作/NFT 页面，
@@ -104,7 +101,7 @@ lib/
 
 | 平台 | 状态 | 说明 |
 | ---- | ---- | ---- |
-| Android | `[已实现]` | `android/app/build.gradle.kts` 定义 `flavorDimensions "brand"` + 三个 flavor（applicationId / resValue `app_name`）；`buildFeatures.resValues = true`；AndroidManifest 用 `@string/app_name`。已用 `gradlew :app:tasks` 验证 `installAgidin/Babelyx/Tryapp*` 生成。 |
+| Android | `[已实现]` | `android/app/build.gradle.kts` 定义 `flavorDimensions "brand"` + 多个 flavor（applicationId / resValue `app_name`）；`buildFeatures.resValues = true`；AndroidManifest 用 `@string/app_name`。已用 `gradlew :app:tasks` 验证 `installAgidin/Babelyx*` 生成。 |
 | Web | `[已实现]` | 用不同入口：`flutter build web -t lib/main_agidin.dart`。 |
 | iOS / macOS / Windows | `[待开发]` | 需 xcconfig + Xcode schemes（iOS 需在 Xcode 中操作）；阶段五处理。 |
 
@@ -212,4 +209,4 @@ lib/
 - 图片/视频资源的品牌化与 `static/` 命名映射。
 - go_router 与 Web hash 路由的兼容（外部链接 `#/pages/xxx`）。
 - iOS / macOS / Windows 的 flavors 落地方案（阶段五）。
-- Android 包名暂用 `cc.tic.agidin|babelyx|tryapp`（源项目无现成 bundle id，待确认）。
+- Android 包名暂用 `cc.tic.agidin|babelyx`（源项目无现成 bundle id，待确认）。

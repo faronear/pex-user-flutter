@@ -48,9 +48,6 @@ class AppRoutes {
   // 工具页
   static const String showWebview = 'showWebview';
 
-  // 品牌中页
-  static const String midTryapp = 'midTryapp';
-
   // 创作 / NFT 域（待迁移）
   static const String midBabely = 'midBabely';
   static const String umyContact = 'umyContact';

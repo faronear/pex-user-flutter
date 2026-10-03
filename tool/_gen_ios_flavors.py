@@ -21,7 +21,6 @@ SCHEME_DIR = os.path.join(ROOT, "Runner.xcodeproj", "xcshareddata", "xcschemes")
 FLAVORS = [
     ("agidin", "cc.tic.agidin", "Agidin"),
     ("babelyx", "cc.tic.babelyx", "Babelyx"),
-    ("tryapp", "cc.tic.tryapp", "TRYAPP"),
 ]
 
 
@@ -39,7 +38,7 @@ def main():
     test_uids = []    # 进 RunnerTests 列表
 
     for fkey, bundle, name in FLAVORS:
-        cap = fkey.capitalize()  # Agidin / Babelyx / Tryapp
+        cap = fkey.capitalize()  # Agidin / Babelyx
         for kind, podcfg in [("debug", "debug"), ("release", "release")]:
             u = uid()
             fn = "%s-%s.xcconfig" % (cap, kind.capitalize())

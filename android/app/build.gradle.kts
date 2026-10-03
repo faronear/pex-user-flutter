@@ -59,11 +59,6 @@ android {
             applicationId = "cc.tic.babelyx"
             resValue("string", "app_name", "Babelyx")
         }
-        create("tryapp") {
-            dimension = "brand"
-            applicationId = "cc.tic.tryapp"
-            resValue("string", "app_name", "TRYAPP")
-        }
     }
 
     signingConfigs {
