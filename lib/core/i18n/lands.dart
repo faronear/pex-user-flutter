@@ -1,5 +1,5 @@
 // 由 wo-core-i18n/i18n-lands.js 自动生成，请勿手工编辑。
-// 生成方式见 aimemo/worklog.md（2026-09-29）。
+// 生成方式见 ../aimemo/history/worklogPexUserFlutter.md（2026-09-29）。
 // ignore_for_file: constant_identifier_names
 
 import '../i18n/lang_text.dart';

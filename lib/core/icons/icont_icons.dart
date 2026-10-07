@@ -1,5 +1,5 @@
 // 由 assets/static/icont/{icont,uniicons}.css 自动生成，请勿手工编辑。
-// 重新生成方式见 aimemo/worklog.md（2026-09-29）。
+// 重新生成方式见 ../aimemo/history/worklogPexUserFlutter.md（2026-09-29）。
 // ignore_for_file: constant_identifier_names
 
 /// PEX 图标字体族名（与 pubspec.yaml 的 fonts.family 一致）。
