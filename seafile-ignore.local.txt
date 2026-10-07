@@ -1,0 +1,5 @@
+### seafile-ignore.local.txt ###
+### Followings are project-specific ignore settings merged by opx/sysconfig/seafile_ignore_find2merge.js with seafile_ignore.global.txt
+
+build/
+*/build/
