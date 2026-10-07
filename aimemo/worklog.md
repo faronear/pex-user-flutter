@@ -2,6 +2,30 @@
 
 > 只追加，每次有变化就记录。
 
+## 2026-10-07（续）
+
+**seafile 忽略分层（global/local）+ seafile_ignore_find2merge 移植 Node 跨平台**
+
+- 老板的设计原则确认：**多项目通用的机器本地产物进 `seafile-ignore.global.txt`（随所有合并生成的 seafile-ignore.txt 下发），个别项目的进 `seafile-ignore.local.txt`**（与 node_modules 在 global 同逻辑）。
+- **Flutter/Dart 产物分层落地**（起因：`.dart_tool/package_config.json` 含 `/Users/luk/.pub-cache/...` 绝对路径，跨机同步会让另一台机器编译崩——与今日 `flutter pub get` 修复同一根因）：
+  - 进 global（`opx/sysconfig/nixhome/seafile-ignore.global.txt`）：`.dart_tool/`、`.flutter-plugins-dependencies`、`Pods/`、`local.properties`、`.gradle/`、`.kotlin/`——逐条核实过 productX 下无任何仓库把这些名字纳入 git 跟踪，可安全全局忽略。
+  - 留 pex 本地（`pex/seafile-ignore.local.txt`）：`build/`——**撞车**：tic/tic-www-vue、cox/cox-user-vue、cox/cox-team-vue 把 `build/` 纳入 git 跟踪（vue 打包产物），全局忽略会波及，只能在需要的项目层级覆盖。
+  - 规律：**"锁文件"（pubspec.lock / Podfile.lock）跨机共享，"检出/解析产物"（.dart_tool / Pods / node_modules）各机本地再生**（`flutter pub get` / `pod install` / `npm i` 自动重生成）。pub 缓存在 `~/.pub-cache`，在资料库根之外，seafile 同步不到，无需列出。
+- **`seafile_ignore_find2merge` 移植 Node**（`opx/sysconfig/seafile_ignore_find2merge.js`，跨平台通用）：忠实移植 .sh 语义；修正 .sh 三个问题——① 默认 global 是 URL 但 .sh 用 `cat` 处理会失败（.js 用 fetch）；② 去掉误从 git_ignore_find2merge 抄来的 `.git` 检测（判定条件改为存在 seafile-ignore.txt 或 .local.txt）；③ 根目录自身参与合并（.sh 的 `find -name '[^.]*'` 匹配不到根目录）。
+- **验证**：/tmp 夹具树（覆盖根目录、local-only、深度 3 边界、skip 目录、隐藏目录）.sh 与 .js 写入产物 `diff -r` 逐字节一致；productX 全树 dry-run 候选目录 87 条两边一致。
+- **提交**：flutter 仓 aimemo 本条目（`pex/seafile-ignore.local.txt` 不在任何 git 仓库内，靠 seafile 同步，不提交）；sysconfig 仓 `seafile_ignore_find2merge.js`（新增）+ `.sh`（同步修正）+ `nixhome/seafile-ignore.global.txt`（新增 6 条 Flutter 规则）。均不 push。
+- **遗留**：① `seafile_ignore_find2merge.bat`（Windows 旧版）仍被 git 跟踪，待 .js 验证稳定后老板自行删除；② 各层级已生成的 `seafile-ignore.txt` 产物（含 pex/）留待老板自行跑合并脚本重新生成；③ `pex-user-flutter/ios/Podfile.lock` 已提交、`macos/Podfile.lock` 未提交（不含机器路径、可共享，是否提交待老板定夺）。
+
+## 2026-10-07
+
+**双机切换首跑：macbook air 上 web 端编译崩溃 → `flutter pub get` 修复**
+
+- 背景：老板开始在 iMac（原生端）与 macbook air（web 端）间频繁切换。air 上跑 `npm run app-webapp-run-local`（`flutter run -d chrome`，`CHROME_EXECUTABLE` 指向 Edge）崩溃：`The Dart compiler exited unexpectedly`。
+- 根因：`.dart_tool/package_config.json` 是机器本地文件（gitignored），引用 `/Users/luk/.pub-cache/...` 下的 `go_router-18.0.2`、`flutter_riverpod-3.4.3` 等包；两台机器 HOME 用户名恰好都是 `luk`，路径"看起来对"，但 air 的 pub 缓存里根本没有这些包（iMac 上拉过，air 从未 `pub get`）。
+- 修复：在 air 上 `flutter pub get`，包落进本机缓存、package_config 重生成，`npm run app-webapp-run-local` 验证通过（Edge 起窗口、debug service 正常、热重载可用）。
+- **换机 SOP**：切到另一台机器后如出现指向 `.pub-cache` 的 "No such file or directory" 编译错误，先 `flutter pub get`；同理 `node_modules` → `npm install`、`ios/Pods` → `pod install`（原生端 iMac 上才需要）。
+- 已更新 `userProfile.md` 的双机切换条目。
+
 ## 2026-10-03
 
 **下线 TRYAPP（远近星空）品牌**
