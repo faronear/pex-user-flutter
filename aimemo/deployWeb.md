@@ -1,3 +1,5 @@
+> [已停用 2026-10-07] 本文件已归档并入 `../../aimemo/`（见 `../../aimemo/README.md` 的来源对照表），请勿再更新。原内容暂时保留，待清理。
+
 # Web 部署（生产）
 
 Flutter 产物是纯静态文件（`build/web/`），用 hash 路由无需 404 回退；后端 `server.js` 走 `cors()`（allow-all），新域名不受跨域限制。

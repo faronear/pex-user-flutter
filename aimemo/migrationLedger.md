@@ -1,3 +1,5 @@
+> [已停用 2026-10-07] 本文件已归档并入 `../../aimemo/`（见 `../../aimemo/README.md` 的来源对照表），请勿再更新。原内容暂时保留，待清理。
+
 # 迁移台账（migrationLedger）
 
 > 源 `pex-user-uniapp` → 目标 `pex-user-flutter` 的逐项对照与进度。

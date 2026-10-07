@@ -1,3 +1,5 @@
+> [已停用 2026-10-07] 本文件已归档并入 `../../aimemo/`（见 `../../aimemo/README.md` 的来源对照表），请勿再更新。原内容暂时保留，待清理。
+
 # 架构与技术决策（architecture）
 
 > 记录 `pex-user-flutter` 的技术选型与 uniapp → Flutter 的迁移映射，供跨 session 复用。

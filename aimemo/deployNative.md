@@ -1,3 +1,5 @@
+> [已停用 2026-10-07] 本文件已归档并入 `../../aimemo/`（见 `../../aimemo/README.md` 的来源对照表），请勿再更新。原内容暂时保留，待清理。
+
 # 原生构建（iOS / Android）
 
 多品牌用 **Flutter flavors** 区分：Dart 侧入口 `lib/main_<brand>.dart` 决定品牌，原生侧决定包名 / 应用名。
