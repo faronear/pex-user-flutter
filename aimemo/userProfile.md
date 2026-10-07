@@ -1,3 +1,5 @@
+> [已停用 2026-10-07] 本文件已归档并入 `../../aimemo/`（见 `../../aimemo/README.md` 的来源对照表），请勿再更新。原内容暂时保留，待清理。
+
 # 老板画像（userProfile）
 
 > 对老板的背景、习惯、偏好的观察总结，按需补充。
@@ -11,7 +13,8 @@
 ## 项目角色
 
 - 独立（在 agents 协助下）运营多个品牌 App：Agidin（爱奇点）/ Babelyx（巴贝历）等（TRYAPP/远近星空已于 2026-10-03 下线）。
-- 主力设备 iMac（VSCode + flutter + Xcode 26.3 + Android Studio）；另有 macbook air（无 Xcode/Android Studio）。
+- 主力设备 iMac（VSCode + flutter + Xcode 26.3 + Android Studio）；macbook air（无 Xcode/Android Studio）。
+- 双机切换（2026-10-07 起）：pex 有 web 端，老板经常在两台机器间切换——iMac 做原生端（iOS/Android 模拟器、Xcode），macbook air 做 web 端（Edge 当 Chromium 跑 `flutter run -d chrome`，靠 `CHROME_EXECUTABLE` 指向 Edge）。注意两台机器 HOME 用户名都是 `luk`，机器本地文件（pub 缓存、`.dart_tool`、`node_modules`、`Pods`）内容并不同步，换机后按 worklog 2026-10-07 条目处理。
 - 与多个配套仓库协作：`pex-server-torm`（后端）、`pex-contract-hardhat`（合约）、`pex-web-md`（文档）、`base/opx/*`（自研库）、`einz`（Flutter 经验参考）。
 
 ## 技术偏好
