@@ -1,0 +1,7 @@
+// Babelyx (macOS) Debug: app-level settings + Flutter/Pods chain.
+// dev bundle id (isolated from prod release build).
+#include "Debug.xcconfig"
+#include? "../../Pods/Target Support Files/Pods-Runner/Pods-Runner.debug-babelyx.xcconfig"
+PRODUCT_NAME = pex_user_flutter
+PRODUCT_BUNDLE_IDENTIFIER = com.babelyx.app.dev
+PRODUCT_COPYRIGHT = Copyright (c) 2026 babelyx.com. All rights reserved.

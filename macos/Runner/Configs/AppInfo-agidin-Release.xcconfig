@@ -1,0 +1,7 @@
+// Agidin (macOS) Release: app-level settings + Flutter/Pods chain.
+// prod bundle id (same identity as published App Store app).
+#include "Release.xcconfig"
+#include? "../../Pods/Target Support Files/Pods-Runner/Pods-Runner.release-agidin.xcconfig"
+PRODUCT_NAME = pex_user_flutter
+PRODUCT_BUNDLE_IDENTIFIER = com.agidin.app
+PRODUCT_COPYRIGHT = Copyright (c) 2026 agidin.com. All rights reserved.
