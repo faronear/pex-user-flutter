@@ -2,7 +2,8 @@
 ///
 /// 环境变量：
 /// - APP=agidin|babely（默认 agidin）
-/// - SERVERMODE=local|prod（默认 local）。local 时注入 `--dart-define API_BASE=http://localhost:7739`；
+/// - SERVERMODE=local|prod：run 类命令默认 local，build 类默认 prod；显式设置则覆盖。
+///   local 时注入 `--dart-define API_BASE=http://localhost:7739`；
 ///   prod 时不注入，由代码里的 `ApiEndpoint.production` 兜底。
 /// - API_BASE=... 显式覆盖（优先于 SERVERMODE 的默认值，prod 下也可用）
 /// - REINSTALL=1（仅 run-ios）先卸载模拟器上的旧包
@@ -13,10 +14,11 @@ const fs = require('fs')
 const APP_DEFAULT = 'agidin'
 const API_BASE_LOCAL = 'http://localhost:7739' // 对应 ApiEndpoint.localDev
 const BUNDLE_BY_APP = { agidin: 'cc.aizoi.app.dist.ios', babely: 'faronear.babely.app.ios.dist' }
+const RUN_COMMANDS = new Set(['run-webserver', 'run-webapp', 'run-macos', 'run-ios'])
 
 const app = process.env.APP || APP_DEFAULT
-const serverMode = process.env.SERVERMODE || 'local'
 const command = process.argv[2]
+const serverMode = process.env.SERVERMODE || (RUN_COMMANDS.has(command) ? 'local' : 'prod')
 
 const flutterArgs = ['-t', `lib/main_${app}.dart`]
 
