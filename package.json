@@ -11,7 +11,7 @@
     "app-webserver-run": "node -e \"const{spawn}=require('child_process');const app=process.env.APP||'agidin';spawn('flutter',['run','-d','web-server','--web-port',app==='agidin'?'8081':'8082','-t','lib/main_'+app+'.dart','--dart-define','API_BASE='+((process.env.API_BASE)||((process.env.SERVERMODE||'dev')==='prod'?'https://pexserver.tic.cc':'http://localhost:7739'))],{stdio:'inherit'}).on('exit',c=>process.exit(c||0))\"",
     "app-webapp-run": "node -e \"const{spawn}=require('child_process'),fs=require('fs');const app=process.env.APP||'agidin';const edge='/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge';const env={...process.env};if(fs.existsSync(edge))env.CHROME_EXECUTABLE=edge;spawn('flutter',['run','-d','chrome','-t','lib/main_'+app+'.dart','--dart-define','API_BASE='+((process.env.API_BASE)||((process.env.SERVERMODE||'dev')==='prod'?'https://pexserver.tic.cc':'http://localhost:7739'))],{stdio:'inherit',env}).on('exit',c=>process.exit(c||0))\"",
     "app-macos-run": "node -e \"const{spawn}=require('child_process');const app=process.env.APP||'agidin';spawn('flutter',['run','-d','macos','--flavor',app,'-t','lib/main_'+app+'.dart','--dart-define','API_BASE='+((process.env.API_BASE)||((process.env.SERVERMODE||'dev')==='prod'?'https://pexserver.tic.cc':'http://localhost:7739'))],{stdio:'inherit'}).on('exit',c=>process.exit(c||0))\"",
-    "app-ios-boot": "node -e \"require('child_process').spawn('bash',['node_modules/wo_scripts/emuBootIos.sh',...process.argv.slice(1)],{stdio:'inherit'}).on('exit',c=>process.exit(c||0))\"",
+    "app-ios-boot": "node -e \"require('child_process').spawn('bash',['node_modules/wo_scripts/emuBootIos.sh',process.env.EMU||'iPhone 17',...process.argv.slice(1)],{stdio:'inherit'}).on('exit',c=>process.exit(c||0))\"",
     "app-ios-run": "node -e \"const{spawn,spawnSync}=require('child_process');const app=process.env.APP||'agidin';const u=spawnSync('bash',['node_modules/wo_scripts/emuUdidIos.sh',process.env.EMU||''],{encoding:'utf8'});if(u.status!==0){process.stderr.write(u.stderr||u.stdout||'');process.exit(u.status||1)}const udid=u.stdout.trim();if(process.env.REINSTALL)spawnSync('xcrun',['simctl','uninstall',udid,app==='agidin'?'cc.aizoi.app.dist.ios':'faronear.babely.app.ios.dist'],{stdio:'inherit'});spawn('flutter',['run','-d',udid,'--flavor',app,'-t','lib/main_'+app+'.dart','--dart-define','API_BASE='+((process.env.API_BASE)||((process.env.SERVERMODE||'dev')==='prod'?'https://pexserver.tic.cc':'http://localhost:7739')),'--pid-file','/tmp/pex_flutter_ios_'+app+'.pid'],{stdio:'inherit'}).on('exit',c=>process.exit(c||0))\"",
     "app-web-build": "node -e \"const{spawn}=require('child_process');const app=process.env.APP||'agidin';spawn('flutter',['build','web','--release','-t','lib/main_'+app+'.dart',...(process.env.API_BASE?['--dart-define','API_BASE='+process.env.API_BASE]:[])],{stdio:'inherit'}).on('exit',c=>process.exit(c||0))\"",
     "app-apk-build": "node -e \"const{spawn}=require('child_process');const app=process.env.APP||'agidin';spawn('flutter',['build','apk','--flavor',app,'-t','lib/main_'+app+'.dart',...(process.env.API_BASE?['--dart-define','API_BASE='+process.env.API_BASE]:[])],{stdio:'inherit'}).on('exit',c=>process.exit(c||0))\"",
@@ -22,9 +22,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "config": {
-    "emuDefault": "ip16@26.3"
-  },
   "devDependencies": {
     "wo_scripts": "git+https://git.tic.cc/opx/wo_scripts"
   }
