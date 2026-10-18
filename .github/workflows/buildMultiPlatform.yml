@@ -401,7 +401,7 @@ jobs:
           MACOS_NOTARY_PASSWORD: ${{ secrets.MACOS_NOTARY_PASSWORD }}
           MACOS_NOTARY_TEAM_ID: ${{ secrets.MACOS_NOTARY_TEAM_ID }}
         run: |
-          APP=build/macos/Build/Products/Release/pex_user_flutter.app
+          APP=build/macos/Build/Products/Release-${{ matrix.brand }}/pex_user_flutter.app
           # Developer ID 分发不需要也不该带 profile
           rm -f "$APP/Contents/embedded.provisionprofile"
           ENT=macos/Runner/Release.entitlements
@@ -431,17 +431,17 @@ jobs:
           # **不要加 `--options runtime`**：ad-hoc 没有 Team ID，Hardened Runtime 会
           # 打开 Library Validation，dyld 加载内嵌 framework 时直接起不来。
           ENT=macos/Runner/Release.entitlements
-          find build/macos/Build/Products/Release/pex_user_flutter.app/Contents/Frameworks -name "*.framework" \
+          find build/macos/Build/Products/Release-${{ matrix.brand }}/pex_user_flutter.app/Contents/Frameworks -name "*.framework" \
             -exec codesign -f -s - --timestamp=none {} \;
           codesign -f -s - --timestamp=none --entitlements "$ENT" \
-            build/macos/Build/Products/Release/pex_user_flutter.app
-          codesign --verify -v build/macos/Build/Products/Release/pex_user_flutter.app
+            build/macos/Build/Products/Release-${{ matrix.brand }}/pex_user_flutter.app
+          codesign --verify -v build/macos/Build/Products/Release-${{ matrix.brand }}/pex_user_flutter.app
       - name: Zip app bundle
         # 命名对齐本地：配 secrets = -dist（Developer ID 可分发），未配 = -dev（ad-hoc 兜底）。
         # 版本号从产物自己的 Info.plist 读（签名+公证之间隔几分钟，不现场重算）。
         run: |
           SUFFIX=${{ steps.devid.outputs.configured == 'true' && 'dist' || 'dev' }}
-          APP_DIR=build/macos/Build/Products/Release
+          APP_DIR=build/macos/Build/Products/Release-${{ matrix.brand }}
           NAME="$(/usr/bin/plutil -extract CFBundleShortVersionString raw "$APP_DIR/pex_user_flutter.app/Contents/Info.plist")"
           # 防"绿但坏"：flutter 没吃到 --build-name 时这里当场炸
           [[ "$NAME" =~ ^[0-9]{4}\.[0-9]{4}\.[0-9]{2}$ ]] || {
@@ -500,13 +500,13 @@ jobs:
         # 版本号从产物自己读（exe 的 PE 资源 FILEVERSION），不重跑 appVersion.js
         shell: pwsh
         run: |
-          $exe = "build/windows/x64/runner/Release/pex_user_flutter.exe"
+          $exe = "build/windows/x64/${{ matrix.brand }}/runner/Release/pex_user_flutter.exe"
           $name = (Get-Item $exe).VersionInfo.FileVersion
           if ($name -notmatch '^\d{4}\.\d{4}\.\d{2}$') {
             throw "❌ pex_user_flutter.exe 版本是「$name」，不是 yymm.ddhh.mm——flutter 没吃到 --build-name？"
           }
           $zipName = "${{ matrix.brand }}-windows.zip"
-          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $zipName
+          Compress-Archive -Path "build/windows/x64/${{ matrix.brand }}/runner/Release/*" -DestinationPath $zipName
           Set-Content -Path "${{ matrix.brand }}-windows.version.txt" -Value $name
           Write-Output "Windows ${{ matrix.brand }} 版本：$name"
       - uses: actions/upload-artifact@v4
