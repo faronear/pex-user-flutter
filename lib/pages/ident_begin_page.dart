@@ -210,6 +210,7 @@ class _IdentBeginPageState extends ConsumerState<IdentBeginPage> {
             hasError: _feedback != null,
             onChanged: (_) {
               if (_feedback != null) setState(() => _feedback = null);
+              setState(() {}); // 让提交按钮的可用态跟随输入
             },
             onSubmitted: _submit,
             // 源项目 onkeypress="return wo.tt.omit_space_key(event)"：禁止空格。
