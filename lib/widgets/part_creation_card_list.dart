@@ -66,25 +66,33 @@ class PartCreationCardList extends ConsumerWidget {
             : twoColumnOnPhone
                 ? <double>[width / 2]
                 : <double>[width];
-    final double itemWidth = columns.first;
+    final double normalItemWidth = columns.first;
 
-    return Wrap(
-      alignment: WrapAlignment.spaceEvenly,
-      children: <Widget>[
-        for (final Map<String, dynamic> raw in pexList)
-          SizedBox(
-            width: itemWidth,
-            child: Padding(
-              padding: EdgeInsets.all(inCreatorCard ? 0 : 10),
-              child: _CreationCard(
-                creation: Creation.of(raw),
-                inCreatorCard: inCreatorCard,
-                hideAvatar: hideAvatar,
-                hideInfobar: hideInfobar,
+    // 源项目 `partCreationCardList.vue`：`inCreatorCard` 时宽度优先取 `50%`
+    // （创作者卡内两张作品左右并排），覆盖 PC/平板/手机的分支。
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        final double itemWidth =
+            inCreatorCard ? constraints.maxWidth / 2 : normalItemWidth;
+        return Wrap(
+          alignment: WrapAlignment.spaceEvenly,
+          children: <Widget>[
+            for (final Map<String, dynamic> raw in pexList)
+              SizedBox(
+                width: itemWidth,
+                child: Padding(
+                  padding: EdgeInsets.all(inCreatorCard ? 0 : 10),
+                  child: _CreationCard(
+                    creation: Creation.of(raw),
+                    inCreatorCard: inCreatorCard,
+                    hideAvatar: hideAvatar,
+                    hideInfobar: hideInfobar,
+                  ),
+                ),
               ),
-            ),
-          ),
-      ],
+          ],
+        );
+      },
     );
   }
 }
