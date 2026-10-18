@@ -1,0 +1,522 @@
+# pex-user-flutter 多平台构建（GitHub Actions）
+#
+# 覆盖 Android / iOS / macOS / Windows 四个目标，**双品牌**（flavors）agidin / babelyx：
+#   - Android：每品牌出 APK（可直装/内测）+ AAB（Google Play 上架）
+#   - iOS：    每品牌出 App Store IPA，构建成功即自动上传 TestFlight
+#   - macOS：  每品牌出 .app（配 Developer ID secrets = -dist 签名+公证；未配 = -dev ad-hoc 兜底）
+#   - Windows：每品牌出 Release 目录 zip（无签名）
+#
+# 触发方式（对齐 ~/einz 的 buildMultiPlatform.yml）：
+#   - push main：自动跑全平台（纯 .md 改动被 paths-ignore 挡掉，不烧额度）
+#   - push tag v*：全平台（路径过滤对 tag 不生效，发版一律全跑）
+#   - workflow_dispatch：手动选择单个平台
+#
+# 与参考（einz）的主要差异：
+#   - 双品牌：每个出包 job 都是 brand matrix（agidin / babelyx）
+#   - 版本号：用 scripts/appVersion.js 现算 yymm.ddhh.mm（从 einz 移植，见该文件注释）
+#   - 生产包统一带 --dart-define=API_BASE=https://pexserver.tic.cc
+#   - 不需要 patchPubCache.sh（未用 open_filex / video_thumbnail）、不需要 libsodium
+#   - iOS 工程本身已是 App Store 签名（每 flavor 的 PROVISIONING_PROFILE_SPECIFIER 已正确），
+#     无需像 einz 那样在工作区里把 Ad Hoc 改写指 App Store
+#   - macOS 双品牌产物同名 pex_user_flutter.app（PRODUCT_NAME 固定），靠 bundle id / 图标区分
+#
+# 计费：macOS 10x、Windows 2x，注意私有仓库额度；要单平台/单品牌验证用 workflow_dispatch。
+name: Multi Platform Build
+
+on:
+  # 手动：Actions 页面 Run workflow，可选单个平台（inputs 必须保留——job 的 if 依赖
+  # `inputs.platform`；只解开 workflow_dispatch 而删掉 inputs，手动触发会零 job）
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build (all = android+ios+macos+windows, each x 2 brands)'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - android
+          - ios
+          - macos
+          - windows
+  push:
+    branches:
+      - main
+    # 纯文档改动不烧额度（私有仓库 macOS 计费 10x、Windows 2x）。
+    # 注：路径过滤对 tag 推送不生效，即发版 tag 一律触发全平台。
+    paths-ignore:
+      - '**.md'
+    tags:
+      - 'v*'
+
+jobs:
+  # 测试先行：pex 目前无 *_test.dart，用 `flutter analyze` 作为质量闸门——
+  # analyze 有 error 就不出包（与参考的 test gate 同思路，只是这里没有独立测试套件）。
+  test:
+    name: test（flutter analyze）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Flutter analyze
+        run: flutter analyze
+
+  # Android：双品牌 matrix，每品牌出 APK + AAB。
+  # 签名：与本地同一把 release keystore（缺 secrets 直接失败，不静默退回 debug——
+  # "CI 绿但装不上/与本地包冲突"是最难发现的那种坏）。pex 的 build.gradle.kts 只从
+  # android/key.properties 读签名（不支持环境变量），故 CI 现场生成 key.properties。
+  android:
+    needs: [test]
+    if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'android' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        brand: [agidin, babelyx]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Install Android release keystore + key.properties
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          HAS_STORE_PW: ${{ secrets.ANDROID_KEYSTORE_PASSWORD != '' }}
+          HAS_KEY_PW: ${{ secrets.ANDROID_KEY_PASSWORD != '' }}
+        run: |
+          [[ -n "$ANDROID_KEYSTORE_BASE64" && -n "$ANDROID_KEY_ALIAS" ]] \
+            || { echo "❌ 缺 ANDROID_KEYSTORE_BASE64 / ANDROID_KEY_ALIAS" >&2; exit 1; }
+          [[ "$HAS_STORE_PW" == "true" && "$HAS_KEY_PW" == "true" ]] \
+            || { echo "❌ 缺 ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_PASSWORD" >&2; exit 1; }
+          # keystore 放到工作区之外（$RUNNER_TEMP），别被 artifact / 缓存带走
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pex-release.jks"
+          chmod 600 "$RUNNER_TEMP/pex-release.jks"
+          # pex 的 build.gradle.kts 只从 rootProject 的 key.properties 读签名，
+          # 所以这里按它的格式（storeFile/keyAlias/keyPassword/storePassword）现场生成
+          printf 'storeFile=%s\nkeyAlias=%s\nkeyPassword=%s\nstorePassword=%s\n' \
+            "$RUNNER_TEMP/pex-release.jks" "$ANDROID_KEY_ALIAS" \
+            "$ANDROID_KEY_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" > android/key.properties
+          echo "✅ 已装入 release keystore（别名 $ANDROID_KEY_ALIAS）"
+      - name: Build APK + AAB
+        env:
+          # 公共 runner 仅 7GB 内存：压一下 Gradle 堆，避免 OOM killer 杀 Gradle
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3G -XX:MaxMetaspaceSize=1G"
+        run: |
+          eval "$(node scripts/appVersion.js)"
+          # 生产包统一连 pexserver.tic.cc（与 npm run app-apk-build-prod 一致）
+          flutter build apk --release --flavor ${{ matrix.brand }} \
+            -t lib/main_${{ matrix.brand }}.dart \
+            --build-name "$APP_BUILD_NAME" --build-number "$APP_BUILD_NUMBER" \
+            --dart-define=API_BASE=https://pexserver.tic.cc
+          flutter build appbundle --release --flavor ${{ matrix.brand }} \
+            -t lib/main_${{ matrix.brand }}.dart \
+            --build-name "$APP_BUILD_NAME" --build-number "$APP_BUILD_NUMBER" \
+            --dart-define=API_BASE=https://pexserver.tic.cc
+      - name: Verify APK is signed with the release key
+        run: |
+          # 防"静默退回 debug 签名"：只断言签名者不是 debug，不写死指纹
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}"
+          APKSIGNER="$(ls -d "$SDK"/build-tools/*/apksigner 2>/dev/null | sort -V | tail -1)"
+          [[ -x "$APKSIGNER" ]] || { echo "❌ 找不到 apksigner（SDK=$SDK）" >&2; exit 1; }
+          OUT="$("$APKSIGNER" verify --print-certs build/app/outputs/flutter-apk/app-${{ matrix.brand }}-release.apk)"
+          echo "$OUT" | grep -E "Signer #1 certificate (DN|SHA-256)" || true
+          if echo "$OUT" | grep -q "CN=Android Debug"; then
+            echo "❌ 产物是 debug 签名——release keystore 没生效（查 secrets 与 android/key.properties）" >&2
+            exit 1
+          fi
+      - name: Rename + 旁车 version.txt
+        run: |
+          # 版本号从产物自己读（aapt2 读 APK 的 versionName），不重跑 appVersion.js——
+          # 那是 new Date() 现算的，生成 txt 的时刻 ≠ 打包时刻，跨分钟就不一致
+          SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}"
+          AAPT2="$(ls -d "$SDK"/build-tools/*/aapt2 2>/dev/null | sort -V | tail -1)"
+          [[ -x "$AAPT2" ]] || { echo "❌ 找不到 aapt2（SDK=$SDK）" >&2; exit 1; }
+          mv build/app/outputs/flutter-apk/app-${{ matrix.brand }}-release.apk ${{ matrix.brand }}-android.apk
+          NAME="$("$AAPT2" dump badging "${{ matrix.brand }}-android.apk" | grep -o "versionName='[^']*'" | head -1 | cut -d"'" -f2)"
+          [[ "$NAME" =~ ^[0-9]{4}\.[0-9]{4}\.[0-9]{2}$ ]] || {
+            echo "❌ APK versionName 是「$NAME」，不是 yymm.ddhh.mm——flutter 没吃到 --build-name？" >&2
+            exit 1
+          }
+          echo "$NAME" > "${{ matrix.brand }}-android.version.txt"
+          echo "${{ matrix.brand }} APK 版本：$NAME"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.brand }}-android
+          path: |
+            ${{ matrix.brand }}-android.apk
+            ${{ matrix.brand }}-android.version.txt
+            build/app/outputs/bundle/${{ matrix.brand }}/release/app-${{ matrix.brand }}-release.aab
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build
+          make_latest: true
+          files: |
+            ${{ matrix.brand }}-android.apk
+            ${{ matrix.brand }}-android.version.txt
+            build/app/outputs/bundle/${{ matrix.brand }}/release/app-${{ matrix.brand }}-release.aab
+
+  # iOS：双品牌 matrix，每品牌出 App Store IPA。
+  # 两个品牌是 App Store 里的两个不同应用（bundle id 不同），各自上传到各自的 app。
+  # 签名：Apple Distribution 证书 + 各品牌已配的 App Store profile（工程 pbxproj 已就绪，
+  # 每 flavor 的 PROVISIONING_PROFILE_SPECIFIER 已指向对应 profile）。
+  # **构建成功即自动上传 TestFlight**——push 与手动触发一视同仁。
+  # 缺签名 secrets 时 job 照常被调度但**干净跳过构建**（只打印提示，不红）；
+  # 配了签名但缺 ASC secrets 则当场失败（"CI 绿但没传"是最难发现的那种坏）。
+  ios:
+    needs: [test]
+    if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'ios' }}
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        include:
+          - brand: agidin
+            bundleId: cc.aizoi.app.dist.ios
+            profileName: Agidin Dist Appstore
+          - brand: babelyx
+            bundleId: faronear.babely.app.ios.dist
+            profileName: Babelyx Dist Appstore
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check signing secrets
+        id: secrets
+        env:
+          HAS_P12: ${{ secrets.IOS_P12_CERTIFICATE != '' }}
+          HAS_PROFILE: ${{ secrets.IOS_APPSTORE_PROVISIONING_PROFILE != '' }}
+          HAS_ASC_KEY_ID: ${{ secrets.ASC_API_KEY_ID != '' }}
+          HAS_ASC_ISSUER: ${{ secrets.ASC_API_ISSUER != '' }}
+          HAS_ASC_P8: ${{ secrets.ASC_P8_KEY != '' }}
+        run: |
+          cfg=true
+          [[ "$HAS_P12" == "true" && "$HAS_PROFILE" == "true" ]] || cfg=false
+          echo "configured=$cfg" >> "$GITHUB_OUTPUT"
+          echo "证书=$HAS_P12 描述文件(appstore)=$HAS_PROFILE ASC(key=$HAS_ASC_KEY_ID issuer=$HAS_ASC_ISSUER p8=$HAS_ASC_P8) → 构建=$cfg"
+          if [[ "$cfg" == "true" && ( "$HAS_ASC_KEY_ID" != "true" || "$HAS_ASC_ISSUER" != "true" || "$HAS_ASC_P8" != "true" ) ]]; then
+            echo "❌ 缺 ASC secrets（ASC_API_KEY_ID / ASC_API_ISSUER / ASC_P8_KEY）——TestFlight 上传是自动动作" >&2
+            exit 1
+          fi
+      - name: Skip iOS build (no signing secrets)
+        if: steps.secrets.outputs.configured != 'true'
+        run: |
+          echo "未配置 iOS 签名 secrets → 跳过 iOS 构建"
+          echo "  需要 IOS_P12_CERTIFICATE + IOS_P12_PASSWORD + IOS_APPSTORE_PROVISIONING_PROFILE"
+      - name: Select newest Xcode
+        if: steps.secrets.outputs.configured == 'true'
+        run: |
+          # App Store 对新 SDK 有要求（如 iOS 26 SDK 起构建的包）：挑 runner 上最新的
+          # 一版 Xcode 并显式选中，免得用默认的旧 Xcode 白跑一轮再被 Apple 退回
+          newest=$(ls -d /Applications/Xcode*.app 2>/dev/null | sort -V | tail -1)
+          if [[ -n "$newest" ]]; then
+            sudo xcode-select -s "$newest/Contents/Developer" 2>/dev/null \
+              || xcode-select -s "$newest/Contents/Developer"
+            echo "选中 $newest"
+          fi
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphoneos || true
+      - uses: subosito/flutter-action@v2
+        if: steps.secrets.outputs.configured == 'true'
+        with:
+          channel: stable
+          cache: true
+      - name: Install signing certificate
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          IOS_P12_CERTIFICATE: ${{ secrets.IOS_P12_CERTIFICATE }}
+          IOS_P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+        run: |
+          echo "$IOS_P12_CERTIFICATE" | base64 --decode > cert.p12
+          security create-keychain -p build build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p build build.keychain
+          security import cert.p12 -k build.keychain -P "$IOS_P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k build build.keychain
+      - name: Install provisioning profile (appstore)
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          # "Agidin Dist Appstore" / "Babelyx Dist Appstore"（各品牌 bundle id，无设备列表）
+          # 生成方式：base64 -i Agidin_Dist_Appstore.mobileprovision | pbcopy
+          PROFILE_STORE: ${{ secrets.IOS_APPSTORE_PROVISIONING_PROFILE }}
+        run: |
+          PROFILE_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PROFILE_DIR"
+          printf '%s' "$PROFILE_STORE" | base64 --decode > /tmp/pex-store.mobileprovision
+          uuid=$(security cms -D -i /tmp/pex-store.mobileprovision | plutil -extract UUID raw -)
+          name=$(security cms -D -i /tmp/pex-store.mobileprovision | plutil -extract Name raw -)
+          cp /tmp/pex-store.mobileprovision "$PROFILE_DIR/$uuid.mobileprovision"
+          echo "✅ 已安装描述文件: ${name}（${uuid}）"
+          # 防呆：配成 Ad Hoc 描述文件（或别的 App）当场拦掉，别等到 export 阶段
+          # 报一句含糊的 "no profile found"
+          expected="${{ matrix.profileName }}"
+          [[ "$name" == "$expected" ]] || {
+            echo "❌ 描述文件是「${name}」，本品牌需要「${expected}」——IOS_APPSTORE_PROVISIONING_PROFILE 配错文件了" >&2
+            exit 1
+          }
+          # 再核一遍 bundle id 与本品牌一致
+          appid=$(security cms -D -i /tmp/pex-store.mobileprovision | plutil -extract Entitlements.application-identifier raw - 2>/dev/null || true)
+          echo "  profile 内 application-identifier: ${appid:-（未读到）}"
+      - name: Build iOS IPA (App Store)
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          PROFILE_BUNDLE_ID: ${{ matrix.bundleId }}
+          PROFILE_NAME: ${{ matrix.profileName }}
+        run: |
+          eval "$(node scripts/appVersion.js)"
+          # 构建号用**到分钟**的 UTC 时间戳（10 位）：iOS 的 CFBundleVersion 只要单调
+          # 递增即可，"同一小时内推两次"＝同一个构建号＝Apple 拒收第二个包，所以加细。
+          # 注意：两个品牌是 App Store 里两个不同的 app，版本号各走各的，互不冲突。
+          IOS_BUILD_NUMBER="$(date -u +%y%m%d%H%M)"
+          echo "==> App Store 包 ${PROFILE_NAME} $APP_BUILD_NAME($IOS_BUILD_NUMBER)"
+          # 工程里每 flavor 的签名已就绪（Manual + Apple Distribution + 对应 profile），
+          # 但 ExportOptions-appstore.plist 同时带两个品牌的 profile 映射——flutter 只会
+          # 用当前构建的 bundle id 去查，另一个品牌无影响，直接用仓库里这份即可
+          flutter build ipa --release \
+            --flavor ${{ matrix.brand }} \
+            -t lib/main_${{ matrix.brand }}.dart \
+            --build-name "$APP_BUILD_NAME" --build-number "$IOS_BUILD_NUMBER" \
+            --export-options-plist=ios/ExportOptions-appstore.plist \
+            --dart-define=API_BASE=https://pexserver.tic.cc
+          mkdir -p /tmp/pex-out
+          # 固定文件名（带品牌）：Release 资产列表里一眼能认出来
+          cp build/ios/ipa/*.ipa "/tmp/pex-out/${{ matrix.brand }}-ios-appstore.ipa"
+          # 旁车 version.txt：从 .ipa 自己的 Payload/<App>.app/Info.plist 读版本号
+          rm -rf /tmp/pex-ipa-check && mkdir -p /tmp/pex-ipa-check
+          unzip -q "/tmp/pex-out/${{ matrix.brand }}-ios-appstore.ipa" -d /tmp/pex-ipa-check
+          PLIST="$(find /tmp/pex-ipa-check/Payload -name Info.plist -path '*/Payload/*.app/Info.plist' | head -1)"
+          NAME="$(/usr/bin/plutil -extract CFBundleShortVersionString raw "$PLIST")"
+          [[ "$NAME" =~ ^[0-9]{4}\.[0-9]{4}\.[0-9]{2}$ ]] || {
+            echo "❌ IPA 版本号是「$NAME」，不是 yymm.ddhh.mm——flutter 没吃到 --build-name？" >&2
+            exit 1
+          }
+          echo "$NAME" > "/tmp/pex-out/${{ matrix.brand }}-ios-appstore.version.txt"
+          rm -rf /tmp/pex-ipa-check
+          ls -lh /tmp/pex-out
+      - uses: actions/upload-artifact@v4
+        if: steps.secrets.outputs.configured == 'true' # 没构建就没产物，别去 warn 空目录
+        with:
+          name: ${{ matrix.brand }}-ios-appstore
+          path: |
+            /tmp/pex-out/${{ matrix.brand }}-ios-appstore.ipa
+            /tmp/pex-out/${{ matrix.brand }}-ios-appstore.version.txt
+      - name: Upload to Release
+        if: steps.secrets.outputs.configured == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build
+          make_latest: true
+          files: |
+            /tmp/pex-out/${{ matrix.brand }}-ios-appstore.ipa
+            /tmp/pex-out/${{ matrix.brand }}-ios-appstore.version.txt
+      - name: Upload to TestFlight
+        if: steps.secrets.outputs.configured == 'true'
+        env:
+          ASC_API_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_API_ISSUER: ${{ secrets.ASC_API_ISSUER }}
+          ASC_P8_KEY: ${{ secrets.ASC_P8_KEY }}
+        run: |
+          # altool 从 ~/private_keys/AuthKey_<KeyID>.p8 读私钥
+          mkdir -p ~/private_keys
+          printf '%s' "$ASC_P8_KEY" | base64 --decode > "$HOME/private_keys/AuthKey_${ASC_API_KEY_ID}.p8"
+          chmod 600 "$HOME/private_keys/AuthKey_${ASC_API_KEY_ID}.p8"
+          xcrun altool --upload-app -f "/tmp/pex-out/${{ matrix.brand }}-ios-appstore.ipa" -t ios \
+            --apiKey "$ASC_API_KEY_ID" --apiIssuer "$ASC_API_ISSUER"
+          echo "✅ 已上传 TestFlight（${{ matrix.brand }}，处理需要几分钟才出现在 App Store Connect）"
+
+  # macOS：双品牌 matrix，每品牌出 .app。
+  # 配 Developer ID secrets = -dist（Developer ID 签名 + 公证 + staple，异机双击即用）；
+  # 未配 = -dev（ad-hoc 兜底，仅本机调试）。
+  # 两个品牌的 macOS 产物同名 pex_user_flutter.app（PRODUCT_NAME 固定），靠 zip 名里的
+  # 品牌段区分。macOS 无 flavors 概念之外的签名差异：两个 flavor 都是
+  # CODE_SIGN_STYLE=Automatic + 无 Team（CI 里临时改成 Manual+ 禁签名出产物，签名统一
+  # 在下一步做），所以两个品牌走完全相同的构建/签名步骤。
+  macos:
+    needs: [test]
+    if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'macos' }}
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        brand: [agidin, babelyx]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Check Developer ID secrets
+        id: devid
+        env:
+          HAS_P12: ${{ secrets.MACOS_DEVID_P12 != '' }}
+        run: echo "configured=${{ env.HAS_P12 }}" >> "$GITHUB_OUTPUT"
+      - name: Import Developer ID certificate
+        if: steps.devid.outputs.configured == 'true'
+        env:
+          MACOS_DEVID_P12: ${{ secrets.MACOS_DEVID_P12 }}
+          MACOS_DEVID_P12_PASSWORD: ${{ secrets.MACOS_DEVID_P12_PASSWORD }}
+        run: |
+          echo "$MACOS_DEVID_P12" | base64 --decode > devid.p12
+          security create-keychain -p build build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p build build.keychain
+          security import devid.p12 -k build.keychain -P "$MACOS_DEVID_P12_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k build build.keychain
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Build macOS App
+        run: |
+          # CI 无开发证书/profile：临时禁用签名再构建（工程为 Automatic+无 Team，
+          # flutter build 传参会覆盖环境变量，故直接改 pbxproj；不改仓库内文件）
+          # 配了 Developer ID secrets 时也先这样出未签名产物，签名统一在下一步做
+          sed -i '' -e 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/' \
+                    -e 's/CODE_SIGN_IDENTITY = "-";/CODE_SIGN_IDENTITY = "-";/' \
+                    macos/Runner.xcodeproj/project.pbxproj
+          eval "$(node scripts/appVersion.js)"
+          flutter build macos --release \
+            --flavor ${{ matrix.brand }} \
+            -t lib/main_${{ matrix.brand }}.dart \
+            --build-name "$APP_BUILD_NAME" --build-number "$APP_BUILD_NUMBER" \
+            --dart-define=API_BASE=https://pexserver.tic.cc
+      - name: Sign (Developer ID + notarize + staple)
+        if: steps.devid.outputs.configured == 'true'
+        env:
+          MACOS_NOTARY_APPLE_ID: ${{ secrets.MACOS_NOTARY_APPLE_ID }}
+          MACOS_NOTARY_PASSWORD: ${{ secrets.MACOS_NOTARY_PASSWORD }}
+          MACOS_NOTARY_TEAM_ID: ${{ secrets.MACOS_NOTARY_TEAM_ID }}
+        run: |
+          APP=build/macos/Build/Products/Release/pex_user_flutter.app
+          # Developer ID 分发不需要也不该带 profile
+          rm -f "$APP/Contents/embedded.provisionprofile"
+          ENT=macos/Runner/Release.entitlements
+          IDENTITY="Developer ID Application"
+          find "$APP/Contents/Frameworks" -name "*.framework" \
+            -exec codesign -f -s "$IDENTITY" --timestamp --options runtime {} \;
+          codesign -f -s "$IDENTITY" --timestamp --options runtime --entitlements "$ENT" "$APP"
+          codesign --verify -v --strict "$APP"
+          # 公证凭据存入临时 keychain profile（secrets 不落日志）
+          xcrun notarytool store-credentials notary-ci \
+            --apple-id "$MACOS_NOTARY_APPLE_ID" \
+            --team-id "$MACOS_NOTARY_TEAM_ID" \
+            --password "$MACOS_NOTARY_PASSWORD"
+          # zip 必须用 ditto（保留 Frameworks 符号链接，zip 命令会破坏结构导致公证失败）
+          ditto -c -k --keepParent --sequesterRsrc "$APP" notary-upload.zip
+          xcrun notarytool submit notary-upload.zip --keychain-profile notary-ci --wait
+          xcrun stapler staple "$APP"
+          xcrun stapler validate "$APP"
+          spctl -a -vv -t exec "$APP"
+          rm -f notary-upload.zip
+      - name: Re-sign ad-hoc (no Developer ID secrets)
+        if: steps.devid.outputs.configured != 'true'
+        run: |
+          # 未配 Developer ID secrets 的兜底：只打 ad-hoc 签名（沙盒照常保留）。
+          # macOS 的 Release.entitlements 只含沙盒 + 出站网络两个布尔项，没有需真实
+          # 身份背书的受限 entitlement，可直接带上。
+          # **不要加 `--options runtime`**：ad-hoc 没有 Team ID，Hardened Runtime 会
+          # 打开 Library Validation，dyld 加载内嵌 framework 时直接起不来。
+          ENT=macos/Runner/Release.entitlements
+          find build/macos/Build/Products/Release/pex_user_flutter.app/Contents/Frameworks -name "*.framework" \
+            -exec codesign -f -s - --timestamp=none {} \;
+          codesign -f -s - --timestamp=none --entitlements "$ENT" \
+            build/macos/Build/Products/Release/pex_user_flutter.app
+          codesign --verify -v build/macos/Build/Products/Release/pex_user_flutter.app
+      - name: Zip app bundle
+        # 命名对齐本地：配 secrets = -dist（Developer ID 可分发），未配 = -dev（ad-hoc 兜底）。
+        # 版本号从产物自己的 Info.plist 读（签名+公证之间隔几分钟，不现场重算）。
+        run: |
+          SUFFIX=${{ steps.devid.outputs.configured == 'true' && 'dist' || 'dev' }}
+          APP_DIR=build/macos/Build/Products/Release
+          NAME="$(/usr/bin/plutil -extract CFBundleShortVersionString raw "$APP_DIR/pex_user_flutter.app/Contents/Info.plist")"
+          # 防"绿但坏"：flutter 没吃到 --build-name 时这里当场炸
+          [[ "$NAME" =~ ^[0-9]{4}\.[0-9]{4}\.[0-9]{2}$ ]] || {
+            echo "❌ 产物 Info.plist 版本号是「$NAME」，不是 yymm.ddhh.mm——flutter 没吃到 --build-name？" >&2
+            exit 1
+          }
+          cd "$APP_DIR"
+          zip -r -y "$GITHUB_WORKSPACE/${{ matrix.brand }}-macos-$SUFFIX.zip" pex_user_flutter.app
+          echo "$NAME" > "$GITHUB_WORKSPACE/${{ matrix.brand }}-macos-$SUFFIX.version.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.brand }}-macos
+          path: |
+            ${{ matrix.brand }}-macos-*.zip
+            ${{ matrix.brand }}-macos-*.version.txt
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build
+          make_latest: true
+          files: |
+            ${{ matrix.brand }}-macos-*.zip
+            ${{ matrix.brand }}-macos-*.version.txt
+
+  # Windows：双品牌 matrix，每品牌出 Release 目录 zip（无签名）。
+  # 产物 exe 名 pex_user_flutter.exe（CMakeLists 的 BINARY_NAME 固定），靠 zip 名里的
+  # 品牌段区分。
+  windows:
+    needs: [test]
+    if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'windows' }}
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        brand: [agidin, babelyx]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Flutter pub get
+        run: flutter pub get
+      - name: Build Windows
+        # 只传版本号不传构建号：FILEVERSION 四个字段各 16 位（≤65535），
+        # 构建号 yymmddhh（8 位）塞不进去，不传则 flutter 取 0。
+        shell: bash
+        run: |
+          eval "$(node scripts/appVersion.js)"
+          flutter build windows --release \
+            --flavor ${{ matrix.brand }} \
+            -t lib/main_${{ matrix.brand }}.dart \
+            --build-name "$APP_BUILD_NAME" \
+            --dart-define=API_BASE=https://pexserver.tic.cc
+      - name: Zip release folder + 旁车 version.txt
+        # 版本号从产物自己读（exe 的 PE 资源 FILEVERSION），不重跑 appVersion.js
+        shell: pwsh
+        run: |
+          $exe = "build/windows/x64/runner/Release/pex_user_flutter.exe"
+          $name = (Get-Item $exe).VersionInfo.FileVersion
+          if ($name -notmatch '^\d{4}\.\d{4}\.\d{2}$') {
+            throw "❌ pex_user_flutter.exe 版本是「$name」，不是 yymm.ddhh.mm——flutter 没吃到 --build-name？"
+          }
+          $zipName = "${{ matrix.brand }}-windows.zip"
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $zipName
+          Set-Content -Path "${{ matrix.brand }}-windows.version.txt" -Value $name
+          Write-Output "Windows ${{ matrix.brand }} 版本：$name"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.brand }}-windows
+          path: |
+            ${{ matrix.brand }}-windows.zip
+            ${{ matrix.brand }}-windows.version.txt
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest Build
+          make_latest: true
+          files: |
+            ${{ matrix.brand }}-windows.zip
+            ${{ matrix.brand }}-windows.version.txt
