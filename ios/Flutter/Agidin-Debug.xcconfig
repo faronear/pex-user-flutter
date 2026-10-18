@@ -1,5 +1,5 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"
 #include "Generated.xcconfig"
-PRODUCT_BUNDLE_IDENTIFIER = cc.aizoi.app.dist.ios
+PRODUCT_BUNDLE_IDENTIFIER = com.agidin.app.dev
 PRODUCT_NAME = Agidin
 DEVELOPMENT_TEAM = CQ6733CTMV
