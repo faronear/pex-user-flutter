@@ -188,16 +188,18 @@ jobs:
           - brand: agidin
             bundleId: cc.aizoi.app.dist.ios
             profileName: Agidin Dist Appstore
+            profileSecret: IOS_PROFILE_AGIDIN
           - brand: babelyx
             bundleId: faronear.babely.app.ios.dist
             profileName: Babelyx Dist Appstore
+            profileSecret: IOS_PROFILE_BABELYX
     steps:
       - uses: actions/checkout@v4
       - name: Check signing secrets
         id: secrets
         env:
           HAS_P12: ${{ secrets.IOS_P12_CERTIFICATE != '' }}
-          HAS_PROFILE: ${{ secrets.IOS_APPSTORE_PROVISIONING_PROFILE != '' }}
+          HAS_PROFILE: ${{ secrets[matrix.profileSecret] != '' }}
           HAS_ASC_KEY_ID: ${{ secrets.ASC_API_KEY_ID != '' }}
           HAS_ASC_ISSUER: ${{ secrets.ASC_API_ISSUER != '' }}
           HAS_ASC_P8: ${{ secrets.ASC_P8_KEY != '' }}
@@ -214,7 +216,7 @@ jobs:
         if: steps.secrets.outputs.configured != 'true'
         run: |
           echo "未配置 iOS 签名 secrets → 跳过 iOS 构建"
-          echo "  需要 IOS_P12_CERTIFICATE + IOS_P12_PASSWORD + IOS_APPSTORE_PROVISIONING_PROFILE"
+          echo "  需要 IOS_P12_CERTIFICATE + IOS_P12_PASSWORD + 各品牌 IOS_PROFILE_<BRAND>"
       - name: Select newest Xcode
         if: steps.secrets.outputs.configured == 'true'
         run: |
@@ -248,9 +250,11 @@ jobs:
       - name: Install provisioning profile (appstore)
         if: steps.secrets.outputs.configured == 'true'
         env:
-          # "Agidin Dist Appstore" / "Babelyx Dist Appstore"（各品牌 bundle id，无设备列表）
-          # 生成方式：base64 -i Agidin_Dist_Appstore.mobileprovision | pbcopy
-          PROFILE_STORE: ${{ secrets.IOS_APPSTORE_PROVISIONING_PROFILE }}
+          # 双品牌两个不同的 App Store 应用 → 两个 profile 各走各的 secret
+          # （IOS_PROFILE_AGYDIN / IOS_PROFILE_BABELYX，见 matrix 的 profileSecret）。
+          # 生成方式：base64 -i <brand>_Dist_Appstore.mobileprovision | pbcopy
+          PROFILE_STORE: ${{ secrets[matrix.profileSecret] }}
+          PROFILE_SECRET_NAME: ${{ matrix.profileSecret }}
         run: |
           PROFILE_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
           mkdir -p "$PROFILE_DIR"
@@ -263,7 +267,7 @@ jobs:
           # 报一句含糊的 "no profile found"
           expected="${{ matrix.profileName }}"
           [[ "$name" == "$expected" ]] || {
-            echo "❌ 描述文件是「${name}」，本品牌需要「${expected}」——IOS_APPSTORE_PROVISIONING_PROFILE 配错文件了" >&2
+            echo "❌ 描述文件是「${name}」，本品牌需要「${expected}」——${PROFILE_SECRET_NAME} 配错文件了" >&2
             exit 1
           }
           # 再核一遍 bundle id 与本品牌一致
