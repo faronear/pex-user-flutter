@@ -83,10 +83,13 @@ class BabelyxBrand extends BrandConfig {
       );
 
 
-  /// 标签栏（源项目 `pages.json` 的 `tabBar.list`）：探索 / 遇见 / 我的。
+  /// 标签栏（源项目 `pages.json` 的 `tabBar.list`）：探索 / 我的。
   ///
   /// 源项目还有第 4 项 AIGC（`menuAipp`），但老板 2026-09-30 决定**去掉**：
   /// Babelyx 入口不含 AI 域（入口级裁剪省 ~147KB），等 AIGC 在 Babelyx 的方向明确后再加。
+  /// 第 3 项遇见（`menuCreator`/Creators）老板 2026-10-19 决定**隐藏**：
+  /// 加上中间创造按钮后左右标签数不均匀，去掉后 1 左 1 右正好对称；
+  /// `menuCreator` 路由保留，仍可从创作者主页等入口进入。
   @override
   List<TabItem> get tabItems => <TabItem>[
         TabItem(
@@ -99,17 +102,6 @@ class BabelyxBrand extends BrandConfig {
           ),
           iconType: 'navigate',
           iconTypeOn: 'navigate-filled',
-        ),
-        TabItem(
-          pageName: 'menuCreator',
-          i18nText: const LangText(
-            zhCN: '遇见',
-            enUS: 'Creators',
-            deDE: 'Ersteller',
-            jaJP: '出会い',
-          ),
-          iconType: 'staff',
-          iconTypeOn: 'staff-filled',
         ),
         TabItem(
           pageName: 'menuUzone',
