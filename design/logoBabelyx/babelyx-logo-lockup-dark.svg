@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
+  <!-- Babelyx 恒焰 · 横版 lockup（深底） -->
+  <defs>
+    <linearGradient id="flameGradD" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFC46B"/>
+      <stop offset="0.38" stop-color="#FC592B"/>
+      <stop offset="1" stop-color="#D42B0F"/>
+    </linearGradient>
+    <linearGradient id="ringGradD" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#FC592B"/>
+      <stop offset="1" stop-color="#FFB347"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="400" fill="#14141C"/>
+
+  <g transform="translate(40,40) scale(0.75)">
+    <circle cx="256" cy="256" r="238" fill="none" stroke="url(#ringGradD)"
+            stroke-width="6" pathLength="1000" stroke-dasharray="955 45"
+            stroke-dashoffset="-22.5" stroke-linecap="round"
+            transform="rotate(-90 256 256)"/>
+    <circle cx="424" cy="88" r="10" fill="#FFB347"/>
+    <circle cx="256" cy="256" r="196" fill="none" stroke="#FC592B"
+            stroke-width="3" opacity="0.35"/>
+    <path d="M256 112 L322 220 L302 302 L256 356 L210 302 L190 220 Z"
+          fill="url(#flameGradD)"/>
+    <path d="M256 190 L296 262 L274 262 L274 318 L238 318 L238 262 L216 262 Z"
+          fill="#14141C"/>
+  </g>
+
+  <text x="400" y="212" font-family="'Avenir Next','Futura','Segoe UI',Helvetica,Arial,sans-serif"
+        font-size="150" font-weight="600" letter-spacing="4" fill="#FFFFFF">Babelyx</text>
+  <text x="404" y="286" font-family="'Avenir Next','Futura','Segoe UI',Helvetica,Arial,sans-serif"
+        font-size="32" font-weight="500" letter-spacing="12" fill="#FC592B">CREATE NEW POSSIBILITY</text>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Babelyx 恒焰 · App 图标版（浅底） -->
+  <defs>
+    <linearGradient id="flameGradL" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFC46B"/>
+      <stop offset="0.38" stop-color="#FC592B"/>
+      <stop offset="1" stop-color="#D42B0F"/>
+    </linearGradient>
+    <linearGradient id="ringGradL" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#FC592B"/>
+      <stop offset="1" stop-color="#FFB347"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="256" cy="256" r="256" fill="#FFFFFF"/>
+  <circle cx="256" cy="256" r="238" fill="none" stroke="url(#ringGradL)"
+          stroke-width="6" pathLength="1000" stroke-dasharray="955 45"
+          stroke-dashoffset="-22.5" stroke-linecap="round"
+          transform="rotate(-90 256 256)"/>
+  <circle cx="424" cy="88" r="10" fill="#FFB347"/>
+  <circle cx="256" cy="256" r="196" fill="none" stroke="#FC592B"
+          stroke-width="3" opacity="0.35"/>
+  <path d="M256 112 L322 220 L302 302 L256 356 L210 302 L190 220 Z"
+        fill="url(#flameGradL)"/>
+  <path d="M256 190 L296 262 L274 262 L274 318 L238 318 L238 262 L216 262 Z"
+        fill="#FFFFFF"/>
+</svg>
