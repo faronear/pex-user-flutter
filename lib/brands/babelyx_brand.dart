@@ -130,9 +130,4 @@ class BabelyxBrand extends BrandConfig {
   @override
   LangText get coinIname => const LangText(zhCN: '巴贝币', enUS: 'Babelyx');
 
-  @override
-  String get androidAppId => 'cc.tic.babelyx';
-
-  @override
-  String get iosBundleId => 'cc.tic.babelyx';
 }

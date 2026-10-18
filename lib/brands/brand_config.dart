@@ -103,10 +103,6 @@ abstract class BrandConfig {
   /// 应用内币种名称。
   LangText get coinIname;
 
-  /// 原生包名 / Bundle ID。
-  String get androidAppId;
-  String get iosBundleId;
-
   /// 选集统计色（源项目品牌主题 `--ColorCollect`；仅 Babelyx 定义，其余品牌沿用之）。
   Color get colorCollect => const Color(0xFF27C2F5);
 

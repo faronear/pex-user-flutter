@@ -64,9 +64,4 @@ class AgidinBrand extends BrandConfig {
   @override
   LangText get coinIname => const LangText(zhCN: '奇点币', enUS: 'Agidin');
 
-  @override
-  String get androidAppId => 'cc.tic.agidin';
-
-  @override
-  String get iosBundleId => 'cc.tic.agidin';
 }
