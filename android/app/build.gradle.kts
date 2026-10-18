@@ -51,12 +51,14 @@ android {
     productFlavors {
         create("agidin") {
             dimension = "brand"
-            applicationId = "cc.tic.agidin"
+            // dist 基址；debug 经 buildTypes 追加 .dev 后缀（与 macos 对齐）。
+            applicationId = "com.agidin.app"
             resValue("string", "app_name", "Agidin")
         }
         create("babelyx") {
             dimension = "brand"
-            applicationId = "cc.tic.babelyx"
+            // dist 基址；debug 经 buildTypes 追加 .dev 后缀（与 macos 对齐）。
+            applicationId = "com.babelyx.app"
             resValue("string", "app_name", "Babelyx")
         }
     }
@@ -71,6 +73,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // dev 构建追加 .dev 后缀，与 macos 的 dev bundle id 隔离一致
+            // （agidin → com.agidin.app.dev，babelyx → com.babelyx.app.dev）。
+            applicationIdSuffix = ".dev"
+        }
         release {
             // 有 key.properties 时用真实 keystore 签名，否则退回 debug key（与 einz/app 现状一致）。
             signingConfig = if (hasReleaseKey) {
