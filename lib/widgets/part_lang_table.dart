@@ -8,6 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/i18n/i18n.dart';
 import '../core/i18n/lang_text.dart';
+import '../core/state/app_providers.dart';
+import '../core/state/app_startup_notifier.dart';
+import '../core/state/envar_provider.dart';
+import '../core/storage/local_store.dart';
 
 /// 语言代码 → 母语名（对应源项目 `langSet[*].native`）。
 const Map<String, String> kLangNative = <String, String>{
@@ -61,6 +65,19 @@ class PartLangTable extends ConsumerWidget {
     );
     if (picked != null) {
       ref.read(languageProvider.notifier).set(picked);
+      // 源项目 `pick_lang`：本地持久化 + 已登录时同步到账号偏好。
+      await ref.read(localStoreProvider).setString(LocalStore.keyMylang, picked);
+      final Map<String, dynamic> user = ref.read(onlineUserProvider);
+      if ((user['usid']?.toString() ?? '').isNotEmpty) {
+        await ref.read(apiClientProvider).callBase(
+              apiWho: 'User',
+              apiTodo: 'set_user_lang',
+              apiWhat: <String, dynamic>{
+                'User': <String, dynamic>{'lang': picked},
+              },
+            );
+        ref.read(appStartupProvider.notifier).mergeOnlineUser(<String, dynamic>{'lang': picked});
+      }
     }
   }
 }

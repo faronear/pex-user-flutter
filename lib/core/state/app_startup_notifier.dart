@@ -82,7 +82,6 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
   Future<bool> runOnce() async {
     final ApiClient api = ref.read(apiClientProvider);
     final LocalStore store = ref.read(localStoreProvider);
-    final String lang = ref.read(languageProvider);
 
     state = state.copyWith(
       connecting: true,
@@ -112,9 +111,17 @@ class AppStartupNotifier extends Notifier<AppStartupState> {
         (result['onlineUser'] as Map?)?.cast<String, dynamic>() ??
             <String, dynamic>{};
 
-    // 后端下发的语言优先，其次本地存储，最后回落当前语言。
+    // 语言解析，对齐源项目 `App.vue:113` 的优先级：
+    // ① 登录用户偏好 onlineUser.lang → ② 本地保存的 mylang
+    // → ③ IP 国家映射 land2lang[userlandCode]（仅 CN→zhCN，其余→enUS）
+    // → ④ 默认 enUS。与源项目一致：不读设备系统语言。
+    final String userlandCode = (result['_uipl']?.toString() ?? '').isNotEmpty
+        ? result['_uipl'].toString()
+        : store.getString(LocalStore.keyUserlandCode, 'EARTH');
+    final String land2lang = userlandCode == 'CN' ? LangCode.zhCN : LangCode.enUS;
+    final String savedLang = store.getString(LocalStore.keyMylang, '');
     final String resolvedLang = onlineUser['lang']?.toString() ??
-        store.getString(LocalStore.keyMylang, lang);
+        (savedLang.isNotEmpty ? savedLang : land2lang);
     if (LangCode.isSupported(resolvedLang)) {
       ref.read(languageProvider.notifier).set(resolvedLang);
       await store.setString(LocalStore.keyMylang, resolvedLang);
