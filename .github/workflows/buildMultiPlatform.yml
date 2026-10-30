@@ -117,7 +117,7 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3G -XX:MaxMetaspaceSize=1G"
         run: |
           eval "$(node scripts/appVersion.js)"
-          # 生产包统一连 pexserver.tic.cc（与 npm run app-apk-build-prod 一致）
+          # 生产包统一连 pexserver.tic.cc（与 npm run build-apk 一致，API_BASE 生产值）
           flutter build apk --release --flavor ${{ matrix.brand }} \
             -t lib/main_${{ matrix.brand }}.dart \
             --build-name "$APP_BUILD_NAME" --build-number "$APP_BUILD_NUMBER" \
