@@ -99,9 +99,12 @@ class _PartTextReaderState extends ConsumerState<PartTextReader> {
         ),
       );
     }
-    final String text = _fetched.isNotEmpty
-        ? _fetched
-        : widget.section['text']?.toString() ?? '';
+    // `text` 可能是语言字典（如系统通知 {zhCN:..., enUS:...}），需按当前语言解析。
+    final Object? rawText =
+        _fetched.isNotEmpty ? _fetched : widget.section['text'];
+    final String text = rawText is Map
+        ? ll(lang, LangText.fromMap(rawText.cast<String, dynamic>()))
+        : rawText?.toString() ?? '';
     final String autocontent = widget.section['_autocontent']?.toString() ?? '';
     final String shown = text.isNotEmpty ? text : autocontent;
     return SelectableText(

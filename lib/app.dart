@@ -12,6 +12,7 @@ import 'core/state/app_startup_notifier.dart';
 import 'core/state/client_envar.dart';
 import 'core/storage/local_store.dart';
 import 'theme/app_theme.dart';
+import 'widgets/global_click_cursor.dart';
 
 /// 启动应用：注入品牌、路由组与本地存储，构建 [ProviderScope]。
 ///
@@ -72,6 +73,9 @@ class _PexAppState extends ConsumerState<PexApp> {
       title: brand.displayName.enUS,
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(brand),
+      // 桌面/Web：全局手型光标（悬停可点击区域时变手型，输入框除外）。
+      builder: (BuildContext context, Widget? child) =>
+          GlobalClickCursor(child: child ?? const SizedBox.shrink()),
       routerConfig: _router,
     );
   }

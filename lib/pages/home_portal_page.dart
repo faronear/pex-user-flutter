@@ -51,16 +51,55 @@ class HomePortalPage extends ConsumerWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: <Widget>[
+            // 内容整体可滚动，避免窗口过矮时 Column 溢出报错。
             Expanded(
-              child: Column(
-                children: <Widget>[
-                  _buildLogo(brand.logoAsset),
-                  if (!newsline.isEmpty) _buildNewsline(lang, newsline),
-                  if (recocards.isNotEmpty) _buildRecocards(context, lang, recocards),
-                  const Spacer(),
-                  _buildSlogans(lang, slogans),
-                  _buildStartButton(context, ref, lang, afterAutologin, online),
-                ],
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) =>
+                    constraints.maxHeight.isFinite
+                        ? SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight,
+                              ),
+                              child: Column(
+                                children: <Widget>[
+                                  _buildLogo(brand.logoAsset),
+                                  if (!newsline.isEmpty)
+                                    _buildNewsline(lang, newsline),
+                                  if (recocards.isNotEmpty)
+                                    _buildRecocards(context, lang, recocards),
+                                  // 滚动视图内高度无界，不能用 Spacer。
+                                  const SizedBox(height: 40),
+                                  _buildSlogans(lang, slogans),
+                                  _buildStartButton(
+                                    context,
+                                    ref,
+                                    lang,
+                                    afterAutologin,
+                                    online,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Column(
+                            children: <Widget>[
+                              _buildLogo(brand.logoAsset),
+                              if (!newsline.isEmpty)
+                                _buildNewsline(lang, newsline),
+                              if (recocards.isNotEmpty)
+                                _buildRecocards(context, lang, recocards),
+                              const Spacer(),
+                              _buildSlogans(lang, slogans),
+                              _buildStartButton(
+                                context,
+                                ref,
+                                lang,
+                                afterAutologin,
+                                online,
+                              ),
+                            ],
+                          ),
               ),
             ),
             _buildBottomBar(startup),

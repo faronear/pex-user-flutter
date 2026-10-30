@@ -34,6 +34,8 @@ import '../../pages/umy_invite_page.dart';
 import '../../pages/umy_mia_detail_page.dart';
 import '../../pages/umy_mia_page.dart';
 import '../../pages/umy_contact_page.dart';
+import '../../pages/user_resource_detail_page.dart';
+import '../../pages/user_resource_page.dart';
 import 'app_routes.dart';
 
 /// 首页门户 + 账户/登录注册闭环 + 我的空间。
@@ -162,6 +164,19 @@ List<RouteBase> commonRoutes() => <RouteBase>[
         path: AppRoutes.path(AppRoutes.umyContact),
         name: AppRoutes.umyContact,
         builder: (_, _) => const UmyContactPage(),
+      ),
+      // 「更多资源」全品牌共用（页脚、快捷入口都指向它），不属于创作域。
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.userResource),
+        name: AppRoutes.userResource,
+        builder: (_, _) => const UserResourcePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.path(AppRoutes.userResourceDetail),
+        name: AppRoutes.userResourceDetail,
+        builder: (_, GoRouterState state) => UserResourceDetailPage(
+          tagNow: state.uri.queryParameters['tagnow'] ?? '',
+        ),
       ),
       GoRoute(
         path: AppRoutes.path(AppRoutes.identBegin),

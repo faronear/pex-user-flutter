@@ -190,6 +190,8 @@ class _UmyContactPageState extends ConsumerState<UmyContactPage> {
                     hint: _kMessagePlaceholder,
                     maxLength: 512,
                     minLines: 5,
+                    // 多行输入：maxLines 不设上限，跟随 minLines 展开。
+                    maxLines: 5,
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20),

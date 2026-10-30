@@ -643,7 +643,6 @@ class _PactSheetState extends ConsumerState<_PactSheet> {
         (envar.raw['pactDict'] as Map?)?.cast<String, dynamic>() ??
             <String, dynamic>{};
     final CreationDraftState draft = ref.watch(creationDraftProvider);
-    final bool storyEmpty = isEmptyStory(draft.story);
     final String tucSymbol = envar.tucSymbol;
 
     return ConstrainedBox(
@@ -861,7 +860,9 @@ class _PactSheetState extends ConsumerState<_PactSheet> {
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
               child: PartButtonSubmit(
                 loading: _creating,
-                disabled: _creating || storyEmpty,
+                // 源项目只按 creating 禁用（纯标题作品也允许创建）；
+                // storyEmpty 仅用于禁用弹窗内的输入框。
+                disabled: _creating,
                 onPressed: _create,
                 children: <Widget>[
                   PexIcon.uni('fire-filled', size: 20, color: Colors.white),

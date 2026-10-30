@@ -13,8 +13,6 @@ import '../../pages/show_creation_update_page.dart';
 import '../../pages/show_creation_page.dart';
 import '../../pages/show_creator_page.dart';
 import '../../pages/umy_collection_page.dart';
-import '../../pages/user_resource_detail_page.dart';
-import '../../pages/user_resource_page.dart';
 import 'app_routes.dart';
 
 /// 创作、创作者、市场、作品详情等。
@@ -70,18 +68,6 @@ List<RouteBase> creationRoutes() => <RouteBase>[
         name: AppRoutes.showCreationUpdate,
         builder: (_, GoRouterState state) =>
             ShowCreationUpdatePage(unid: state.uri.queryParameters['unid'] ?? ''),
-      ),
-      GoRoute(
-        path: AppRoutes.path(AppRoutes.userResource),
-        name: AppRoutes.userResource,
-        builder: (_, _) => const UserResourcePage(),
-      ),
-      GoRoute(
-        path: AppRoutes.path(AppRoutes.userResourceDetail),
-        name: AppRoutes.userResourceDetail,
-        builder: (_, GoRouterState state) => UserResourceDetailPage(
-          tagNow: state.uri.queryParameters['tagnow'] ?? '',
-        ),
       ),
       // menuCreator / showCreator / menuMarket 待后续批次加入
     ];

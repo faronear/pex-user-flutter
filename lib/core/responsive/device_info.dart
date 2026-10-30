@@ -53,13 +53,17 @@ class DeviceInfo {
     };
   }
 
-  /// 依据平台与可用宽度判定设备类型（桌面平台恒为 pc）。
+  /// 依据平台与可用宽度判定设备类型。
+  ///
+  /// 桌面原生平台（macOS/Windows/Linux）与 iPad 同布局——手机版的放大
+  /// （底部标签栏、无 PC 顶栏/页脚），不采用 Web/PC 布局；Web 端仍按
+  /// 宽度断点区分 PC/平板/手机。
   static DeviceType deviceTypeOf(double width) {
     final bool isDesktop = !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.macOS ||
             defaultTargetPlatform == TargetPlatform.windows ||
             defaultTargetPlatform == TargetPlatform.linux);
-    if (isDesktop) return DeviceType.pc;
+    if (isDesktop) return DeviceType.pad;
     if (width >= Breakpoints.pc) return DeviceType.pc;
     if (width >= Breakpoints.pad) return DeviceType.pad;
     return DeviceType.phone;
