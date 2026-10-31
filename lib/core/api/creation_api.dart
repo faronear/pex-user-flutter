@@ -8,19 +8,23 @@ import 'api_client.dart';
 
 /// 「我的收藏」的 5 种身份（对应源项目 `partCreationAs*` 与 `get_creations_as_*`）。
 enum CreationRole {
-  creator('creator', 'TCREATE'),
-  owner('owner', 'TOWN'),
-  holder('holder', 'THOLD'),
-  viewer('viewer', 'TVIEW'),
-  fueler('fueler', 'TFUEL');
+  creator('creator', 'TCREATE', 'countAsCreator'),
+  owner('owner', 'TOWN', 'countAsOwner'),
+  holder('holder', 'THOLD', 'countAsHolder'),
+  viewer('viewer', 'TVIEW', 'countAsViewer'),
+  fueler('fueler', 'TFUEL', 'countFueling');
 
-  const CreationRole(this.apiRole, this.pactKey);
+  const CreationRole(this.apiRole, this.pactKey, this.counter);
 
   /// `get_creations_as_<apiRole>` 的中间段。
   final String apiRole;
 
   /// 对应的 `pactDict` key（决定图标与文案）。
   final String pactKey;
+
+  /// `onlineUser` 上的计数字段名（源项目 `envar-config.js` 的
+  /// `pactDict.*.counter`，选集页 tab 标题上方的数字标注）。
+  final String counter;
 }
 
 class CreationApi {

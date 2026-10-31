@@ -54,6 +54,14 @@ class _PartCreationAsListState extends ConsumerState<PartCreationAsList> {
   List<Map<String, dynamic>> get _list =>
       ref.read(creationProvider).collectionOf(widget.role);
 
+  /// 服务端各身份接口的返回字段名不同（源项目同款）：
+  /// `creatorCollection` / `ownerCollection` / `holderCollection` /
+  /// `viewerCollection` / `fuelerCollection`。
+  List<Map<String, dynamic>> _fetchedOf(Map<String, dynamic> data) {
+    final Object? list = data['${widget.role.apiRole}Collection'];
+    return list is List ? list.cast<Map<String, dynamic>>() : <Map<String, dynamic>>[];
+  }
+
   /// 向下翻页（更早的作品），游标为最后一条的 `createTimeUnix`。
   Future<void> _getOlder() async {
     if (_down == LoadState.loading) return;
@@ -66,9 +74,7 @@ class _PartCreationAsListState extends ConsumerState<PartCreationAsList> {
     if (!mounted) return;
 
     if (bok(data['_state']?.toString())) {
-      final List<Map<String, dynamic>> fetched =
-          (data['creatorCollection'] as List?)?.cast<Map<String, dynamic>>() ??
-              <Map<String, dynamic>>[];
+      final List<Map<String, dynamic>> fetched = _fetchedOf(data);
       if (fetched.isNotEmpty) {
         ref
             .read(creationProvider.notifier)
@@ -95,9 +101,7 @@ class _PartCreationAsListState extends ConsumerState<PartCreationAsList> {
     if (!mounted) return;
 
     if (bok(data['_state']?.toString())) {
-      final List<Map<String, dynamic>> fetched =
-          (data['creatorCollection'] as List?)?.cast<Map<String, dynamic>>() ??
-              <Map<String, dynamic>>[];
+      final List<Map<String, dynamic>> fetched = _fetchedOf(data);
       ref.read(creationProvider.notifier).setCollection(widget.role, fetched);
       setState(() =>
           _down = fetched.length < _takeLimit ? LoadState.noMore : LoadState.loadUp);

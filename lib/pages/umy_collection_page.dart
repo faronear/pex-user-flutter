@@ -54,6 +54,12 @@ class _UmyCollectionPageState extends ConsumerState<UmyCollectionPage> {
     return LangText(zhCN: role.name, enUS: role.name);
   }
 
+  /// 分类计数（源项目 `onlineUser[pactype.counter]`，如 countAsCreator）。
+  int _roleCount(CreationRole role) {
+    final Object? count = ref.watch(onlineUserProvider)[role.counter];
+    return count is num ? count.toInt() : int.tryParse('$count') ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     final AppStartupState startup = ref.watch(appStartupProvider);
@@ -90,6 +96,20 @@ class _UmyCollectionPageState extends ConsumerState<UmyCollectionPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
+                            // 计数标注（源项目 tagContents：counter + 换行 + 标签）。
+                            Text(
+                              _roleCount(role).toString(),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: role == _roleNow
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: role == _roleNow
+                                    ? const Color(0xFF2979FF)
+                                    : PexColors.grey9,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
                             Text(
                               _roleLabel(role).resolve(lang),
                               style: TextStyle(

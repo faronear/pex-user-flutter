@@ -463,34 +463,7 @@ class _FoundView extends ConsumerWidget {
               ],
             )
           else
-            // 源项目：头像 z-index:900 悬浮于封面与信息面板交界（上下各半）。
-            // 头像必须在这两者之上，故放在覆盖整个区域的外层 Stack。
-            Stack(
-              clipBehavior: Clip.none,
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    _LeftColumn(creation: creation, twoCol: false),
-                    // 源项目信息面板 margin: 2px 0，紧贴封面。
-                    const SizedBox(height: 2),
-                    _SurroundingsPanel(creation: creation, twoCol: false),
-                  ],
-                ),
-                if (creation.creatorUsid.isNotEmpty)
-                  Positioned(
-                    right: 10,
-                    // 圆底伸出面板顶边下方 33px（2px 间隙 + 35px 半圆 - 4px
-                    // 余量微调），圆顶自然落在封面内，上下各压半圆。
-                    bottom: -33,
-                    child: _AuthorAvatar(
-                      creation: creation,
-                      size: 70,
-                      iconSize: 30,
-                    ),
-                  ),
-              ],
-            ),
+            _SingleColStack(creation: creation),
         ],
       ),
     );
@@ -523,6 +496,79 @@ class _LeftColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _CoverPanel(creation: creation);
+  }
+}
+
+/// 单列布局：封面 + 2px + 信息面板，作者头像悬浮于封面与面板交界
+/// （上下各半圆）。
+///
+/// 实现：以「封面高度」为锚。封面外层包一个带 [GlobalKey] 的容器，
+/// 头像放 [Stack] 的定位子项里，y = 封面高度 - 35（圆心落在交界线）。
+/// 头像是 Stack 最后一个子项，绘制在最上层，天然压住面板顶边；
+/// 面板顶行右侧留 80px，昵称不会被头像遮住（见 _AuthorRow）。
+class _SingleColStack extends StatefulWidget {
+  const _SingleColStack({required this.creation});
+
+  final Creation creation;
+
+  @override
+  State<_SingleColStack> createState() => _SingleColStackState();
+}
+
+class _SingleColStackState extends State<_SingleColStack> {
+  /// 封面容器 key，用于测量封面高度（= 交界线的 y 坐标）。
+  final GlobalKey _coverKey = GlobalKey();
+
+  double? _coverHeight;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _measureCover());
+  }
+
+  void _measureCover() {
+    final RenderObject? render =
+        _coverKey.currentContext?.findRenderObject();
+    if (render is RenderBox && render.hasSize) {
+      final double height = render.size.height;
+      if (height != _coverHeight) {
+        setState(() => _coverHeight = height);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Creation creation = widget.creation;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // 测量锚：包住封面，拿到封面底边位置（= 交界线）。
+            KeyedSubtree(
+              key: _coverKey,
+              child: _LeftColumn(creation: creation, twoCol: false),
+            ),
+            const SizedBox(height: 2),
+            _SurroundingsPanel(creation: creation, twoCol: false),
+          ],
+        ),
+        if (creation.creatorUsid.isNotEmpty && _coverHeight != null)
+          Positioned(
+            right: 10,
+            // 圆心落在交界线：top = 封面高度 - 半圆 35px。
+            top: _coverHeight! - 35,
+            child: _AuthorAvatar(
+              creation: creation,
+              size: 70,
+              iconSize: 30,
+            ),
+          ),
+      ],
+    );
   }
 }
 
