@@ -124,7 +124,8 @@ class _UserResourceDetailPageState extends ConsumerState<UserResourceDetailPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+                // 源项目整页 align-items: center，所有块居中。
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   const SizedBox(height: 10),
                   _GroupTabs(envar: envar, groupNow: group),
@@ -209,33 +210,37 @@ class _GroupTabs extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: <Widget>[
-            for (final String group in groups)
-              TextButton(
-                onPressed: () {
-                  final List<String> keys = envar.subtags(group).keys.toList();
-                  if (keys.isEmpty) return;
-                  context.replace(
-                    '/${AppRoutes.userResourceDetail}?tagnow=${keys.first}',
-                  );
-                },
-                style: TextButton.styleFrom(
-                  foregroundColor:
-                      group == groupNow ? PexColors.blueMy : PexColors.grey6,
-                ),
-                child: Text(
-                  ll(lang, LangText.fromMap(envar.linkGroup(group)['iName'])),
-                  style: TextStyle(
-                    fontWeight: group == groupNow
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+      // 内容居中（源项目整页 align-items:center）；Center 包住滚动视图，
+      // 内容窄于视口时整体居中，超宽时仍可横向滚动。
+      child: Center(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: <Widget>[
+              for (final String group in groups)
+                TextButton(
+                  onPressed: () {
+                    final List<String> keys = envar.subtags(group).keys.toList();
+                    if (keys.isEmpty) return;
+                    context.replace(
+                      '/${AppRoutes.userResourceDetail}?tagnow=${keys.first}',
+                    );
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor:
+                        group == groupNow ? PexColors.blueMy : PexColors.grey6,
+                  ),
+                  child: Text(
+                    ll(lang, LangText.fromMap(envar.linkGroup(group)['iName'])),
+                    style: TextStyle(
+                      fontWeight: group == groupNow
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -263,6 +268,8 @@ class _SubtagTabs extends ConsumerWidget {
       padding: const EdgeInsets.only(top: 10),
       child: Wrap(
         spacing: 6,
+        // 内容居中（源项目整页 align-items:center）。
+        alignment: WrapAlignment.center,
         children: <Widget>[
           for (final String key in subtags.keys)
             ChoiceChip(
@@ -305,37 +312,41 @@ class _MarketPicker extends ConsumerWidget {
             <String, dynamic>{};
     if (markets.isEmpty) return const SizedBox.shrink();
 
+    // 源项目：flex:none + margin-top:20px，随整页居中；这里限宽 300 居中。
     return Padding(
       padding: const EdgeInsets.only(top: 20),
-      child: DropdownButtonFormField<String>(
-        initialValue: marketNow,
-        isExpanded: true,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4),
-            borderSide: const BorderSide(color: PexColors.grey9),
-          ),
-        ),
-        items: <DropdownMenuItem<String>>[
-          DropdownMenuItem<String>(
-            value: kRawApk,
-            child: Text(ll(lang, _kStandardApk)),
-          ),
-          for (final String key in markets.keys)
-            DropdownMenuItem<String>(
-              value: (markets[key] as Map?)?['linkkey']?.toString() ?? key,
-              child: Text(
-                ll(lang, LangText.fromMap((markets[key] as Map?)?['i18nName'])),
-              ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 300),
+        child: DropdownButtonFormField<String>(
+          initialValue: marketNow,
+          isExpanded: true,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(4),
+              borderSide: const BorderSide(color: PexColors.grey9),
             ),
-        ],
-        onChanged: (String? value) {
-          if (value != null) onChanged(value);
-        },
+          ),
+          items: <DropdownMenuItem<String>>[
+            DropdownMenuItem<String>(
+              value: kRawApk,
+              child: Text(ll(lang, _kStandardApk)),
+            ),
+            for (final String key in markets.keys)
+              DropdownMenuItem<String>(
+                value: (markets[key] as Map?)?['linkkey']?.toString() ?? key,
+                child: Text(
+                  ll(lang, LangText.fromMap((markets[key] as Map?)?['i18nName'])),
+                ),
+              ),
+          ],
+          onChanged: (String? value) {
+            if (value != null) onChanged(value);
+          },
+        ),
       ),
     );
   }
@@ -426,49 +437,54 @@ class _LinkRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: InkWell(
-              borderRadius: BorderRadius.circular(4),
-              onTap: () async {
-                final Uri? uri = Uri.tryParse(linkUrl);
-                if (uri == null) return;
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    PexIcon.icont(
-                      'icont-hyperlink',
-                      size: 18,
-                      color: PexColors.blueMy,
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        linkUrl,
-                        style: const TextStyle(
-                          color: PexColors.blueMy,
-                          fontSize: 14,
+    // 源项目：margin: 10px auto; max-width: 300px，整行居中。
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 300),
+        margin: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap: () async {
+                  final Uri? uri = Uri.tryParse(linkUrl);
+                  if (uri == null) return;
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      PexIcon.icont(
+                        'icont-hyperlink',
+                        size: 18,
+                        color: PexColors.blueMy,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          linkUrl,
+                          style: const TextStyle(
+                            color: PexColors.blueMy,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          // 源项目用 `partIcontextCopyshare`（复制 + 系统分享；系统分享仅 App 端，待阶段四）。
-          PartIcontextCopy(
-            onCopy: () => Clipboard.setData(ClipboardData(text: linkUrl)),
-          ),
-        ],
+            // 源项目用 `partIcontextCopyshare`（复制 + 系统分享；系统分享仅 App 端，待阶段四）。
+            PartIcontextCopy(
+              onCopy: () => Clipboard.setData(ClipboardData(text: linkUrl)),
+            ),
+          ],
+        ),
       ),
     );
   }
