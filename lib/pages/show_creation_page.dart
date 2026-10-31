@@ -277,6 +277,12 @@ class _ShowCreationPageState extends ConsumerState<ShowCreationPage> {
 
     return PartWindowLayout(
       pageName: AppRoutes.showCreation,
+      // 导航栏固定在顶部，不随内容滚动（对应源项目 position:fixed）。
+      navibar: PartNavibarPcFixed(
+        title: ShowCreationTexts.pageTitle,
+        backToPage: AppRoutes.menuCreation,
+        pageName: AppRoutes.showCreation,
+      ),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -285,11 +291,6 @@ class _ShowCreationPageState extends ConsumerState<ShowCreationPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const SizedBox(height: 10),
-                  PartNavibarPcFixed(
-                    title: ShowCreationTexts.pageTitle,
-                    backToPage: AppRoutes.menuCreation,
-                    pageName: AppRoutes.showCreation,
-                  ),
                 if (!show.readyShow)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 60),

@@ -112,6 +112,11 @@ class _UserResourceDetailPageState extends ConsumerState<UserResourceDetailPage>
 
     return PartWindowLayout(
       pageName: AppRoutes.userResourceDetail,
+      // 导航栏固定在顶部，不随内容滚动（对应源项目 position:fixed）。
+      navibar: PartNavibarPcFixed(
+        title: LangText.fromMap(subtag['i18nPageTitle']),
+        backToPage: AppRoutes.userResource,
+      ),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -122,10 +127,6 @@ class _UserResourceDetailPageState extends ConsumerState<UserResourceDetailPage>
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   const SizedBox(height: 10),
-                    PartNavibarPcFixed(
-                      title: LangText.fromMap(subtag['i18nPageTitle']),
-                      backToPage: AppRoutes.userResource,
-                    ),
                   _GroupTabs(envar: envar, groupNow: group),
                   _SubtagTabs(envar: envar, groupNow: group, tagNow: widget.tagNow),
                   if (widget.tagNow == 'android')

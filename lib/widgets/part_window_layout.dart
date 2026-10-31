@@ -17,10 +17,17 @@ class PartWindowLayout extends ConsumerWidget {
     required this.child,
     this.pageName = '',
     this.showTabBar = false,
+    this.navibar,
   });
 
   final Widget child;
   final String pageName;
+
+  /// 二级页面导航栏（标题 + Back）。非 null 时固定渲染在内容区上方、
+  /// 页面滚动区之外（对应源项目 partNavibarPcFixed 的 position:fixed，
+  /// 不随内容滚动）。页面不要再把 PartNavibarPcFixed 放进
+  /// SingleChildScrollView 里。
+  final Widget? navibar;
 
   /// 是否显示底部标签栏。null（默认）= 由布局形态决定：非 PC 布局
   /// （手机/平板/桌面原生）一律显示，作为全局导航；PC 布局不显示
@@ -39,6 +46,7 @@ class PartWindowLayout extends ConsumerWidget {
       body: Column(
         children: <Widget>[
           PartWindowHeader(pageName: pageName),
+          ?navibar,
           Expanded(child: child),
           if (showBar) PartTabBarPhone(currentPage: pageName),
           PartWindowFooter(),

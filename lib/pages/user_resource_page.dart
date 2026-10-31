@@ -39,6 +39,8 @@ class UserResourcePage extends ConsumerWidget {
 
     return PartWindowLayout(
       pageName: AppRoutes.userResource,
+      // 导航栏固定在顶部，不随内容滚动（对应源项目 position:fixed）。
+      navibar: const PartNavibarPcFixed(pageName: AppRoutes.userResource),
       child: SingleChildScrollView(
         child: Center(
           child: ConstrainedBox(
@@ -47,7 +49,6 @@ class UserResourcePage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const SizedBox(height: 10),
-                  PartNavibarPcFixed(pageName: AppRoutes.userResource),
                 if (!startup.afterAutologging)
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 60),
