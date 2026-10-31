@@ -11,6 +11,7 @@ import '../core/state/creator_provider.dart';
 import '../core/state/envar_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/part_circle_list.dart';
+import '../widgets/part_navibar_pc_fixed.dart';
 import '../widgets/part_window_layout.dart';
 
 class UmyCirclePage extends ConsumerStatefulWidget {
@@ -47,6 +48,8 @@ class _UmyCirclePageState extends ConsumerState<UmyCirclePage> {
       pageName: AppRoutes.umyCircle,
       child: Column(
         children: <Widget>[
+          // 源项目本页自带 partNavibarPc（标题+Back）。
+          const PartNavibarPcFixed(pageName: AppRoutes.umyCircle),
           const SizedBox(height: 6),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),

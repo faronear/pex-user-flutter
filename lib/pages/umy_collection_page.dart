@@ -13,6 +13,7 @@ import '../core/state/app_startup_notifier.dart';
 import '../core/state/envar_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/part_creation_as_list.dart';
+import '../widgets/part_navibar_pc_fixed.dart';
 import '../widgets/part_show_loading.dart';
 import '../widgets/part_window_layout.dart';
 
@@ -64,6 +65,9 @@ class _UmyCollectionPageState extends ConsumerState<UmyCollectionPage> {
       pageName: AppRoutes.umyCollection,
       child: Column(
         children: <Widget>[
+          // 源项目本页自带 partNavibarPc（标题+Back）；Flutter 版由
+          // 二级导航栏统一承担返回职责。
+          const PartNavibarPcFixed(pageName: AppRoutes.umyCollection),
           Padding(
             padding: const EdgeInsets.only(top: 6),
             child: Text(
