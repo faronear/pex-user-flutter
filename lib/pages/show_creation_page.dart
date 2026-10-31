@@ -285,7 +285,6 @@ class _ShowCreationPageState extends ConsumerState<ShowCreationPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const SizedBox(height: 10),
-                if (device.inPc)
                   PartNavibarPcFixed(
                     title: ShowCreationTexts.pageTitle,
                     backToPage: AppRoutes.menuCreation,

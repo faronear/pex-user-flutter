@@ -122,7 +122,6 @@ class _UserResourceDetailPageState extends ConsumerState<UserResourceDetailPage>
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   const SizedBox(height: 10),
-                  if (device.inPc)
                     PartNavibarPcFixed(
                       title: LangText.fromMap(subtag['i18nPageTitle']),
                       backToPage: AppRoutes.userResource,

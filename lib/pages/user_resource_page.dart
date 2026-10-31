@@ -47,7 +47,6 @@ class UserResourcePage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 const SizedBox(height: 10),
-                if (device.inPc)
                   PartNavibarPcFixed(pageName: AppRoutes.userResource),
                 if (!startup.afterAutologging)
                   const Padding(

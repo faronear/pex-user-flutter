@@ -59,17 +59,16 @@ class _ShowCreationUpdatePageState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                if (device.inPc)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: PartNavibarPcFixed(
-                      title: const LangText(
-                        zhCN: '修改创作品',
-                        enUS: 'Modify Creation',
-                      ),
-                      pageName: AppRoutes.showCreationUpdate,
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: PartNavibarPcFixed(
+                    title: const LangText(
+                      zhCN: '修改创作品',
+                      enUS: 'Modify Creation',
                     ),
+                    pageName: AppRoutes.showCreationUpdate,
                   ),
+                ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(5, device.inPc ? 0 : 10, 5, 30),
                   child: const PartCreate(),

@@ -1,4 +1,8 @@
-/// PC 固定导航栏容器，对应源项目 `parts/partNavibarPcFixed.vue`（仅 PC 显示）。
+/// 二级页面固定导航栏（标题 + Back），对应源项目 `parts/partNavibarPcFixed.vue`。
+///
+/// 全形态渲染：PC（Web 宽窗口）与手机/平板/桌面原生都显示——源项目手机
+/// 形态靠 uni-app 原生导航栏提供 Back，Flutter 版统一由本组件承担。
+/// 组件名里的 Pc 是迁移历史遗留。
 library;
 
 import 'package:flutter/material.dart';
