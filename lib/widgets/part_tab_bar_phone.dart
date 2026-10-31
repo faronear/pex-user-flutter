@@ -35,8 +35,11 @@ class PartTabBarPhone extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final DeviceInfo device = DeviceInfo.of(context);
-    if (device.inPc) return const SizedBox.shrink();
+    // 桌面原生端（macOS/Win/Linux）现为 pad 布局：底部标签栏是其全局导航
+    // （无 PC 顶栏/页脚），同样显示；纯 Web 的 PC 宽度窗口仍用顶栏+页脚。
+    if (DeviceInfo.of(context).inWeb && DeviceInfo.of(context).inPc) {
+      return const SizedBox.shrink();
+    }
 
     final BrandConfig brand = ref.watch(brandProvider);
     final List<TabItem> tabs = brand.tabItems;
