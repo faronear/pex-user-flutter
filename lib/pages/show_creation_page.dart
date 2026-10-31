@@ -463,12 +463,32 @@ class _FoundView extends ConsumerWidget {
               ],
             )
           else
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            // 源项目：头像 z-index:900 悬浮于封面与信息面板交界（上下各半）。
+            // 头像必须在这两者之上，故放在覆盖整个区域的外层 Stack。
+            Stack(
+              clipBehavior: Clip.none,
               children: <Widget>[
-                _LeftColumn(creation: creation, twoCol: false),
-                const SizedBox(height: 30),
-                _SurroundingsPanel(creation: creation, twoCol: false),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    _LeftColumn(creation: creation, twoCol: false),
+                    // 源项目信息面板 margin: 2px 0，紧贴封面。
+                    const SizedBox(height: 2),
+                    _SurroundingsPanel(creation: creation, twoCol: false),
+                  ],
+                ),
+                if (creation.creatorUsid.isNotEmpty)
+                  Positioned(
+                    right: 10,
+                    // 圆底伸出面板顶边下方 33px（2px 间隙 + 35px 半圆 - 4px
+                    // 余量微调），圆顶自然落在封面内，上下各压半圆。
+                    bottom: -33,
+                    child: _AuthorAvatar(
+                      creation: creation,
+                      size: 70,
+                      iconSize: 30,
+                    ),
+                  ),
               ],
             ),
         ],
@@ -492,6 +512,8 @@ class _FoundView extends ConsumerWidget {
 }
 
 /// 左栏：封面 + 手机端作者头像（源项目「创作品自身」）。
+///
+/// 头像的悬浮定位由外层（单列模式的 Stack）承担，这里只出封面。
 class _LeftColumn extends StatelessWidget {
   const _LeftColumn({required this.creation, required this.twoCol});
 
@@ -500,19 +522,7 @@ class _LeftColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool showAvatar = !twoCol && creation.creatorUsid.isNotEmpty;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: <Widget>[
-        _CoverPanel(creation: creation),
-        if (showAvatar)
-          Positioned(
-            right: 10,
-            bottom: -35,
-            child: _AuthorAvatar(creation: creation, size: 70, iconSize: 30),
-          ),
-      ],
-    );
+    return _CoverPanel(creation: creation);
   }
 }
 
@@ -815,16 +825,19 @@ class _SurroundingsPanel extends ConsumerWidget {
 
 /// 通用信息行（源项目 `uni-list-item`）。
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.leading, this.body, this.trailing});
+  const _InfoRow({required this.leading, this.body, this.trailing, this.padding});
 
   final Widget leading;
   final Widget? body;
   final Widget? trailing;
 
+  /// 覆盖默认内边距（如作者行需要 `padding: 0 10px 0 10px` 且右侧给头像留位）。
+  final EdgeInsetsGeometry? padding;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: PexColors.greyE, width: 0.5)),
       ),
@@ -848,8 +861,14 @@ class _AuthorRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!twoCol) {
+      // 源项目单列作者行：padding '0 0 0 10px'（紧凑，无上下留白，压在
+      // 头像正下方的面板顶行），body 右侧留 80px 给悬浮头像的下半圆。
       return _InfoRow(
-        leading: const SizedBox.shrink(),
+        padding: const EdgeInsets.fromLTRB(10, 0, 80, 0),
+        leading: Text(
+          formatDate(creation.createTimeUnix, 'yyyy-mm-dd'),
+          style: const TextStyle(fontSize: 12, color: PexColors.subtext),
+        ),
         body: Align(
           alignment: Alignment.centerRight,
           child: Text(
