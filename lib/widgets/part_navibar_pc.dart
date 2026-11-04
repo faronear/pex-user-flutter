@@ -48,7 +48,9 @@ class PartNavibarPc extends ConsumerWidget {
     final String lang = ref.watch(languageProvider);
     final LangText? effectiveTitle =
         title ?? pageMetaOf(pageName)?.i18nPageTitle;
-    final bool canBack = canGoBack && context.canPop();
+    // 栈里可 pop 时显示返回；不可 pop（如 pushReplacement 进入）但配置了
+    // backToPage 兜底时也显示，点击后落到 backToPage。
+    final bool canBack = canGoBack && (context.canPop() || backToPage.isNotEmpty);
     return SizedBox(
       height: 50,
       child: Stack(
