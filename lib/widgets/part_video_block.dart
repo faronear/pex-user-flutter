@@ -16,13 +16,17 @@ import '../core/state/envar_provider.dart';
 import '../core/util/server_url.dart';
 
 class PartVideoBlock extends ConsumerStatefulWidget {
-  const PartVideoBlock({super.key, required this.url, this.title});
+  const PartVideoBlock({super.key, required this.url, this.title, this.fillCover = false});
 
   /// 视频地址（段落原始值：相对路径 / 裸 cid / 完整 URL）。
   final String url;
 
   /// 可选标题（失败卡片里展示；通常为原始文件名）。
   final String? title;
+
+  /// true = 等比放大裁剪填满容器（封面场景，BoxFit.cover 语义）；
+  /// false = 保持视频自身宽高比（编辑器/阅读器场景）。
+  final bool fillCover;
 
   @override
   ConsumerState<PartVideoBlock> createState() => _PartVideoBlockState();
@@ -148,35 +152,76 @@ class _PartVideoBlockState extends ConsumerState<PartVideoBlock> {
         ),
       );
     }
+    // 注意：macOS 实现里 controller.value.size 可能为零，不能用它判断；
+    // aspectRatio（宽/高）初始化后必有值，用它构造基准尺寸给 FittedBox cover。
+    final double ratio = controller.value.aspectRatio; // 宽/高
+    final bool haveSize = ratio > 0;
+    // fillCover：等比放大裁剪填满容器（不变形）；否则按视频自身宽高比显示
+    final Widget video = haveSize && widget.fillCover
+        ? FittedBox(
+            fit: BoxFit.cover,
+            clipBehavior: Clip.hardEdge,
+            child: SizedBox(
+              width: 1000 * ratio,
+              height: 1000,
+              child: VideoPlayer(controller),
+            ),
+          )
+        : AspectRatio(
+            aspectRatio: controller.value.aspectRatio,
+            child: VideoPlayer(controller),
+          );
     return ClipRRect(
       borderRadius: BorderRadius.circular(6),
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: <Widget>[
-          GestureDetector(
-            onTap: () => setState(() {
-              // video_player 的 VideoPlayer 组件不带控制界面，点击画面切换播放/暂停
-              controller.value.isPlaying ? controller.pause() : controller.play();
-            }),
-            child: AspectRatio(
-              aspectRatio: controller.value.aspectRatio,
-              child: Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  VideoPlayer(controller),
-                  if (!controller.value.isPlaying)
-                    const Icon(Icons.play_circle_fill, size: 48, color: Colors.white70),
-                ],
-              ),
+      child: widget.fillCover
+          ? Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () => setState(() {
+                    controller.value.isPlaying ? controller.pause() : controller.play();
+                  }),
+                  // 内层 Stack 必须 expand：loose 约束下 FittedBox 退化为原比例居中（contain），cover 裁剪不生效
+                  child: Stack(
+                    alignment: Alignment.center,
+                    fit: StackFit.expand,
+                    children: <Widget>[
+                      video,
+                      if (!controller.value.isPlaying)
+                        const Icon(Icons.play_circle_fill, size: 48, color: Colors.white70),
+                    ],
+                  ),
+                ),
+                // 封面模式不放进度条：其半透明背景会像蒙版盖住画面，
+                // allowScrubbing 的拖动条也会露出红色段
+              ],
+            )
+          : Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () => setState(() {
+                    controller.value.isPlaying ? controller.pause() : controller.play();
+                  }),
+                  child: AspectRatio(
+                    aspectRatio: controller.value.aspectRatio,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        VideoPlayer(controller),
+                        if (!controller.value.isPlaying)
+                          const Icon(Icons.play_circle_fill, size: 48, color: Colors.white70),
+                      ],
+                    ),
+                  ),
+                ),
+                VideoProgressIndicator(
+                  controller,
+                  allowScrubbing: true,
+                  padding: const EdgeInsets.only(top: 12),
+                ),
+              ],
             ),
-          ),
-          VideoProgressIndicator(
-            controller,
-            allowScrubbing: true,
-            padding: const EdgeInsets.only(top: 12),
-          ),
-        ],
-      ),
     );
   }
 }

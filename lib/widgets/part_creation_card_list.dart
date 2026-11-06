@@ -20,6 +20,7 @@ import '../data/creation.dart';
 import '../theme/app_theme.dart';
 import 'part_pexdata_summary.dart';
 import 'part_text_reader.dart';
+import 'part_video_block.dart';
 
 const LangText _kNoContent = LangText(zhCN: '没有内容', enUS: 'No Content');
 
@@ -192,6 +193,14 @@ class _Cover extends ConsumerWidget {
             _lockedCover(ref, lang)
           else
             _contentCover(ref, lang),
+          // 统一点击层：列表里点击任何类型封面都进入作品秀
+          // （盖在视频/文字封面上，避免视频在此处播放、文字封面无响应）
+          Positioned.fill(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => context.push('/showCreation?unid=${creation.csid}'),
+            ),
+          ),
         ],
       ),
     );
@@ -234,19 +243,25 @@ class _Cover extends ConsumerWidget {
     );
   }
 
-  /// 内容封面：图 / 视频 / 纯文本。
+  /// 内容封面：用户自带封面 > 第一个段落（图 / 视频 / 文字）。
   Widget _contentCover(WidgetRef ref, String lang) {
-    final String image = creation.coverImage;
-    if (image.isNotEmpty) {
-      return ServerImage(image, fit: BoxFit.cover);
-    }
-    if (creation.coverVideo.isNotEmpty) {
-      // Web 可内联播放；此处统一用封面占位 + 提示，视频播放能力见阶段四。
-      return _plainCover(<Widget>[
-        Text(creation.coverVideo, style: const TextStyle(color: Colors.white, fontSize: 12)),
-      ]);
+    if (creation.openCover.isNotEmpty) {
+      return ServerImage(creation.openCover, fit: BoxFit.cover);
     }
     final Map<String, dynamic>? section = creation.firstSection;
+    if (section != null) {
+      if (section['image'] != null) {
+        return ServerImage(section['image']?.toString(), fit: BoxFit.cover);
+      }
+      if (section['video'] != null) {
+        // 视频段落直接内联播放（等比裁剪填满封面，首帧 + 点击播放 + 进度条）
+        return PartVideoBlock(
+          url: section['video'].toString(),
+          title: section['_originalname']?.toString(),
+          fillCover: true,
+        );
+      }
+    }
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(5),
