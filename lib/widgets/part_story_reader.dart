@@ -17,6 +17,7 @@ import '../core/util/pex_toolkit.dart';
 import '../core/util/server_url.dart';
 import '../theme/app_theme.dart';
 import 'part_text_reader.dart';
+import 'part_video_block.dart';
 
 const LangText _kValidUntil = LangText(
   zhCN: '有效期至 ',
@@ -76,12 +77,12 @@ class PartStoryReader extends ConsumerWidget {
       );
     }
     if (section['video'] != null) {
-      return _linkBlock(
-        context,
-        ref,
-        icon: 'uniui-videocam',
-        title: section['_originalname']?.toString() ?? section['video'].toString(),
-        onTap: () => _openUrl(context, ref, section['video']),
+      return Padding(
+        padding: const EdgeInsets.all(5),
+        child: PartVideoBlock(
+          url: section['video'].toString(),
+          title: section['_originalname']?.toString(),
+        ),
       );
     }
     if (section['audio'] != null) {

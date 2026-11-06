@@ -24,6 +24,7 @@ import '../core/util/pex_toolkit.dart';
 import '../core/util/server_url.dart';
 import '../theme/app_theme.dart';
 import 'part_button_submit.dart';
+import 'part_video_block.dart';
 
 const LangText _kPublish = LangText(zhCN: '发 表', enUS: 'Publish', jaJP: '送信');
 
@@ -234,7 +235,10 @@ class _PartStoryEditorState extends ConsumerState<PartStoryEditor> {
       );
     }
     if (section['video'] != null) {
-      return _pendingBlock(lang, 'uniui-videocam', section['video'].toString());
+      return PartVideoBlock(
+        url: section['video'].toString(),
+        title: section['_originalname']?.toString(),
+      );
     }
     if (section['audio'] != null) {
       return _pendingBlock(lang, 'uniui-sound', section['audio'].toString());
