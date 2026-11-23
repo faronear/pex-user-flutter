@@ -59,6 +59,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
+          # 钉住与本地一致的版本，防 stable 漂移（新版把 material.dart 标 deprecated，analyze 有 info 即退出 1）
+          flutter-version: 3.47.2
           channel: stable
           cache: true
       - name: Flutter pub get
@@ -85,6 +87,8 @@ jobs:
           java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
+          # 钉住与本地一致的版本，防 stable 漂移（新版把 material.dart 标 deprecated，analyze 有 info 即退出 1）
+          flutter-version: 3.47.2
           channel: stable
           cache: true
       - name: Flutter pub get
@@ -233,6 +237,8 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: steps.secrets.outputs.configured == 'true'
         with:
+          # 钉住与本地一致的版本，防 stable 漂移（新版把 material.dart 标 deprecated，analyze 有 info 即退出 1）
+          flutter-version: 3.47.2
           channel: stable
           cache: true
       - name: Install signing certificate
@@ -359,6 +365,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
+          # 钉住与本地一致的版本，防 stable 漂移（新版把 material.dart 标 deprecated，analyze 有 info 即退出 1）
+          flutter-version: 3.47.2
           channel: stable
           cache: true
       - name: Check Developer ID secrets
@@ -481,6 +489,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
+          # 钉住与本地一致的版本，防 stable 漂移（新版把 material.dart 标 deprecated，analyze 有 info 即退出 1）
+          flutter-version: 3.47.2
           channel: stable
           cache: true
       - name: Flutter pub get
